@@ -11,8 +11,7 @@ final class AbonnementController extends AbstractController
     #[Route('/abonnement', name: 'app_abonnement')]
     public function index(): Response
     {
-        return $this->render('abonnement/index.html.twig', [
-            'controller_name' => 'AbonnementController',
-        ]);
+        return $this->render('abonnement/abonnement.html.twig'
+        );
     }
 }

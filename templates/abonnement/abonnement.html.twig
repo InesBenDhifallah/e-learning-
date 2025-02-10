@@ -1,20 +1,63 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Hello AbonnementController!{% endblock %}
+{% block title %}Plans d'Abonnement{% endblock %}  
 
 {% block body %}
-<style>
-    .example-wrapper { margin: 1em auto; max-width: 800px; width: 95%; font: 18px/1.5 sans-serif; }
-    .example-wrapper code { background: #F5F5F5; padding: 2px 6px; }
-</style>
+   <h2 class="text-3xl font-bold text-center text-gray-800 my-8">Choisissez votre abonnement</h2>
+        <div class="grid md:grid-cols-3 gap-6 px-6">
+            <!-- Pack d'essai -->
+            <div class="bg-[#FEF9E7] p-6 rounded-2xl shadow-lg border border-gray-200 text-center">
+                <h3 class="text-xl font-semibold text-gray-800">Pack d'essai</h3>
+                <p class="text-gray-600 my-2">Paiement par mois</p>
+                <p class="text-3xl font-bold text-orange-600 my-4">100D <span class="text-sm font-normal">/ mois</span></p>
+                <ul class="text-gray-700 text-sm mb-6 space-y-2">
+                    <li>✔ Accès aux cours de base</li>
+                    <li>✔ Sessions en ligne</li>
+                    <li>✔ Quiz et évaluations</li>
+                </ul>
+                <button 
+                    class="w-full bg-orange-600 text-white py-2 rounded-lg hover:bg-orange-700"
+                    onclick="window.location.href='{{ path('pay', { prix: 100 }) }}'">
+                    Choisir
+                </button>
 
-<div class="example-wrapper">
-    <h1>Hello {{ controller_name }}! ✅</h1>
 
-    This friendly message is coming from:
-    <ul>
-        <li>Your controller at <code>C:/Users/bendh/pidev/src/Controller/AbonnementController.php</code></li>
-        <li>Your template at <code>C:/Users/bendh/pidev/templates/abonnement/index.html.twig</code></li>
-    </ul>
-</div>
+            </div>
+            
+            <!-- Pack intermédiaire -->
+            <div class="bg-[#FEF9E7] p-6 rounded-2xl shadow-lg border border-orange-600 text-center relative">
+                <span class="absolute top-0 right-0 bg-orange-600 text-white text-xs font-bold px-3 py-1 rounded-bl-lg">Populaire</span>
+                <h3 class="text-xl font-semibold text-gray-800">Pack intermédiaire</h3>
+                <p class="text-gray-600 my-2">Paiement par trimestre</p>
+                <p class="text-3xl font-bold text-orange-600 my-4">250D <span class="text-sm font-normal">/ mois</span></p>
+                <ul class="text-gray-700 text-sm mb-6 space-y-2">
+                    <li>✔ Accès aux cours du trimestre</li>
+                    <li>✔ Sessions en ligne</li>
+                    <li>✔ Quiz et évaluations</li>
+                </ul>
+                 <button 
+                    class="w-full bg-orange-600 text-white py-2 rounded-lg hover:bg-orange-700"
+                    onclick="window.location.href='{{ path('pay', { prix: 250 }) }}'">
+                    Choisir
+                </button>
+            </div>
+            
+            <!-- Pack fidèle -->
+            <div class="bg-[#FEF9E7] p-6 rounded-2xl shadow-lg border border-gray-200 text-center">
+                <h3 class="text-xl font-semibold text-gray-800">Pack fidèle</h3>
+                <p class="text-gray-600 my-2">Paiement par année</p>
+                <p class="text-3xl font-bold text-orange-600 my-4">700D <span class="text-sm font-normal">/ mois</span></p>
+                <ul class="text-gray-700 text-sm mb-6 space-y-2">
+                    <li>✔ Accès aux cours de l'année</li>
+                    <li>✔ Sessions en ligne</li>
+                    <li>✔ Quiz et évaluations</li>
+                </ul>
+                 <button 
+                    class="w-full bg-orange-600 text-white py-2 rounded-lg hover:bg-orange-700"
+                    onclick="window.location.href='{{ path('pay', { prix: 700 }) }}'">
+                    Choisir
+                </button>
+            </div>
+        </div>
 {% endblock %}
+
