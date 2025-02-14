@@ -22,17 +22,19 @@ class Abonnement
     #[ORM\Column]
     private ?float $prix = null;
 
-    #[ORM\Column(type: Types::DATE_MUTABLE, nullable: true)]
-    private ?\DateTimeInterface $date_debut = null;
-
-    #[ORM\Column(type: Types::DATE_MUTABLE, nullable: true)]
-    private ?\DateTimeInterface $date_fin = null;
+    
 
     /**
      * @var Collection<int, Paiement>
      */
     #[ORM\OneToMany(targetEntity: Paiement::class, mappedBy: 'id_abonnement')]
     private Collection $paiements;
+
+    #[ORM\Column(length: 255)]
+    private ?string $duree = null;
+
+    #[ORM\Column(length: 255)]
+    private ?string $description = null;
 
     public function __construct()
     {
@@ -68,29 +70,7 @@ class Abonnement
         return $this;
     }
 
-    public function getDateDebut(): ?\DateTimeInterface
-    {
-        return $this->date_debut;
-    }
-
-    public function setDateDebut(?\DateTimeInterface $date_debut): static
-    {
-        $this->date_debut = $date_debut;
-
-        return $this;
-    }
-
-    public function getDateFin(): ?\DateTimeInterface
-    {
-        return $this->date_fin;
-    }
-
-    public function setDateFin(?\DateTimeInterface $date_fin): static
-    {
-        $this->date_fin = $date_fin;
-
-        return $this;
-    }
+   
 
     /**
      * @return Collection<int, Paiement>
@@ -118,6 +98,30 @@ class Abonnement
                 $paiement->setIdAbonnement(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getDuree(): ?string
+    {
+        return $this->duree;
+    }
+
+    public function setDuree(string $duree): static
+    {
+        $this->duree = $duree;
+
+        return $this;
+    }
+
+    public function getDescription(): ?string
+    {
+        return $this->description;
+    }
+
+    public function setDescription(string $description): static
+    {
+        $this->description = $description;
 
         return $this;
     }
