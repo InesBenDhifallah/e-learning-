@@ -1,0 +1,40 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Détails de l'Abonnement{% endblock %}
+
+{% block body %}
+<div class="max-w-3xl mx-auto mt-10 p-6 bg-white shadow-lg rounded-lg">
+    <h1 class="text-3xl font-semibold text-center mb-6 text-gray-800">Détails de l'Abonnement</h1>
+
+    <!-- Table stylisée -->
+    <div class="overflow-hidden rounded-lg border border-gray-200">
+        <table class="min-w-full bg-white">
+            <tbody class="divide-y divide-gray-200">
+                <tr>
+                    <th class="px-6 py-4 text-left bg-gray-100 font-semibold">ID</th>
+                    <td class="px-6 py-4">{{ abonnement.id }}</td>
+                </tr>
+                <tr>
+                    <th class="px-6 py-4 text-left bg-gray-100 font-semibold">Type</th>
+                    <td class="px-6 py-4">{{ abonnement.type }}</td>
+                </tr>
+                <tr>
+                    <th class="px-6 py-4 text-left bg-gray-100 font-semibold">Prix</th>
+                    <td class="px-6 py-4">{{ abonnement.prix }} Dinars </td>
+                </tr>
+                <tr>
+                    <th class="px-6 py-4 text-left bg-gray-100 font-semibold">Durée</th>
+                    <td class="px-6 py-4">{{ abonnement.duree }}</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Boutons d'action -->
+    <div class="mt-6 flex justify-between">
+        <a href="{{ path('app_abonnement_index') }}" class="bg-gray-500 text-white px-6 py-2 rounded-lg hover:bg-gray-600 transition">Retour</a>
+
+        {{ include('abonnement/_delete_form.html.twig') }}
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Abonnement Index</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+</head>
+<body class="bg-gray-100 min-h-screen">
+    <div class="flex min-h-screen">
+        <!-- Sidebar -->
+        <div class="w-64">
+            {% include 'sidebaradmin.html.twig' %}
+        </div>
+
+        <!-- Contenu principal -->
+        <div class="flex-1 p-8">
+            <h1 class="text-3xl font-semibold text-center mb-6">Liste des Abonnements</h1>
+
+            <!-- Table container -->
+            <div class="overflow-x-auto bg-white shadow-lg rounded-lg p-4">
+                <table class="w-full table-auto border border-gray-200 rounded-lg">
+                    <thead class="bg-lime-500 text-white">
+                        <tr>
+                            <th class="px-6 py-3 text-left">Id</th>
+                            <th class="px-6 py-3 text-left">Type</th>
+                            <th class="px-6 py-3 text-left">Prix</th>
+                            <th class="px-6 py-3 text-left">Durée</th>
+                            <th class="px-6 py-3 text-center">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody class="text-gray-700">
+                    {% for abonnement in abonnements %}
+                        <tr class="border-t hover:bg-gray-50">
+                            <td class="px-6 py-3">{{ abonnement.id }}</td>
+                            <td class="px-6 py-3">{{ abonnement.type }}</td>
+                            <td class="px-6 py-3">{{ abonnement.prix }} Dinars </td>
+                            <td class="px-6 py-3">{{ abonnement.duree }}</td>
+                            <td class="px-6 py-3 text-center">
+                                <a href="{{ path('app_abonnement_show', {'id': abonnement.id}) }}" class="text-blue-600 hover:text-blue-800">Afficher</a>
+                                <span class="mx-2">|</span>
+                                <a href="{{ path('app_abonnement_edit', {'id': abonnement.id}) }}" class="text-yellow-600 hover:text-yellow-800">Modifier</a>
+                            </td>
+                        </tr>
+                    {% else %}
+                        <tr>
+                            <td colspan="5" class="text-center py-3 text-gray-500">Aucun abonnement trouvé</td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="mt-6 text-center">
+                <a href="{{ path('app_abonnement_new') }}" class="bg-lime-500 text-white py-2 px-6 rounded-lg hover:bg-lime-600 transition duration-300">Créer un nouvel abonnement</a>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
