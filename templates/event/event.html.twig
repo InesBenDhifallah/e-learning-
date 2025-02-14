@@ -53,7 +53,7 @@
     <p>No image available</p>
 {% endif %}
     
-        <p>📅 {{ event.date|date('Y-m-d') }} | 🕒  {{ event.time }}| 🎤 Speaker: {{ event.speaker }} | 📍 {{ event.place }}</p>
+        <p>📅 {{ event.date|date('Y-m-d') }} | 🕒  {{ event.time }}|| 📍 {{ event.place }}</p>
         <a href="{{ path('event_show', {'id': event.id}) }}">View Details</a>
     </div>
     {% else %}
