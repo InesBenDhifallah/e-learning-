@@ -1,0 +1,33 @@
+{{ form_start(form) }}
+    
+
+{% block body %}
+
+
+            {{ form_start(form, {'attr': {'class': 'space-y-4'}}) }}
+                <div>
+                    <label for="type" class="block text-sm font-medium text-gray-600">Nom du Pack</label>
+                    {{ form_widget(form.type, {'attr': {'class': 'mt-2 w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-lime-500'}}) }}
+                </div>
+                <div>
+                    <label for="description" class="block text-sm font-medium text-gray-600">Description</label>
+                    {{ form_widget(form.description, {'attr': {'class': 'mt-2 w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-lime-500'}}) }}
+                </div>
+                <div>
+                    <label for="prix" class="block text-sm font-medium text-gray-600">Prix</label>
+                    {{ form_widget(form.prix, {'attr': {'class': 'mt-2 w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-lime-500'}}) }}
+                </div>
+                <div>
+                    <label for="duree" class="block text-sm font-medium text-gray-600">Durée </label>
+                    {{ form_widget(form.duree, {'attr': {'class': 'mt-2 w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-lime-500'}}) }}
+                </div>
+                <br>
+                <button type="submit" class="w-full py-3 bg-lime-500 text-white font-medium rounded-lg hover:bg-lime-600 transition duration-300">
+    {{ button_label }}
+</button>
+
+            {{ form_end(form) }}
+     
+{% endblock %}
+    
+{{ form_end(form) }}
