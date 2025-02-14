@@ -1,0 +1,15 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Participate in {{ event.name }}{% endblock %}
+
+{% block body %}
+    <h2>Register for {{ event.name }}</h2>
+
+    {{ form_start(form) }}
+        {{ form_row(form.nbrTickets) }}
+        {{ form_row(form.somme) }}
+        {{ form_row(form.paymentMethod) }}
+        {{ form_row(form.submit) }}
+    {{ form_end(form) }}
+
+{% endblock %}
