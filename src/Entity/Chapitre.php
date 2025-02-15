@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\ChapitreRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: ChapitreRepository::class)]
@@ -14,66 +16,69 @@ class Chapitre
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
-    private ?string $nomchapitre = null;
+    private ?string $nom = null;
 
-    #[ORM\ManyToOne(inversedBy: 'cours')]
-    private ?Cours $cours = null;
+    #[ORM\ManyToOne(targetEntity: Module::class, inversedBy: "chapitres")]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?Module $module = null;
 
-    #[ORM\ManyToOne(inversedBy: 'chapitre')]
-    private ?Cours $Chapitres = null;
+    #[ORM\OneToMany(mappedBy: "chapitre", targetEntity: Cours::class, cascade: ["remove"])]
+    private Collection $cours;
 
-    #[ORM\ManyToOne(inversedBy: 'chapitree')]
-    private ?Cours $courses = null;
+    public function __construct()
+    {
+        $this->cours = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
         return $this->id;
     }
 
-    public function getNomchapitre(): ?string
+    public function getNom(): ?string
     {
-        return $this->nomchapitre;
+        return $this->nom;
     }
 
-    public function setNomchapitre(string $nomchapitre): static
+    public function setNom(string $nom): static
     {
-        $this->nomchapitre = $nomchapitre;
-
+        $this->nom = $nom;
         return $this;
     }
 
-    public function getCours(): ?cours
+    public function getModule(): ?Module
+    {
+        return $this->module;
+    }
+
+    public function setModule(?Module $module): static
+    {
+        $this->module = $module;
+        return $this;
+    }
+
+    public function getCours(): Collection
     {
         return $this->cours;
     }
 
-    public function setCours(?cours $cours): static
+    public function addCours(Cours $cours): static
     {
-        $this->cours = $cours;
+        if (!$this->cours->contains($cours)) {
+            $this->cours->add($cours);
+            $cours->setChapitre($this);
+        }
 
         return $this;
     }
 
-    public function getChapitres(): ?Cours
+    public function removeCours(Cours $cours): static
     {
-        return $this->Chapitres;
-    }
-
-    public function setChapitres(?Cours $Chapitres): static
-    {
-        $this->Chapitres = $Chapitres;
-
-        return $this;
-    }
-
-    public function getCourses(): ?Cours
-    {
-        return $this->courses;
-    }
-
-    public function setCourses(?Cours $courses): static
-    {
-        $this->courses = $courses;
+        if ($this->cours->removeElement($cours)) {
+            if ($cours->getChapitre() === $this) {
+                $cours->setChapitre(null);
+            }
+        }
 
         return $this;
     }

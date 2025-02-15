@@ -20,9 +20,9 @@ class Participation
 
     #[ORM\Column(type: 'integer')]
     private ?int $nbrTickets = null;
-
-    #[ORM\Column(type: Types::DECIMAL, precision: 10, scale: 2)]
-    private ?float $somme = null;
+   
+    #[ORM\Column(type: "decimal", precision: 10, scale: 2)]  
+    private ?string $somme = null;
 
     #[ORM\Column(length: 20)]
     private ?string $paymentMethod = null;
@@ -57,12 +57,12 @@ class Participation
         return $this;
     }
 
-    public function getSomme(): ?float
+    public function getSomme(): ?string
     {
         return $this->somme;
     }
 
-    public function setSomme(float $somme): static
+    public function setSomme(string $somme): static
     {
         $this->somme = $somme;
         return $this;
