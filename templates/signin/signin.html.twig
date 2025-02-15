@@ -1,0 +1,39 @@
+{% block body %}
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    {# ... keep the same head content ... #}
+</head>
+<body>
+    <!-- Menu en haut -->
+    <div class="top-nav">
+        {# ... same navigation content ... #}
+    </div>
+
+    <div class="overlay"></div>
+    <div class="login-container">
+        <h2>Connexion à Alpha Education</h2>
+        {% if error %}
+            <div class="alert alert-danger">{{ error.messageKey|trans(error.messageData, 'security') }}</div>
+        {% endif %}
+        
+        {{ form_start(loginForm, {'attr': {'class': 'login-form'}}) }}
+            <div class="input-group">
+                <i class="fas fa-envelope"></i>
+                {{ form_widget(loginForm.email) }}
+            </div>
+            <div class="input-group">
+                <i class="fas fa-lock"></i>
+                {{ form_widget(loginForm.password) }}
+            </div>
+            {{ form_widget(loginForm._token) }}
+            <button type="submit" class="login-btn">Se connecter</button>
+        {{ form_end(loginForm) }}
+        
+        <div class="extra-links">
+            <a href="#">Mot de passe oublié ?</a>
+        </div>
+    </div>
+</body>
+</html>
+{% endblock %}
