@@ -16,17 +16,14 @@ class Module
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
-    private ?string $nomModule = null;
+    private ?string $nom = null;
 
-    /**
-     * @var Collection<int, cours>
-     */
-    #[ORM\OneToMany(targetEntity: cours::class, mappedBy: 'module')]
-    private Collection $courses;
+    #[ORM\OneToMany(mappedBy: "module", targetEntity: Chapitre::class, cascade: ["remove"])]
+    private Collection $chapitres;
 
     public function __construct()
     {
-        $this->courses = new ArrayCollection();
+        $this->chapitres = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -34,42 +31,37 @@ class Module
         return $this->id;
     }
 
-    public function getNomModule(): ?string
+    public function getNom(): ?string
     {
-        return $this->nomModule;
+        return $this->nom;
     }
 
-    public function setNomModule(string $nomModule): static
+    public function setNom(string $nom): static
     {
-        $this->nomModule = $nomModule;
-
+        $this->nom = $nom;
         return $this;
     }
 
-    /**
-     * @return Collection<int, cours>
-     */
-    public function getCourses(): Collection
+    public function getChapitres(): Collection
     {
-        return $this->courses;
+        return $this->chapitres;
     }
 
-    public function addCourse(cours $course): static
+    public function addChapitre(Chapitre $chapitre): static
     {
-        if (!$this->courses->contains($course)) {
-            $this->courses->add($course);
-            $course->setModule($this);
+        if (!$this->chapitres->contains($chapitre)) {
+            $this->chapitres->add($chapitre);
+            $chapitre->setModule($this);
         }
 
         return $this;
     }
 
-    public function removeCourse(cours $course): static
+    public function removeChapitre(Chapitre $chapitre): static
     {
-        if ($this->courses->removeElement($course)) {
-            // set the owning side to null (unless already changed)
-            if ($course->getModule() === $this) {
-                $course->setModule(null);
+        if ($this->chapitres->removeElement($chapitre)) {
+            if ($chapitre->getModule() === $this) {
+                $chapitre->setModule(null);
             }
         }
 

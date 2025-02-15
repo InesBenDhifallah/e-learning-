@@ -1,0 +1,301 @@
+{% block body %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Alpha Education - Student Progress</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css">
+    {% block css %}
+    <style>
+        body {
+            background-color: #f0f4f8;
+            margin: 0;
+            display: flex;
+            min-height: 100vh;
+        }
+        .sidebar {
+            background-color: #C4DA36;
+            color: #000;
+            width: 16rem;
+            padding: 20px;
+            box-shadow: 4px 0 15px rgba(0,0,0,0.1);
+        }
+        .sidebar a {
+            display: flex;
+            align-items: center;
+            color: #000;
+            padding: 12px;
+            margin-bottom: 8px;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+        .sidebar a:hover {
+            background-color: rgba(255,255,255,0.9);
+            transform: translateX(5px);
+        }
+        .main-content {
+            flex: 1;
+            padding: 2rem;
+            background: white;
+            margin: 20px;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+        }
+        .chart-card {
+            background: white;
+            border-radius: 15px;
+            padding: 1.5rem;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            transition: transform 0.3s ease;
+        }
+        .chart-card:hover {
+            transform: translateY(-5px);
+        }
+    </style>
+    {% endblock %}
+</head>
+<body>
+    <!-- Sidebar -->
+    <div class="sidebar">
+        <div class="text-center mb-6">
+            <img src="{{asset('img/logo.png')}}" alt="Logo" class="h-12 mx-auto">
+        </div>
+        <nav>
+            <a href="#"><i class="fas fa-user-circle mr-3"></i> Profil</a>
+            <a href="#"><i class="fas fa-credit-card mr-3"></i> Paiements</a>
+            <a href="#"><i class="fas fa-child mr-3"></i> Ajouter mon enfant</a>
+            <a href="#"><i class="fas fa-chart-line mr-3"></i> Suivre mon enfant</a>
+            <a href="#"><i class="fas fa-sign-out-alt mr-3"></i> Déconnexion</a>
+        </nav>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-content">
+        <div class="mb-8">
+            <h1 class="text-3xl font-bold text-gray-800">👨👩👧‍👦 Suivi de Progrès</h1>
+            <p class="text-gray-600">Visualisez les progrès de votre enfant en temps réel</p>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <!-- Subject Performance -->
+            <div class="chart-card">
+                <h3 class="text-xl font-semibold mb-4 text-gray-700">📚 Performance par Matière</h3>
+                <canvas id="subjectChart"></canvas>
+            </div>
+
+            <!-- Weekly Progress -->
+            <div class="chart-card">
+                <h3 class="text-xl font-semibold mb-4 text-gray-700">📅 Progrès Hebdomadaire</h3>
+                <canvas id="progressChart"></canvas>
+            </div>
+
+            <!-- Time Distribution -->
+            <div class="chart-card">
+                <h3 class="text-xl font-semibold mb-4 text-gray-700">⏱ Répartition du Temps</h3>
+                <canvas id="timeChart"></canvas>
+            </div>
+
+            <!-- Competency Radar -->
+            <div class="chart-card">
+                <h3 class="text-xl font-semibold mb-4 text-gray-700">🎯 Compétences Clés</h3>
+                <canvas id="competencyChart"></canvas>
+            </div>
+        </div>
+    </div>
+    {% block js %}
+
+    <script>
+        // Gradient Generator
+        const createGradient = (ctx, color1, color2) => {
+            const gradient = ctx.createLinearGradient(0, 0, 0, 400);
+            gradient.addColorStop(0, color1);
+            gradient.addColorStop(1, color2);
+            return gradient;
+        };
+
+        // Subject Performance (Horizontal Bar Chart)
+        const ctx1 = document.getElementById('subjectChart').getContext('2d');
+        new Chart(ctx1, {
+            type: 'bar',
+            data: {
+                labels: ['Mathématiques', 'Sciences', 'Anglais', 'Histoire', 'Art'],
+                datasets: [{
+                    label: 'Score Moyen',
+                    data: [88, 92, 85, 78, 95],
+                    backgroundColor: createGradient(ctx1, '#6366f1', '#8b5cf6'),
+                    borderWidth: 0,
+                    borderRadius: 12,
+                    barPercentage: 0.7,
+                }]
+            },
+            options: {
+                indexAxis: 'y',
+                responsive: true,
+                plugins: {
+                    legend: { display: false },
+                    tooltip: { 
+                        backgroundColor: '#1e293b',
+                        titleFont: { size: 14 },
+                        bodyFont: { size: 14 },
+                    },
+                    datalabels: {
+                        anchor: 'end',
+                        align: 'end',
+                        color: '#1e293b',
+                        font: { weight: 'bold' }
+                    }
+                },
+                scales: {
+                    x: { 
+                        display: false,
+                        max: 100
+                    },
+                    y: {
+                        grid: { display: false },
+                        ticks: { 
+                            color: '#64748b',
+                            font: { size: 14 }
+                        }
+                    }
+                }
+            }
+        });
+
+        // Weekly Progress (Line Chart)
+        const ctx2 = document.getElementById('progressChart').getContext('2d');
+        new Chart(ctx2, {
+            type: 'line',
+            data: {
+                labels: ['Sem 1', 'Sem 2', 'Sem 3', 'Sem 4'],
+                datasets: [{
+                    label: 'Heures Étude',
+                    data: [12, 15, 14, 18],
+                    borderColor: '#10b981',
+                    borderWidth: 3,
+                    tension: 0.4,
+                    fill: true,
+                    backgroundColor: createGradient(ctx2, '#a7f3d0', '#d1fae5'),
+                    pointRadius: 6,
+                    pointBackgroundColor: '#059669'
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: { display: false },
+                    tooltip: { 
+                        backgroundColor: '#1e293b',
+                        titleFont: { size: 14 },
+                        bodyFont: { size: 14 },
+                    }
+                },
+                scales: {
+                    x: { 
+                        grid: { display: false },
+                        ticks: { color: '#64748b', font: { size: 14 } }
+                    },
+                    y: { 
+                        min: 0,
+                        max: 20,
+                        ticks: { 
+                            stepSize: 5,
+                            color: '#64748b',
+                            font: { size: 14 },
+                            callback: (value) => value + 'h'
+                        }
+                    }
+                }
+            }
+        });
+
+        // Time Distribution (Doughnut Chart)
+        const ctx3 = document.getElementById('timeChart').getContext('2d');
+        new Chart(ctx3, {
+            type: 'doughnut',
+            data: {
+                labels: ['Cours', 'Exercices', 'Projets', 'Jeux Éducatifs'],
+                datasets: [{
+                    data: [35, 30, 20, 15],
+                    backgroundColor: [
+                        '#3b82f6', '#60a5fa', '#93c5fd', '#bfdbfe'
+                    ],
+                    borderWidth: 0,
+                    spacing: 5
+                }]
+            },
+            options: {
+                cutout: '70%',
+                plugins: {
+                    legend: {
+                        position: 'right',
+                        labels: { 
+                            padding: 15,
+                            font: { size: 14 },
+                            usePointStyle: true,
+                            pointStyle: 'circle'
+                        }
+                    },
+                    tooltip: { 
+                        backgroundColor: '#1e293b',
+                        bodyFont: { size: 14 },
+                        footerFont: { size: 12 }
+                    },
+                    datalabels: {
+                        color: '#1e293b',
+                        font: { size: 14 },
+                        formatter: (value) => value + '%'
+                    }
+                }
+            }
+        });
+
+        // Competency Radar Chart
+        const ctx4 = document.getElementById('competencyChart').getContext('2d');
+        new Chart(ctx4, {
+            type: 'radar',
+            data: {
+                labels: ['Logique', 'Créativité', 'Mémorisation', 'Collaboration', 'Résolution'],
+                datasets: [{
+                    label: 'Compétences',
+                    data: [85, 92, 78, 88, 82],
+                    backgroundColor: 'rgba(99, 102, 241, 0.2)',
+                    borderColor: '#6366f1',
+                    borderWidth: 3,
+                    pointRadius: 5,
+                    pointHoverRadius: 8
+                }]
+            },
+            options: {
+                scales: {
+                    r: {
+                        beginAtZero: true,
+                        max: 100,
+                        ticks: { 
+                            display: false,
+                            stepSize: 20
+                        },
+                        grid: { color: '#e2e8f0' },
+                        pointLabels: { 
+                            color: '#64748b',
+                            font: { size: 14 }
+                        }
+                    }
+                },
+                plugins: {
+                    legend: { display: false },
+                    tooltip: { 
+                        backgroundColor: '#1e293b',
+                        bodyFont: { size: 14 }
+                    }
+                }
+            }
+        });
+    </script>
+    {% endblock %}
+</body>
+</html>
+{% endblock %}

@@ -1,13 +1,13 @@
--- MariaDB dump 10.19  Distrib 10.4.32-MariaDB, for Win64 (AMD64)
+-- MySQL dump 10.13  Distrib 8.0.41, for Win64 (x86_64)
 --
 -- Host: localhost    Database: pidev
 -- ------------------------------------------------------
--- Server version	10.4.32-MariaDB
+-- Server version	8.0.41
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
 /*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
-/*!40101 SET NAMES utf8mb4 */;
+/*!50503 SET NAMES utf8mb4 */;
 /*!40103 SET @OLD_TIME_ZONE=@@TIME_ZONE */;
 /*!40103 SET TIME_ZONE='+00:00' */;
 /*!40014 SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0 */;
@@ -21,10 +21,10 @@
 
 DROP TABLE IF EXISTS `abonnement`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+/*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `abonnement` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `type` varchar(255) NOT NULL,
+  `id` int NOT NULL AUTO_INCREMENT,
+  `type` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
   `prix` double NOT NULL,
   `date_debut` date DEFAULT NULL,
   `date_fin` date DEFAULT NULL,
@@ -47,13 +47,13 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `chapitre`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+/*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `chapitre` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `cours_id` int(11) DEFAULT NULL,
-  `nomchapitre` varchar(255) NOT NULL,
-  `chapitres_id` int(11) DEFAULT NULL,
-  `courses_id` int(11) DEFAULT NULL,
+  `id` int NOT NULL AUTO_INCREMENT,
+  `cours_id` int DEFAULT NULL,
+  `nomchapitre` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `chapitres_id` int DEFAULT NULL,
+  `courses_id` int DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `IDX_8C62B0257ECF78B0` (`cours_id`),
   KEY `IDX_8C62B02520B9AB7E` (`chapitres_id`),
@@ -79,13 +79,13 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `cours`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+/*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `cours` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `nomcours` varchar(255) NOT NULL,
-  `matierecours` varchar(255) NOT NULL,
-  `niveaucours` varchar(255) NOT NULL,
-  `module_id` int(11) DEFAULT NULL,
+  `id` int NOT NULL AUTO_INCREMENT,
+  `nomcours` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `matierecours` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `niveaucours` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `module_id` int DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `IDX_FDCA8C9CAFC2B591` (`module_id`),
   CONSTRAINT `FK_FDCA8C9CAFC2B591` FOREIGN KEY (`module_id`) REFERENCES `module` (`id`)
@@ -107,13 +107,13 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `doctrine_migration_versions`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+/*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `doctrine_migration_versions` (
-  `version` varchar(191) NOT NULL,
+  `version` varchar(191) COLLATE utf8mb3_unicode_ci NOT NULL,
   `executed_at` datetime DEFAULT NULL,
-  `execution_time` int(11) DEFAULT NULL,
+  `execution_time` int DEFAULT NULL,
   PRIMARY KEY (`version`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -127,17 +127,48 @@ INSERT INTO `doctrine_migration_versions` VALUES ('DoctrineMigrations\\Version20
 UNLOCK TABLES;
 
 --
+-- Table structure for table `enseignant`
+--
+
+DROP TABLE IF EXISTS `enseignant`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `enseignant` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `name` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `phonenumber` bigint NOT NULL,
+  `email` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `matiere` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `experience` int NOT NULL,
+  `cv` longblob,
+  `reason` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `cvpath` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `enseignant`
+--
+
+LOCK TABLES `enseignant` WRITE;
+/*!40000 ALTER TABLE `enseignant` DISABLE KEYS */;
+INSERT INTO `enseignant` VALUES (1,'aaa',123,'aaaa@azrazr.com','aaa',12,NULL,'zaerzar',NULL),(2,'aaa',123,'aaa@aaa.com','aaa',12,NULL,'aaaa',NULL);
+/*!40000 ALTER TABLE `enseignant` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
 -- Table structure for table `messenger_messages`
 --
 
 DROP TABLE IF EXISTS `messenger_messages`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+/*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `messenger_messages` (
-  `id` bigint(20) NOT NULL AUTO_INCREMENT,
-  `body` longtext NOT NULL,
-  `headers` longtext NOT NULL,
-  `queue_name` varchar(190) NOT NULL,
+  `id` bigint NOT NULL AUTO_INCREMENT,
+  `body` longtext COLLATE utf8mb4_unicode_ci NOT NULL,
+  `headers` longtext COLLATE utf8mb4_unicode_ci NOT NULL,
+  `queue_name` varchar(190) COLLATE utf8mb4_unicode_ci NOT NULL,
   `created_at` datetime NOT NULL COMMENT '(DC2Type:datetime_immutable)',
   `available_at` datetime NOT NULL COMMENT '(DC2Type:datetime_immutable)',
   `delivered_at` datetime DEFAULT NULL COMMENT '(DC2Type:datetime_immutable)',
@@ -163,10 +194,10 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `module`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+/*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `module` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `nom_module` varchar(255) NOT NULL,
+  `id` int NOT NULL AUTO_INCREMENT,
+  `nom_module` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -186,17 +217,17 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `paiement`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+/*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `paiement` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `nom` varchar(255) NOT NULL,
-  `email` varchar(255) NOT NULL,
-  `type_carte` varchar(255) NOT NULL,
-  `num_carte` int(11) NOT NULL,
+  `id` int NOT NULL AUTO_INCREMENT,
+  `nom` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `email` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `type_carte` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `num_carte` int NOT NULL,
   `date_expiration` date NOT NULL,
-  `cvv` int(11) NOT NULL,
+  `cvv` int NOT NULL,
   `montant` double NOT NULL,
-  `id_abonnement_id` int(11) DEFAULT NULL,
+  `id_abonnement_id` int DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `IDX_B1DC7A1E4FFF9576` (`id_abonnement_id`),
   CONSTRAINT `FK_B1DC7A1E4FFF9576` FOREIGN KEY (`id_abonnement_id`) REFERENCES `abonnement` (`id`)
@@ -211,6 +242,39 @@ LOCK TABLES `paiement` WRITE;
 /*!40000 ALTER TABLE `paiement` DISABLE KEYS */;
 /*!40000 ALTER TABLE `paiement` ENABLE KEYS */;
 UNLOCK TABLES;
+
+--
+-- Table structure for table `user`
+--
+
+DROP TABLE IF EXISTS `user`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `user` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `email` varchar(180) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `roles` longtext COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '(DC2Type:json)',
+  `password` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `nom` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `phonenumber` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `matiere` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `experience` int DEFAULT NULL,
+  `reason` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `is_verified` tinyint(1) NOT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `UNIQ_IDENTIFIER_EMAIL` (`email`)
+) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `user`
+--
+
+LOCK TABLES `user` WRITE;
+/*!40000 ALTER TABLE `user` DISABLE KEYS */;
+INSERT INTO `user` VALUES (1,'aaaa@azrazr.com','[\"ROLE_TEACHER\"]','$2y$13$Rd/wuGR1HVo8m9kJ57vYEOPK9UGLIAPoOURtzfjQ2Vom7lkOzaNsK','aaa','123456','mathematiques',12,'aerzer',0),(2,'zaeraezr@gmail.com','[\"ROLE_TEACHER\"]','$2y$13$wumCJA73t/eg5xMXAMDI0uVgb6Z74fDWh.SEi4gqhA7SOh6QVHynC','aaaa','123123','sciences',12,'azrazr',0),(3,'zaeraezaezeazer@gmail.com','[\"ROLE_TEACHER\"]','$2y$13$r3jFTOhIq/3wGVebP4NovucCLmb8.WhYdPmAFd.MxssveYCqAk2zy','aaaa','123123','sciences',12,'azrazr',0),(4,'aaaab@azrazr.com','[\"ROLE_TEACHER\"]','$2y$13$GqxhpC8pCXA6um4xkwsKvu3tuZJxIs.wTLenGM2awa5oUWozyZ2xK','azerezar','123123','sciences',14,'zzz',0),(5,'aaaaaaaaaaa@gmail.com','[\"ROLE_TEACHER\"]','$2y$13$VoPE6BfQqk26SwDBtcRBPuWDsWm0HG252sDdzJyB5CccBKc.Th/62','aaa','1234456','sciences',12,'aaa',0),(6,'nanous.bellagha@gmail.com','[\"ROLE_TEACHER\"]','$2y$13$v.zkuZkvKBk8Buy6eVbcFuLCNmjk7Mu5eGVj87ueOVOrR9TzakwmC','nanousti','123456','sciences',12,'aaa',0);
+/*!40000 ALTER TABLE `user` ENABLE KEYS */;
+UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
@@ -221,4 +285,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2025-02-12 22:36:23
+-- Dump completed on 2025-02-15 18:24:09
