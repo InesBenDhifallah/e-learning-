@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Alpha Education - Apprendre et Grandir</title>
+    {% block css %}
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #C4DA36;
+            margin: 0;
+            padding: 0;
+            overflow-x: hidden;
+        }
+
+        .top-nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 20px;
+            background: white;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            position: fixed;
+            top: 0;
+            left: 0;
+            z-index: 2;
+            width: 100%;
+        }
+
+        .menu a {
+            margin: 0 15px;
+            text-decoration: none;
+            color: black;
+            font-size: 18px;
+        }
+        .menu a:hover {
+            background-color: #575757;
+            color: white;
+            padding: 5px 10px;
+            border-radius: 5px;
+        }
+
+        .logo img {
+            height: 50px;
+            width: auto;
+        }
+
+        /* Hero Section */
+
+        .hero {
+            background: url("{{ asset('img/elearning2.jpeg') }}") ;no-repeat center center/cover;
+            color: white;
+            padding: 150px 20px;
+            text-align: center;
+            margin-top: 60px;
+            position: relative;
+        }
+
+        .hero h1 {
+            font-size: 50px;
+            margin-bottom: 20px;
+        }
+
+        .hero p {
+            font-size: 20px;
+        }
+
+        .cta-button {
+            background-color: #4bc0c0;
+            color: white;
+            padding: 15px 30px;
+            font-size: 20px;
+            border-radius: 5px;
+            text-decoration: none;
+            margin-top: 20px;
+        }
+
+        .cta-button:hover {
+            background-color: #36a2eb;
+        }
+
+        /* Introduction Section */
+        .intro {
+            background: white;
+            padding: 50px 20px;
+            text-align: center;
+            color: #333;
+        }
+
+        .intro h2 {
+            font-size: 36px;
+            margin-bottom: 20px;
+        }
+
+        .intro p {
+            font-size: 18px;
+            color: #666;
+            line-height: 1.6;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        /* Offer Section */
+        .offers-container {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 20px;
+            padding: 50px 20px;
+            text-align: center;
+        }
+
+        .offer-card {
+            background: white;
+            width: 300px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            transition: transform 0.3s ease;
+        }
+
+        .offer-card img {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+        }
+
+        .offer-card h3 {
+            padding: 15px;
+            font-size: 24px;
+            color: #333;
+        }
+
+        .offer-card p {
+            padding: 0 15px;
+            font-size: 16px;
+            color: #666;
+        }
+
+        .offer-card button {
+            background-color: #4bc0c0;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            width: 100%;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .offer-card button:hover {
+            background-color: #36a2eb;
+        }
+
+        .offer-card:hover {
+            transform: translateY(-10px);
+        }
+
+        /* Testimonials Section */
+        .testimonials {
+            background-color: #f7f7f7;
+            padding: 50px 20px;
+            text-align: center;
+        }
+
+        .testimonials h2 {
+            font-size: 36px;
+            margin-bottom: 30px;
+        }
+
+        .testimonial-card {
+            background: white;
+            width: 300px;
+            margin: 0 15px;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            display: inline-block;
+            text-align: left;
+            vertical-align: top;
+            transition: transform 0.3s ease;
+        }
+
+        .testimonial-card img {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            margin-bottom: 10px;
+        }
+
+        .testimonial-card h3 {
+            font-size: 18px;
+            color: #333;
+        }
+
+        .testimonial-card p {
+            font-size: 16px;
+            color: #666;
+            line-height: 1.5;
+        }
+
+        .testimonial-card:hover {
+            transform: translateY(-10px);
+        }
+
+        /* Footer */
+        .footer {
+            background-color: #fff;
+            padding: 20px;
+            text-align: center;
+            color: #666;
+        }
+        .hero h1,
+        .hero p,
+        .hero a.cta-button {
+              color: black; /* Change la couleur du texte en noir */
+}
+    </style>
+    {% endblock %}
+</head>
+<body>
+    <div class="top-nav">
+        <div class="logo">
+            <img src="{{asset('img/logo.png')}}" alt="Alpha Education Logo">
+        </div>
+        <div class="menu">
+            <a href="addenseignant.html">S'inscrire</a>
+            <a href="applyenseignant.html">rejoignez notre equipe</a>
+            <a href="#"></a>
+        </div>
+    </div>
+
+    <!-- Hero Section -->
+    <div class="hero">
+        <h1>Apprenez et Grandissez avec Alpha Education</h1>
+        <p>Des cours interactifs pour les enfants, adaptés à chaque âge et niveau scolaire.</p>
+        <a href="#" class="cta-button">Commencez maintenant</a>
+    </div>
+
+    <!-- Introduction Section -->
+    <div class="intro">
+        <h2>Pourquoi Choisir Alpha Education ?</h2>
+        <p>Alpha Education vous offre une plateforme d'apprentissage interactive et innovante, conçue spécialement pour les enfants. Avec des cours dans des domaines variés comme les mathématiques, les sciences, l'anglais, et l'art, votre enfant développera des compétences solides dans un environnement amusant et engageant. Grâce à notre méthode d'enseignement moderne et ludique, l'apprentissage devient une expérience joyeuse et efficace.</p>
+    </div>
+
+    <!-- Offer Section -->
+    <div class="offers-container">
+        <!-- Offer 1 -->
+        <div class="offer-card">
+            <img src="{{asset('img/math2.png')}}" alt="Cours de Mathématiques">
+            <h3>Mathématiques</h3>
+            <p>Des leçons et exercices pour maîtriser les bases des mathématiques de manière ludique.</p>
+            <button>Voir l'offre</button>
+        </div>
+        <!-- Offer 2 -->
+        <div class="offer-card">
+            <img src="{{asset('img/science.png')}}" alt="Cours de Sciences">
+            <h3>Sciences</h3>
+            <p>Découvrez le monde fascinant des sciences à travers des vidéos et des expériences virtuelles.</p>
+            <button>Voir l'offre</button>
+        </div>
+        <!-- Offer 3 -->
+        <div class="offer-card">
+            <img src="{{asset('img/english.png')}}" alt="Cours d'Anglais">
+            <h3>Anglais</h3>
+            <p>Apprenez l'anglais de façon interactive et amusante avec des jeux et des exercices pratiques.</p>
+            <button>Voir l'offre</button>
+        </div>
+        <!-- Offer 4 -->
+        <div class="offer-card">
+            <img src="{{asset('img/art.png')}}" alt="Cours d'Art">
+            <h3>Art</h3>
+            <p>Exprimez votre créativité avec des cours de dessin, peinture et plus encore pour les enfants.</p>
+            <button>Voir l'offre</button>
+        </div>
+    </div>
+
+    <!-- Testimonials Section -->
+    <div class="testimonials">
+        <h2>Ce que disent nos utilisateurs</h2>
+        <div class="testimonial-card">
+            <img src="{{asset('img/parent1.png')}}" alt="Parent 1">
+            <h3>Marie Dupont</h3>
+            <p>"Alpha Education a transformé la façon dont mon enfant apprend. Les cours sont captivants et faciles à suivre. Je recommande vivement cette plateforme !"</p>
+        </div>
+        <div class="testimonial-card">
+            <img src="{{asset('img/parent2.png')}}" alt="Parent 2">
+            <h3>Lucien Bertrand</h3>
+            <p>"Grâce à Alpha Education, mon fils adore maintenant les mathématiques ! Les exercices interactifs rendent l'apprentissage beaucoup plus amusant."</p>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <div class="footer">
+        <p>&copy; 2025 Alpha Education. Tous droits réservés.</p>
+    </div>
+</body>
+</html>

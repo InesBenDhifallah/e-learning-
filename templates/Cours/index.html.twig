@@ -1,267 +1,32 @@
-<!DOCTYPE html>
-<html lang="fr">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Gestion des Cours, Chapitres et Quiz - Primaire</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/flowbite/1.6.5/flowbite.min.css">
-</head>
-<body class="flex bg-gray-100">
-    <!-- Sidebar -->
-    <aside class="w-64 bg-lime-500 text-white p-5 min-h-screen">
-        <div class="mb-5">
-            <img src="{{ asset('images/alpha.png') }}" alt="Logo Alpha Education" class="w-48 mx-auto"> <!-- Logo -->
-        </div>
-        <ul class="space-y-4">
-            <li><button id="profilBtn" class="block hover:text-gray-200">👤 Profil</button></li>
-            <li><button id="coursBtn" class="block hover:text-gray-200">📚 Cours</button></li>
-            <li><button id="chapitresBtn" class="block hover:text-gray-200">📖 Chapitres</button></li>
-            <li><button id="quizBtn" class="block hover:text-gray-200">❓ Quiz</button></li>
-            <li><a href="#" class="block hover:text-gray-200">🔒 Déconnexion</a></li>
-        </ul>
-    </aside>
+{% extends 'sidebarprof.html.twig' %}
 
-    <!-- Main Content -->
-    <main class="flex-1 p-6">
-        <!-- Interface Profil -->
-        <div id="profilInterface" class="hidden">
-            <h1 class="text-2xl font-bold mb-8">Profil Utilisateur</h1>
-            <div class="bg-white rounded-lg shadow-lg p-6 max-w-2xl mx-auto">
-                <!-- Informations personnelles -->
-                <div class="mb-6">
-                    <h2 class="text-xl font-semibold mb-4 flex items-center">
-                        <i class="fas fa-user-circle mr-2"></i> Informations Personnelles
-                    </h2>
-                    <div class="space-y-4">
-                        <div>
-                            <label for="nom" class="block text-gray-700">Nom</label>
-                            <input type="text" id="nom" class="w-full p-2 border border-gray-300 rounded-lg" value="John Doe" readonly>
-                        </div>
-                        <div>
-                            <label for="email" class="block text-gray-700">Email</label>
-                            <input type="email" id="email" class="w-full p-2 border border-gray-300 rounded-lg" value="john.doe@example.com" readonly>
-                        </div>
-                        <div>
-                            <label for="telephone" class="block text-gray-700">Téléphone</label>
-                            <input type="tel" id="telephone" class="w-full p-2 border border-gray-300 rounded-lg" value="+33 6 12 34 56 78" readonly>
-                        </div>
-                    </div>
-                </div>
+{% block body %}
+<div class="container mx-auto p-6">
+    <h1 class="text-2xl font-bold mb-6">Liste des Cours</h1>
 
-                <!-- Mot de passe -->
-                <div class="mb-6">
-                    <h2 class="text-xl font-semibold mb-4 flex items-center">
-                        <i class="fas fa-lock mr-2"></i> Sécurité
-                    </h2>
-                    <div class="space-y-4">
-                        <div>
-                            <label for="password" class="block text-gray-700">Mot de passe</label>
-                            <input type="password" id="password" class="w-full p-2 border border-gray-300 rounded-lg" placeholder="********" readonly>
-                        </div>
-                        <div>
-                            <label for="confirmPassword" class="block text-gray-700">Confirmer le mot de passe</label>
-                            <input type="password" id="confirmPassword" class="w-full p-2 border border-gray-300 rounded-lg" placeholder="********" readonly>
-                        </div>
-                    </div>
-                </div>
+    <!-- Bouton pour ajouter un cours -->
+    <a href="{{ path('app_cours_new') }}" class="bg-green-500 text-white px-4 py-2 rounded-lg mb-4 inline-block hover:bg-green-600">
+        + Ajouter un Cours
+    </a>
 
-                <!-- Boutons -->
-                <div class="flex justify-end space-x-4">
-                    <button id="editBtn" class="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600">
-                        <i class="fas fa-edit mr-2"></i> Modifier
-                    </button>
-                    <button id="saveBtn" class="bg-green-500 text-white px-4 py-2 rounded-lg hover:bg-green-600 hidden">
-                        <i class="fas fa-save mr-2"></i> Enregistrer
-                    </button>
-                </div>
+    <!-- Liste des cours -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+        {% for cour in cours %}
+            <div class="bg-white rounded-lg shadow-lg p-6">
+                <h3 class="text-lg font-bold mb-2">{{ cour.nom }}</h3>
+                <p class="text-gray-600 mb-4">Matière : {{ cour.matiere }}</p>
+                <p class="text-gray-600 mb-4">Thème : {{ cour.theme }}</p>
 
-                <!-- Message de succès -->
-                <div id="successMessage" class="mt-4 text-green-600 hidden">
-                    <i class="fas fa-check-circle mr-2"></i> Modifications enregistrées avec succès !
+                <!-- Boutons pour modifier et supprimer -->
+                <div class="flex items-center justify-between">
+                    <a href="{{ path('app_cours_edit', {'id': cour.id}) }}" class="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600">Modifier</a>
+                    <form method="post" action="{{ path('app_cours_delete', {'id': cour.id}) }}" onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer ce cours ?');">
+                        <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ cour.id) }}">
+                        <button type="submit" class="bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600">Supprimer</button>
+                    </form>
                 </div>
             </div>
-        </div>
-
-        <!-- Interface Cours -->
-        <div id="coursInterface" class="hidden">
-            <h1 class="text-2xl font-bold mb-8">Gestion des Cours</h1>
-            <div class="mb-6">
-                <button id="addCourseBtn" class="bg-orange-500 text-white px-4 py-2 rounded-lg hover:bg-orange-600">
-                    + Ajouter un Cours
-                </button>
-            </div>
-            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                <!-- Cours 1 -->
-                <div class="bg-white rounded-lg shadow-lg p-6">
-                    <h3 class="text-lg font-bold mb-2">Mathématiques</h3>
-                    <p class="text-gray-600 mb-4">Thème : Calcul mental</p>
-                    <div class="flex items-center justify-between">
-                        <button class="bg-blue-500 text-white px-2 py-1 rounded text-sm hover:bg-blue-600">Modifier</button>
-                        <button class="bg-red-500 text-white px-2 py-1 rounded text-sm hover:bg-red-600">Supprimer</button>
-                    </div>
-                </div>
-                <!-- Cours 2 -->
-                <div class="bg-white rounded-lg shadow-lg p-6">
-                    <h3 class="text-lg font-bold mb-2">Sciences</h3>
-                    <p class="text-gray-600 mb-4">Thème : Écosystèmes</p>
-                    <div class="flex items-center justify-between">
-                        <button class="bg-blue-500 text-white px-2 py-1 rounded text-sm hover:bg-blue-600">Modifier</button>
-                        <button class="bg-red-500 text-white px-2 py-1 rounded text-sm hover:bg-red-600">Supprimer</button>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Interface Chapitres -->
-        <div id="chapitresInterface" class="hidden">
-            <h1 class="text-2xl font-bold mb-8">Gestion des Chapitres</h1>
-            <div class="mb-6">
-                <button id="addChapterBtn" class="bg-green-500 text-white px-4 py-2 rounded-lg hover:bg-green-600">
-                    + Ajouter un Chapitre
-                </button>
-            </div>
-            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                <!-- Chapitre 1 -->
-                <div class="bg-white rounded-lg shadow-lg p-6">
-                    <h3 class="text-lg font-bold mb-2">Chapitre 1 : Addition</h3>
-                    <p class="text-gray-600 mb-4">Cours : Mathématiques</p>
-                    <div class="flex items-center justify-between">
-                        <button class="bg-blue-500 text-white px-2 py-1 rounded text-sm hover:bg-blue-600">Modifier</button>
-                        <button class="bg-red-500 text-white px-2 py-1 rounded text-sm hover:bg-red-600">Supprimer</button>
-                    </div>
-                </div>
-                <!-- Chapitre 2 -->
-                <div class="bg-white rounded-lg shadow-lg p-6">
-                    <h3 class="text-lg font-bold mb-2">Chapitre 2 : Soustraction</h3>
-                    <p class="text-gray-600 mb-4">Cours : Mathématiques</p>
-                    <div class="flex items-center justify-between">
-                        <button class="bg-blue-500 text-white px-2 py-1 rounded text-sm hover:bg-blue-600">Modifier</button>
-                        <button class="bg-red-500 text-white px-2 py-1 rounded text-sm hover:bg-red-600">Supprimer</button>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Interface Quiz -->
-        <div id="quizInterface" class="hidden">
-            <h1 class="text-2xl font-bold mb-8">Gestion des Quiz</h1>
-            <div class="mb-6">
-                <button id="addQuizBtn" class="bg-purple-500 text-white px-4 py-2 rounded-lg hover:bg-purple-600">
-                    + Ajouter un Quiz
-                </button>
-            </div>
-            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                <!-- Quiz 1 -->
-                <div class="bg-white rounded-lg shadow-lg p-6">
-                    <h3 class="text-lg font-bold mb-2">Quiz 1 : Addition</h3>
-                    <p class="text-gray-600 mb-4">Cours : Mathématiques</p>
-                    <div class="flex items-center justify-between">
-                        <button class="bg-blue-500 text-white px-2 py-1 rounded text-sm hover:bg-blue-600">Modifier</button>
-                        <button class="bg-red-500 text-white px-2 py-1 rounded text-sm hover:bg-red-600">Supprimer</button>
-                    </div>
-                </div>
-                <!-- Quiz 2 -->
-                <div class="bg-white rounded-lg shadow-lg p-6">
-                    <h3 class="text-lg font-bold mb-2">Quiz 2 : Écosystèmes</h3>
-                    <p class="text-gray-600 mb-4">Cours : Sciences</p>
-                    <div class="flex items-center justify-between">
-                        <button class="bg-blue-500 text-white px-2 py-1 rounded text-sm hover:bg-blue-600">Modifier</button>
-                        <button class="bg-red-500 text-white px-2 py-1 rounded text-sm hover:bg-red-600">Supprimer</button>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </main>
-
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/flowbite/1.6.5/flowbite.min.js"></script>
-    <script>
-        // Gestion des interfaces
-        const profilBtn = document.getElementById('profilBtn');
-        const coursBtn = document.getElementById('coursBtn');
-        const chapitresBtn = document.getElementById('chapitresBtn');
-        const quizBtn = document.getElementById('quizBtn');
-
-        const profilInterface = document.getElementById('profilInterface');
-        const coursInterface = document.getElementById('coursInterface');
-        const chapitresInterface = document.getElementById('chapitresInterface');
-        const quizInterface = document.getElementById('quizInterface');
-
-        // Afficher l'interface Profil
-        profilBtn.addEventListener('click', () => {
-            profilInterface.classList.remove('hidden');
-            coursInterface.classList.add('hidden');
-            chapitresInterface.classList.add('hidden');
-            quizInterface.classList.add('hidden');
-        });
-
-        // Afficher l'interface Cours
-        coursBtn.addEventListener('click', () => {
-            coursInterface.classList.remove('hidden');
-            profilInterface.classList.add('hidden');
-            chapitresInterface.classList.add('hidden');
-            quizInterface.classList.add('hidden');
-        });
-
-        // Afficher l'interface Chapitres
-        chapitresBtn.addEventListener('click', () => {
-            chapitresInterface.classList.remove('hidden');
-            profilInterface.classList.add('hidden');
-            coursInterface.classList.add('hidden');
-            quizInterface.classList.add('hidden');
-        });
-
-        // Afficher l'interface Quiz
-        quizBtn.addEventListener('click', () => {
-            quizInterface.classList.remove('hidden');
-            profilInterface.classList.add('hidden');
-            coursInterface.classList.add('hidden');
-            chapitresInterface.classList.add('hidden');
-        });
-
-        // Gestion du formulaire de profil
-        const editBtn = document.getElementById('editBtn');
-        const saveBtn = document.getElementById('saveBtn');
-        const successMessage = document.getElementById('successMessage');
-
-        const nomInput = document.getElementById('nom');
-        const emailInput = document.getElementById('email');
-        const telephoneInput = document.getElementById('telephone');
-        const passwordInput = document.getElementById('password');
-        const confirmPasswordInput = document.getElementById('confirmPassword');
-
-        // Activer le mode édition
-        editBtn.addEventListener('click', () => {
-            // Rendre les champs modifiables
-            nomInput.readOnly = false;
-            emailInput.readOnly = false;
-            telephoneInput.readOnly = false;
-            passwordInput.readOnly = false;
-            confirmPasswordInput.readOnly = false;
-
-            // Afficher le bouton "Enregistrer"
-            saveBtn.classList.remove('hidden');
-            editBtn.classList.add('hidden');
-        });
-
-        // Enregistrer les modifications
-        saveBtn.addEventListener('click', () => {
-            // Rendre les champs en lecture seule
-            nomInput.readOnly = true;
-            emailInput.readOnly = true;
-            telephoneInput.readOnly = true;
-            passwordInput.readOnly = true;
-            confirmPasswordInput.readOnly = true;
-
-            // Afficher le message de succès
-            successMessage.classList.remove('hidden');
-            setTimeout(() => successMessage.classList.add('hidden'), 3000); // Masquer après 3 secondes
-
-            // Revenir au bouton "Modifier"
-            saveBtn.classList.add('hidden');
-            editBtn.classList.remove('hidden');
-        });
-    </script>
-</body>
-</html>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}
