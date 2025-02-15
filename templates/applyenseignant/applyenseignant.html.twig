@@ -1,0 +1,150 @@
+{% block body %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Postuler en tant qu'enseignant - Alpha Education</title>
+    {% block css %}
+    <style>
+        /* Your existing CSS */
+        body {
+            font-family: Arial, sans-serif;
+            background-image: url("{{ asset('img/elearning.png') }}");
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            margin: 0;
+            padding: 0;
+            overflow-x: hidden;
+            overflow-y: auto;
+        }
+        .top-nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 20px;
+            width: 100%;
+            background: white;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            position: fixed;
+            top: 0;
+            left: 0;
+            z-index: 2;
+        }
+        .menu a {
+            margin: 0 10px;
+            text-decoration: none;
+            color: black;
+        }
+        .logo img {
+            height: 50px;
+            width: auto;
+        }
+        .hero {
+            text-align: center;
+            padding: 100px 20px;
+            margin-top: 60px;
+            color: white;
+        }
+        .hero h1 {
+            font-size: 36px;
+            margin-bottom: 10px;
+        }
+        .hero p {
+            font-size: 18px;
+        }
+        .container {
+            background: white;
+            width: 80%;
+            max-width: 800px;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+            text-align: center;
+            margin: 20px auto;
+        }
+        .form-group {
+            margin-bottom: 15px;
+            text-align: left;
+        }
+        label {
+            font-weight: bold;
+            display: block;
+        }
+        input, textarea, select {
+            width: 100%;
+            padding: 10px;
+            margin-top: 5px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        button {
+            background-color: #4bc0c0;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #36a2eb;
+        }
+    </style>
+    {% endblock %}
+</head>
+<body>
+    <div class="top-nav">
+        <div class="logo">
+            <img src="{{ asset('img/logo.png') }}" alt="Alpha Education Logo">
+        </div>
+        <div class="menu">
+            <a href="#">Acceuil</a>
+            <a href="#">S'inscrire</a>
+            <a href="#"></a>
+        </div>
+    </div>
+
+    <div class="hero">
+        <h1>Postulez en tant qu'enseignant</h1>
+        <p>Rejoignez notre équipe passionnée et aidez à façonner l'avenir des enfants !</p>
+    </div>
+
+    <div class="container">
+        <h2>📝 Formulaire de candidature</h2>
+        {{ form_start(form) }}
+            <div class="form-group">
+                {{ form_label(form.nom, 'Nom complet') }}
+                {{ form_widget(form.nom, {'attr': {'class': 'form-control'}}) }}
+            </div>
+            <div class="form-group">
+                {{ form_label(form.email, 'Email') }}
+                {{ form_widget(form.email, {'attr': {'class': 'form-control'}}) }}
+            </div>
+            <div class="form-group">
+                {{ form_label(form.phonenumber, 'Téléphone') }}
+                {{ form_widget(form.phonenumber, {'attr': {'class': 'form-control'}}) }}
+            </div>
+            <div class="form-group">
+                {{ form_label(form.plainPassword, 'Password') }}
+                {{ form_widget(form.plainPassword, {'attr': {'class': 'form-control'}}) }}
+            </div>
+            <div class="form-group">
+                {{ form_label(form.matiere, 'Matière enseignée') }}
+                {{ form_widget(form.matiere, {'attr': {'class': 'form-control'}}) }}
+            </div>
+            <div class="form-group">
+                {{ form_label(form.experience, 'Expérience (années)') }}
+                {{ form_widget(form.experience, {'attr': {'class': 'form-control'}}) }}
+            </div>
+            <div class="form-group">
+                {{ form_label(form.reason, 'Pourquoi voulez-vous rejoindre Alpha Education ?') }}
+                {{ form_widget(form.reason, {'attr': {'class': 'form-control', 'rows': '5'}}) }}
+            </div>
+            <button type="submit" class="btn btn-primary">Soumettre la candidature</button>
+            <center>Notre administrateur vous contactera afin de convenir d'un rendez-vous pour un entretien.</center>
+        {{ form_end(form) }}
+    </div>
+</body>
+</html>
+{% endblock %}
