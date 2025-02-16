@@ -48,7 +48,10 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private ?string $pref = null;
 
     #[ORM\Column(type: "boolean")]
-    private ?bool $isActive = false; // Set default value to false
+    private ?bool $isActive = false;
+
+    #[ORM\ManyToOne(inversedBy: 'users')]
+    private ?Module $idmatiere = null; // Set default value to false
 
     public function __construct() {
         $this->isActive = false; // Default value set to false
@@ -204,6 +207,18 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setIsActive(bool $isActive): static
     {
         $this->isActive = $isActive;
+        return $this;
+    }
+
+    public function getIdmatiere(): ?Module
+    {
+        return $this->idmatiere;
+    }
+
+    public function setIdmatiere(?Module $idmatiere): static
+    {
+        $this->idmatiere = $idmatiere;
+
         return $this;
     }
 }

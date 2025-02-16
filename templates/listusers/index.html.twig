@@ -1,0 +1,75 @@
+{% block title %}Gestion des Utilisateurs{% endblock %}
+
+{% block body %}
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestion des Utilisateurs</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+</head>
+<body class="bg-gray-100 min-h-screen">
+    <div class="flex min-h-screen">
+        <!-- Sidebar -->
+        <div class="w-64 bg-gray-800 text-white">
+            {% include 'sidebaradmin.html.twig' %}
+        </div>
+
+        <!-- Contenu principal -->
+        <div class="flex-1 p-8">
+            <header class="flex justify-between items-center mb-6">
+                <h1 class="text-3xl font-bold text-gray-800">Gestion des Utilisateurs</h1>
+            </header>
+
+            <!-- Tableau des utilisateurs -->
+            <div class="bg-white rounded-xl shadow-lg overflow-hidden">
+                <table class="w-full text-left">
+                    <thead class="bg-indigo-600 text-white">
+                        <tr>
+                            <th class="py-4 px-6">ID</th>
+                            <th class="py-4 px-6">Nom</th>
+                            <th class="py-4 px-6">Email</th>
+                            <th class="py-4 px-6">Rôle</th>
+                            <th class="py-4 px-6">Téléphone</th>
+                            <th class="py-4 px-6">Adresse</th>
+                            <th class="py-4 px-6">Statut</th>
+                            <th class="py-4 px-6">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for user in users %}
+                            <tr class="hover:bg-gray-50">
+                                <td class="py-4 px-6">{{ user.id }}</td>
+                                <td class="py-4 px-6">{{ user.nom }}</td>
+                                <td class="py-4 px-6">{{ user.email }}</td>
+                                <td class="py-4 px-6">{{ user.roles|join(', ') }}</td>
+                                <td class="py-4 px-6">{{ user.phonenumber }}</td>
+                                <td class="py-4 px-6">{{ user.adress }}</td>
+                                <td class="py-4 px-6">
+                                    {% if user.isActive %}
+                                        <span class="bg-green-100 text-green-800 px-2 py-1 rounded-full text-sm">Actif</span>
+                                    {% else %}
+                                        <span class="bg-red-100 text-red-800 px-2 py-1 rounded-full text-sm">Inactif</span>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                        {% else %}
+                            <tr>
+                                <td colspan="8" class="py-4 px-6 text-center">Aucun utilisateur trouvé</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Default Pagination -->
+            <div class="mt-6 flex justify-center">
+                {{ knp_pagination_render(users) }}
+            </div>
+        </div>
+    </div>
+</body>
+</html>
+{% endblock %}
