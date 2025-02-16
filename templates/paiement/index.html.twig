@@ -32,10 +32,7 @@
                             <th class="py-4 px-6">Id</th>
                             <th class="py-4 px-6">Nom</th>
                             <th class="py-4 px-6">Email</th>
-                            <th class="py-4 px-6">Type Carte</th>
-                            <th class="py-4 px-6">Numéro Carte</th>
-                            <th class="py-4 px-6">Date Expiration</th>
-                            <th class="py-4 px-6">CVV</th>
+                            
                             <th class="py-4 px-6">Montant</th>
                             <th class="py-4 px-6">Date Paiement</th>
                             <th class="py-4 px-6">Actions</th>
@@ -47,11 +44,7 @@
                                 <td class="py-4 px-6">{{ paiement.id }}</td>
                                 <td class="py-4 px-6">{{ paiement.nom }}</td>
                                 <td class="py-4 px-6">{{ paiement.email }}</td>
-                                <td class="py-4 px-6">{{ paiement.typeCarte }}</td>
-                                <td class="py-4 px-6">{{ paiement.numCarte }}</td>
-                                <td class="py-4 px-6">{{ paiement.dateExpiration ? paiement.dateExpiration|date('Y-m-d') : '' }}</td>
-                                <td class="py-4 px-6">{{ paiement.cvv }}</td>
-                                <td class="py-4 px-6">{{ paiement.montant }}</td>
+                                <td class="py-4 px-6">{{ paiement.montant }} Dinars</td>
                                 <td class="py-4 px-6">{{ paiement.datePaiement ? paiement.datePaiement|date('Y-m-d') : '' }}</td>
                                 <td class="py-4 px-6">
                                     <a href="{{ path('app_paiement_show', {'id': paiement.id}) }}" 

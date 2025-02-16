@@ -3,24 +3,37 @@
 {% block title %}Module{% endblock %}
 
 {% block body %}
-    <h1>Module</h1>
+    <div class="max-w-4xl mx-auto p-6 bg-white rounded-lg shadow-md">
+        <h1 class="text-3xl font-semibold text-gray-800 mb-6">Détails du module</h1>
 
-    <table class="table">
-        <tbody>
-            <tr>
-                <th>Id</th>
-                <td>{{ module.id }}</td>
-            </tr>
-            <tr>
-                <th>Nom</th>
-                <td>{{ module.nom }}</td>
-            </tr>
-        </tbody>
-    </table>
+        <table class="min-w-full table-auto border-collapse bg-gray-50">
+            <thead>
+                <tr>
+                    <th class="px-6 py-3 text-left text-sm font-medium text-gray-600">Attribut</th>
+                    <th class="px-6 py-3 text-left text-sm font-medium text-gray-600">Détails</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr class="border-b border-gray-200">
+                    <th class="px-6 py-4 text-sm font-medium text-gray-700">Id</th>
+                    <td class="px-6 py-4 text-sm text-gray-900">{{ module.id }}</td>
+                </tr>
+                <tr class="border-b border-gray-200">
+                    <th class="px-6 py-4 text-sm font-medium text-gray-700">Nom</th>
+                    <td class="px-6 py-4 text-sm text-gray-900">{{ module.nom }}</td>
+                </tr>
+            </tbody>
+        </table>
 
-    <a href="{{ path('app_module_index') }}">back to list</a>
+        <div class="mt-6 flex space-x-4">
+            <a href="{{ path('app_module_index') }}" class="bg-blue-500 text-white px-6 py-2 rounded-md hover:bg-blue-600 transition duration-300 ease-in-out">
+                <i class="fas fa-arrow-left mr-2"></i> Back to List
+            </a>
 
-    <a href="{{ path('app_module_edit', {'id': module.id}) }}">edit</a>
+           
+            
+        </div>
 
-    {{ include('module/_delete_form.html.twig') }}
+        
+    </div>
 {% endblock %}
