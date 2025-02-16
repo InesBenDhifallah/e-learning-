@@ -1,49 +1,45 @@
 <?php
-
+// src/Controller/ApplyenseignantController.php
 namespace App\Controller;
 
 use App\Entity\User;
 use App\Form\EnseignantformType;
-use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface; // Add this line
-use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 
-final class ApplyenseignantController extends AbstractController
+class ApplyenseignantController extends AbstractController
 {
-    #[Route('/applyenseignant', name: 'app_applyenseignant')]
-    public function index(
-        Request $request,
-        EntityManagerInterface $entityManager,
-        UserPasswordHasherInterface $userPasswordHasher // Inject the password hasher
-    ): Response {
+    /**
+     * @Route("/apply-enseignant", name="apply_enseignant")
+     */
+    public function apply(Request $request, UserPasswordEncoderInterface $passwordEncoder)
+    {
         $user = new User();
+        
+        // Create and handle the form
         $form = $this->createForm(EnseignantformType::class, $user);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            // Hash the plain password and set it on the User entity
-            $user->setPassword(
-                $userPasswordHasher->hashPassword(
-                    $user,
-                    $form->get('plainPassword')->getData() // Get the plain password from the form
-                )
-            );
-
+            // Hash the password
+            $password = $passwordEncoder->encodePassword($user, $user->getPassword());
+            $user->setPassword($password);
+            
             // Assign the role (e.g., ROLE_TEACHER)
-            $user->setRoles(['ROLE_TEACHER']);
+            $user->setRoles(['ROLE_TEACHER']); // Set the teacher role
 
-            // Persist the User entity to the database
+            // Persist the user
+            $entityManager = $this->getDoctrine()->getManager();
             $entityManager->persist($user);
             $entityManager->flush();
 
-            // Redirect after successful submission
-            return $this->redirectToRoute('app_applyenseignant');
+            // Redirect to some page or show success
+            return $this->redirectToRoute('success');
         }
 
-        return $this->render('applyenseignant/applyenseignant.html.twig', [
+        return $this->render('applyenseignant/index.html.twig', [
             'form' => $form->createView(),
         ]);
     }
