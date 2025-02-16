@@ -3,7 +3,7 @@
 namespace App\Form;
 
 use App\Entity\Chapitre;
-use App\Entity\Cours;
+use App\Entity\Module;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -14,18 +14,10 @@ class ChapitreType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
-            ->add('nomchapitre')
-            ->add('cours', EntityType::class, [
-                'class' => cours::class,
-                'choice_label' => 'id',
-            ])
-            ->add('Chapitres', EntityType::class, [
-                'class' => cours::class,
-                'choice_label' => 'id',
-            ])
-            ->add('courses', EntityType::class, [
-                'class' => cours::class,
-                'choice_label' => 'id',
+            ->add('nom')
+            ->add('module', EntityType::class, [
+                'class' => Module::class,
+                'choice_label' => 'nom',
             ])
         ;
     }
