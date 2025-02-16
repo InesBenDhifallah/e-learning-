@@ -1,15 +1,56 @@
-{% extends 'sidebarprof.html.twig' %}
+{% extends 'base.html.twig' %}
+
+{% block title %}Cours{% endblock %}
 
 {% block body %}
-<div class="container mx-auto p-6">
-    <h1 class="text-2xl font-bold mb-6">Détails du Cours</h1>
-    <div class="bg-white rounded-lg shadow-lg p-6">
-        <h3 class="text-lg font-bold mb-2">{{ cour.nom }}</h3>
-        <p class="text-gray-600 mb-4">Matière : {{ cour.matiere }}</p>
-        <p class="text-gray-600 mb-4">Thème : {{ cour.theme }}</p>
-        <div class="flex justify-end">
-            <a href="{{ path('app_cours_index') }}" class="bg-gray-500 text-white px-4 py-2 rounded-lg hover:bg-gray-600">Retour à la liste</a>
-        </div>
-    </div>
-</div>
+    <h1>Cours</h1>
+
+    <table class="table">
+        <tbody>
+            <tr>
+                <th>Id</th>
+                <td>{{ cour.id }}</td>
+            </tr>
+            <tr>
+                <th>Titre</th>
+                <td>{{ cour.titre }}</td>
+            </tr>
+            <tr>
+                <th>Contenu</th>
+                <td>
+                    {# Vérifier si un fichier est associé au cours #}
+                    {% if cour.contenuFichier is not null %}
+                        {# Obtenir l'extension du fichier #}
+                        {% set file_extension = cour.contenuFichier|split('.')|last %}
+
+                        {# Afficher le fichier en fonction de son type #}
+                        {% if file_extension in ['jpg', 'jpeg', 'png', 'gif'] %}
+                            {# Afficher une image #}
+                            <img src="{{ asset('uploads/cours/' ~ cour.contenuFichier) }}" alt="Cours Image" width="200">
+                        {% elseif file_extension == 'pdf' %}
+                            {# Afficher un PDF #}
+                            <embed src="{{ asset('uploads/cours/' ~ cour.contenuFichier) }}" type="application/pdf" width="600px" height="400px" />
+                        {% elseif file_extension in ['mp4', 'webm', 'ogg'] %}
+                            {# Afficher une vidéo #}
+                            <video width="600" controls>
+                                <source src="{{ asset('uploads/cours/' ~ cour.contenuFichier) }}" type="video/{{ file_extension }}">
+                                Votre navigateur ne supporte pas la lecture de cette vidéo.
+                            </video>
+                        {% else %}
+                            {# Pour les autres types de fichiers, afficher un lien de téléchargement #}
+                            Fichier non pris en charge. <a href="{{ asset('uploads/cours/' ~ cour.contenuFichier) }}" download>Télécharger</a>
+                        {% endif %}
+                    {% else %}
+                        {# Si aucun fichier n'est associé #}
+                        Aucun fichier disponible.
+                    {% endif %}
+                </td>
+            </tr>
+        </tbody>
+    </table>
+
+    <a href="{{ path('app_cours_index') }}">Retour à la liste</a>
+    <a href="{{ path('app_cours_edit', {'id': cour.id}) }}">Modifier</a>
+
+    {{ include('cours/_delete_form.html.twig') }}
 {% endblock %}
