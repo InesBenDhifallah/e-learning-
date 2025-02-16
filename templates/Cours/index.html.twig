@@ -1,32 +1,37 @@
-{% extends 'sidebarprof.html.twig' %}
+{% extends 'base.html.twig' %}
+
+{% block title %}Cours index{% endblock %}
 
 {% block body %}
-<div class="container mx-auto p-6">
-    <h1 class="text-2xl font-bold mb-6">Liste des Cours</h1>
+    <h1>Cours index</h1>
 
-    <!-- Bouton pour ajouter un cours -->
-    <a href="{{ path('app_cours_new') }}" class="bg-green-500 text-white px-4 py-2 rounded-lg mb-4 inline-block hover:bg-green-600">
-        + Ajouter un Cours
-    </a>
-
-    <!-- Liste des cours -->
-    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Titre</th>
+                <th>Contenu</th>
+                <th>actions</th>
+            </tr>
+        </thead>
+        <tbody>
         {% for cour in cours %}
-            <div class="bg-white rounded-lg shadow-lg p-6">
-                <h3 class="text-lg font-bold mb-2">{{ cour.nom }}</h3>
-                <p class="text-gray-600 mb-4">Matière : {{ cour.matiere }}</p>
-                <p class="text-gray-600 mb-4">Thème : {{ cour.theme }}</p>
-
-                <!-- Boutons pour modifier et supprimer -->
-                <div class="flex items-center justify-between">
-                    <a href="{{ path('app_cours_edit', {'id': cour.id}) }}" class="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600">Modifier</a>
-                    <form method="post" action="{{ path('app_cours_delete', {'id': cour.id}) }}" onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer ce cours ?');">
-                        <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ cour.id) }}">
-                        <button type="submit" class="bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600">Supprimer</button>
-                    </form>
-                </div>
-            </div>
+            <tr>
+                <td>{{ cour.id }}</td>
+                <td>{{ cour.titre }}</td>
+                <td>{{ cour.contenufile }}</td>
+                <td>
+                    <a href="{{ path('app_cours_show', {'id': cour.id}) }}">show</a>
+                    <a href="{{ path('app_cours_edit', {'id': cour.id}) }}">edit</a>
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="4">no records found</td>
+            </tr>
         {% endfor %}
-    </div>
-</div>
+        </tbody>
+    </table>
+
+    <a href="{{ path('app_cours_new') }}">Create new</a>
 {% endblock %}

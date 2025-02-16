@@ -1,25 +1,13 @@
-{% extends 'sidebarprof.html.twig' %}
+{% extends 'base.html.twig' %}
+
+{% block title %}Edit Cours{% endblock %}
 
 {% block body %}
-<div class="container mx-auto p-6">
-    <h1 class="text-2xl font-bold mb-6">Modifier le Cours</h1>
-    {{ form_start(form) }}
-        <div class="mb-4">
-            {{ form_label(form.nom, 'Nom du cours', {'label_attr': {'class': 'block text-gray-700'}}) }}
-            {{ form_widget(form.nom, {'attr': {'class': 'w-full p-2 border border-gray-300 rounded-lg'}}) }}
-        </div>
-        <div class="mb-4">
-            {{ form_label(form.matiere, 'Matière', {'label_attr': {'class': 'block text-gray-700'}}) }}
-            {{ form_widget(form.matiere, {'attr': {'class': 'w-full p-2 border border-gray-300 rounded-lg'}}) }}
-        </div>
-        <div class="mb-4">
-            {{ form_label(form.theme, 'Thème', {'label_attr': {'class': 'block text-gray-700'}}) }}
-            {{ form_widget(form.theme, {'attr': {'class': 'w-full p-2 border border-gray-300 rounded-lg'}}) }}
-        </div>
-        <div class="flex justify-end">
-            <a href="{{ path('app_cours_index') }}" class="bg-gray-500 text-white px-4 py-2 rounded-lg mr-2 hover:bg-gray-600">Annuler</a>
-            <button type="submit" class="bg-green-500 text-white px-4 py-2 rounded-lg hover:bg-green-600">Enregistrer</button>
-        </div>
-    {{ form_end(form) }}
-</div>
+    <h1>Edit Cours</h1>
+
+    {{ include('cours/_form.html.twig', {'button_label': 'Update'}) }}
+
+    <a href="{{ path('app_cours_index') }}">back to list</a>
+
+    {{ include('cours/_delete_form.html.twig') }}
 {% endblock %}
