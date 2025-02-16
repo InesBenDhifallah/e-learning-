@@ -1,11 +1,15 @@
 <?php
 
+
 namespace App\Entity;
 
 use App\Repository\CoursRepository;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\HttpFoundation\File\File;
+use Vich\UploaderBundle\Mapping\Annotation as Vich;
 
 #[ORM\Entity(repositoryClass: CoursRepository::class)]
+#[Vich\Uploadable]
 class Cours
 {
     #[ORM\Id]
@@ -16,12 +20,24 @@ class Cours
     #[ORM\Column(length: 255)]
     private ?string $titre = null;
 
-    #[ORM\Column(type: "text", nullable: true)]
-    private ?string $contenu = null;
+    #[Vich\UploadableField(mapping: "cours_files", fileNameProperty: "contenuFichier")]
+    private ?File $contenuFile = null;
+
+    #[ORM\Column(nullable: true)]
+    private ?string $contenuFichier = null;
 
     #[ORM\ManyToOne(targetEntity: Chapitre::class, inversedBy: "cours")]
     #[ORM\JoinColumn(nullable: false)]
     private ?Chapitre $chapitre = null;
+
+    #[ORM\Column(type: 'datetime', nullable: true)]
+    private ?\DateTimeInterface $updatedAt = null;
+
+
+    public function __construct()
+    {
+        $this->updatedAt = new \DateTime();
+    }
 
     public function getId(): ?int
     {
@@ -39,14 +55,28 @@ class Cours
         return $this;
     }
 
-    public function getContenu(): ?string
+    public function getContenuFile(): ?File
     {
-        return $this->contenu;
+        return $this->contenuFile;
     }
 
-    public function setContenu(?string $contenu): static
+    public function setContenuFile(?File $contenuFile): void
     {
-        $this->contenu = $contenu;
+        $this->contenuFile = $contenuFile;
+        if ($contenuFile) {
+            $this->updatedAt = new \DateTimeImmutable();
+        }
+        
+    }
+
+    public function getContenuFichier(): ?string
+    {
+        return $this->contenuFichier;
+    }
+
+    public function setContenuFichier(?string $contenuFichier): static
+    {
+        $this->contenuFichier = $contenuFichier;
         return $this;
     }
 
@@ -60,4 +90,20 @@ class Cours
         $this->chapitre = $chapitre;
         return $this;
     }
+    public function getUpdatedAt(): ?\DateTimeInterface
+    {
+        return $this->updatedAt;
+    }
+
+    public function setUpdatedAt(?\DateTimeInterface $updatedAt): self
+    {
+        $this->updatedAt = $updatedAt;
+        return $this;
+    }
+    #[ORM\PreUpdate]
+    public function updateTimestamp(): void
+    {
+        $this->updatedAt = new \DateTime();
+    }
 }
+

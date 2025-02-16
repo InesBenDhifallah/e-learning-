@@ -1,9 +1,9 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Chapitre index{% endblock %}
+{% block title %}Module index{% endblock %}
 
 {% block body %}
-    <h1>Chapitre index</h1>
+    <h1>Module index</h1>
 
     <table class="table">
         <thead>
@@ -14,13 +14,13 @@
             </tr>
         </thead>
         <tbody>
-        {% for chapitre in chapitres %}
+        {% for module in modules %}
             <tr>
-                <td>{{ chapitre.id }}</td>
-                <td>{{ chapitre.nom }}</td>
+                <td>{{ module.id }}</td>
+                <td>{{ module.nom }}</td>
                 <td>
-                    <a href="{{ path('app_chapitre_show', {'id': chapitre.id}) }}">show</a>
-                    <a href="{{ path('app_chapitre_edit', {'id': chapitre.id}) }}">edit</a>
+                    <a href="{{ path('app_module_show', {'id': module.id}) }}">show</a>
+                    <a href="{{ path('app_module_edit', {'id': module.id}) }}">edit</a>
                 </td>
             </tr>
         {% else %}
@@ -31,5 +31,5 @@
         </tbody>
     </table>
 
-    <a href="{{ path('app_chapitre_new') }}">Create new</a>
+    <a href="{{ path('app_module_new') }}">Create new</a>
 {% endblock %}
