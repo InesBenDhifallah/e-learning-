@@ -44,6 +44,9 @@ class Paiement
     #[ORM\Column(type: Types::DATE_MUTABLE)]
     private ?\DateTimeInterface $date_paiement = null;
 
+    #[ORM\ManyToOne]
+    private ?User $userid = null;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -153,6 +156,18 @@ class Paiement
     public function setDatePaiement(\DateTimeInterface $date_paiement): static
     {
         $this->date_paiement = $date_paiement;
+
+        return $this;
+    }
+
+    public function getUserid(): ?User
+    {
+        return $this->userid;
+    }
+
+    public function setUserid(?User $userid): static
+    {
+        $this->userid = $userid;
 
         return $this;
     }

@@ -1,0 +1,53 @@
+
+
+
+
+{% block body %}
+<div class="flex justify-center items-center min-h-screen">
+    <div class="bg-white w-full max-w-md mx-auto rounded-xl shadow-lg p-8">
+        <h2 class="text-2xl font-bold text-center mb-6">Ajouter un paiement</h2>
+
+        {{ form_start(form, {'attr': {'class': 'space-y-4'}}) }}
+
+        <div>
+            <label for="{{ form.nom.vars.id }}" class="block text-sm font-medium text-gray-600">Nom complet</label>
+            {{ form_widget(form.nom, {'attr': {'class': 'mt-2 w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-lime-500'}}) }}
+        </div>
+
+        <div>
+            <label for="{{ form.email.vars.id }}" class="block text-sm font-medium text-gray-600">Adresse e-mail</label>
+            {{ form_widget(form.email, {'attr': {'class': 'mt-2 w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-lime-500'}}) }}
+        </div>
+
+        <div>
+            <label for="{{ form.type_carte.vars.id }}" class="block text-sm font-medium text-gray-600">Type de carte</label>
+            {{ form_widget(form.type_carte, {'attr': {'class': 'mt-2 w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-lime-500'}}) }}
+        </div>
+
+        <div>
+            <label for="{{ form.num_carte.vars.id }}" class="block text-sm font-medium text-gray-600">Numéro de carte</label>
+            {{ form_widget(form.num_carte, {'attr': {'class': 'mt-2 w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-lime-500', 'placeholder': '1234 5678 9012 3456'}}) }}
+        </div>
+
+        <div class="grid grid-cols-2 gap-4">
+            <div>
+                <label for="{{ form.date_expiration.vars.id }}" class="block text-sm font-medium text-gray-600">Date d'expiration</label>
+                {{ form_widget(form.date_expiration, {'attr': {'class': 'mt-2 w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-lime-500'}}) }}
+            </div>
+            <div>
+                <label for="{{ form.cvv.vars.id }}" class="block text-sm font-medium text-gray-600">CVV</label>
+                {{ form_widget(form.cvv, {'attr': {'class': 'mt-2 w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-lime-500', 'placeholder': '123'}}) }}
+            </div>
+        </div>
+
+        <div class="flex justify-between items-center">
+            <span class="text-sm text-gray-700">Total à payer :</span>
+            <span class="text-xl font-bold text-gray-900">{{ montant }}D</span>
+        </div>
+
+        <button type="submit" class="w-full py-3 bg-lime-500 text-white font-medium rounded-lg hover:bg-lime-600 transition duration-300">Procéder au paiement</button>
+
+        {{ form_end(form) }}
+    </div>
+</div>
+{% endblock %}
