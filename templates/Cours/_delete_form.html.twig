@@ -1,6 +1,9 @@
 {% extends 'sidebarprof.html.twig' %}
 
-<form method="post" action="{{ path('app_cours_delete', {'id': cour.id}) }}" onsubmit="return confirm('Are you sure you want to delete this item?');">
-    <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ cour.id) }}">
-    <button class="btn">Delete</button>
+<form method="post" action="{{ path('app_cours_delete', {'id': cours.id}) }}" 
+      onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer ce cours ?');">
+    <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ cours.id) }}">
+    <button type="submit" class="bg-red-600 text-white px-6 py-2 rounded-lg hover:bg-red-700 transition">
+        Supprimer
+    </button>
 </form>

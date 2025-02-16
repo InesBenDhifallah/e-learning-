@@ -1,0 +1,12 @@
+{% extends 'base.html.twig' %}
+
+
+
+{% block body %}
+
+
+    {{ include('paiement/_form.html.twig', { 'montant': montant }) }}
+
+
+    <a href="{{ path('app_paiement_index') }}">back to list</a>
+{% endblock %}

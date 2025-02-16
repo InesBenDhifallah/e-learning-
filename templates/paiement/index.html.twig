@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Abonnement Index</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+</head>
+<body class="bg-gray-100 min-h-screen">
+    <div class="flex min-h-screen">
+        <!-- Sidebar -->
+        <div class="w-64 bg-gray-800 text-white">
+            {% include 'sidebaradmin.html.twig' %}
+        </div>
+
+        <!-- Contenu principal -->
+        <div class="flex-1 p-8">
+            <header class="flex justify-between items-center mb-6">
+                <h1 class="text-3xl font-bold text-gray-800">Gestion des Paiements</h1>
+                <a href="{{ path('app_abonnement_index') }}" 
+                   class="py-2 px-4 bg-orange-600 text-white rounded-lg hover:bg-orange-700">
+                    <i class="fas fa-plus mr-2"></i> Ajouter un Paiement
+                </a>
+            </header>
+
+            <!-- Tableau des paiements -->
+            <div class="bg-white rounded-xl shadow-lg overflow-hidden">
+                <table class="w-full text-left">
+                    <thead class="bg-lime-600 text-white">
+                        <tr>
+                            <th class="py-4 px-6">Id</th>
+                            <th class="py-4 px-6">Nom</th>
+                            <th class="py-4 px-6">Email</th>
+                            <th class="py-4 px-6">Type Carte</th>
+                            <th class="py-4 px-6">Numéro Carte</th>
+                            <th class="py-4 px-6">Date Expiration</th>
+                            <th class="py-4 px-6">CVV</th>
+                            <th class="py-4 px-6">Montant</th>
+                            <th class="py-4 px-6">Date Paiement</th>
+                            <th class="py-4 px-6">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for paiement in paiements %}
+                            <tr class="hover:bg-gray-50">
+                                <td class="py-4 px-6">{{ paiement.id }}</td>
+                                <td class="py-4 px-6">{{ paiement.nom }}</td>
+                                <td class="py-4 px-6">{{ paiement.email }}</td>
+                                <td class="py-4 px-6">{{ paiement.typeCarte }}</td>
+                                <td class="py-4 px-6">{{ paiement.numCarte }}</td>
+                                <td class="py-4 px-6">{{ paiement.dateExpiration ? paiement.dateExpiration|date('Y-m-d') : '' }}</td>
+                                <td class="py-4 px-6">{{ paiement.cvv }}</td>
+                                <td class="py-4 px-6">{{ paiement.montant }}</td>
+                                <td class="py-4 px-6">{{ paiement.datePaiement ? paiement.datePaiement|date('Y-m-d') : '' }}</td>
+                                <td class="py-4 px-6">
+                                    <a href="{{ path('app_paiement_show', {'id': paiement.id}) }}" 
+                                       class="text-blue-500 hover:text-blue-700">
+                                        Show
+                                    </a>
+                                    
+                                </td>
+                            </tr>
+                        {% else %}
+                            <tr>
+                                <td colspan="10" class="py-4 px-6 text-center">Aucun paiement trouvé</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
