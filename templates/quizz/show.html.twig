@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ quiz.matiere }} - Quiz</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="flex bg-gray-100">
+    <aside class="w-64 bg-lime-500 text-white p-5 min-h-screen">
+        <div class="text-lg font-bold mb-5">Alpha Education</div>
+        <ul class="space-y-4">
+            <li><a href="{{ path('quizz_index') }}" class="block hover:text-gray-200">📚 Liste des Quiz</a></li>
+            <li><a href="#" class="block hover:text-gray-200">🔒 Déconnexion</a></li>
+        </ul>
+    </aside>
+
+<main class="flex-1 p-6">
+    <h1 class="text-2xl font-bold">{{ quiz.matiere }}</h1>
+    <h2 class="mt-4 text-xl font-semibold">Questions</h2>
+
+    <!-- 🔹 Formulaire pour l'élève -->
+    {% if role == 'eleve' %}
+        <form method="post">
+            {% for question in questions %}
+                <div class="bg-white p-4 shadow-lg rounded-lg mb-4">
+                    <p class="font-bold">{{ question.question }}</p>
+                    <div>
+                        <input type="radio" name="question_{{ question.id }}" value="Vrai"> Vrai
+                        <input type="radio" name="question_{{ question.id }}" value="Faux"> Faux
+                    </div>
+                </div>
+            {% endfor %}
+            <button type="submit" class="bg-green-500 text-white px-4 py-2 rounded-lg">Valider</button>
+        </form>
+    {% else %}
+        <!-- 🔹 Liste des questions pour l'admin -->
+        {% for question in questions %}
+            <div class="bg-white p-4 shadow-lg rounded-lg mb-4">
+                <p class="font-bold">{{ question.question }}</p>
+                <p>Réponse correcte : {{ question.reponse }}</p>
+            </div>
+        {% endfor %}
+
+        <!-- 🔹 Bouton pour ajouter une question (Admin uniquement) -->
+        <a href="{{ path('question_add', {id: quiz.id}) }}" class="bg-blue-500 text-white px-4 py-2 rounded-lg">Ajouter une Question</a>
+    {% endif %}
+</main>
+
+</body>
+</html>

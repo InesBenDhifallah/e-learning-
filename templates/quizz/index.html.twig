@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Liste des Quiz</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="flex bg-gray-100">
+    <aside class="w-64 bg-lime-500 text-white p-5 min-h-screen">
+    <div class="text-lg font-bold mb-5">Alpha Education</div>
+    <ul class="space-y-4">
+        <li><a href="{{ path('quizz_index') }}" class="block hover:text-gray-200">📚 Quiz</a></li>
+        <li><a href="#" class="block hover:text-gray-200">🔒 Déconnexion</a></li>
+    </ul>
+    <hr class="my-4 border-white">
+    
+    <!-- 🔹 Boutons pour changer le rôle -->
+    <a href="{{ path('switch_role', {'role': 'admin'}) }}" class="block bg-blue-500 text-white px-4 py-2 my-2 rounded-lg text-center">Admin</a>
+    <a href="{{ path('switch_role', {'role': 'eleve'}) }}" class="block bg-red-500 text-white px-4 py-2 my-2 rounded-lg text-center">Élève</a>
+</aside>
+
+<main class="flex-1 p-6">
+    <h1 class="text-2xl font-bold">Liste des Quiz</h1>
+
+    <!-- 🔹 Afficher le bouton d'ajout de quiz uniquement pour l'admin -->
+    {% if role == 'admin' %}
+        <a href="{{ path('quizz_new') }}" class="bg-blue-500 text-white px-4 py-2 rounded-lg mt-4 inline-block">Créer un Nouveau Quiz</a>
+    {% endif %}
+
+    <div class="mt-8">
+        {% for quiz in quizzs %}
+            <div class="bg-white p-4 shadow-lg rounded-lg mb-4">
+                <h2 class="text-xl font-bold">{{ quiz.matiere }}</h2>
+                <p>Chapitre : {{ quiz.chapitre }}</p>
+                <p>Difficulté : {{ quiz.difficulte }}</p>
+                <a href="{{ path('quizz_show', {'id': quiz.id}) }}" class="text-blue-500">Voir les questions</a>
+            </div>
+        {% else %}
+            <p>Aucun quiz disponible.</p>
+        {% endfor %}
+    </div>
+</main>
+
+</body>
+</html>

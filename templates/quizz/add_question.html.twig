@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ajouter une Question</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="flex bg-gray-100">
+    <aside class="w-64 bg-lime-500 text-white p-5 min-h-screen">
+        <div class="text-lg font-bold mb-5">Alpha Education</div>
+        <ul class="space-y-4">
+            <li><a href="#" class="block hover:text-gray-200">👤 Profil</a></li>
+            <li><a href="#" class="block hover:text-gray-200">📚 Cours</a></li>
+            <li><a href="#" class="block hover:text-gray-200">📊 Chapitres</a></li>
+            <li><a href="#" class="block hover:text-gray-200">🔒 Déconnexion</a></li>
+        </ul>
+    </aside>
+
+    <main class="flex-1 p-6">
+        <h1 class="text-2xl font-bold">Ajouter une Question pour {{ quiz.matiere }}</h1>
+
+        <form action="{{ path('question_add', {'id': quiz.id}) }}" method="POST">
+            <div class="mb-4">
+                <label for="question" class="block">Question</label>
+                <input type="text" name="question" id="question" class="w-full p-2 border border-gray-300 rounded-lg">
+            </div>
+            <div class="mb-4">
+                <label for="reponse" class="block">Réponse</label>
+                <input type="text" name="reponse" id="reponse" class="w-full p-2 border border-gray-300 rounded-lg">
+            </div>
+            <div class="mb-4">
+                <label for="solution" class="block">Solution</label>
+                <input type="text" name="solution" id="solution" class="w-full p-2 border border-gray-300 rounded-lg">
+            </div>
+            <div class="mb-4">
+                <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded-lg">Ajouter</button>
+            </div>
+        </form>
+
+        <a href="{{ path('quizz_show', {'id': quiz.id}) }}" class="mt-8 inline-block bg-gray-500 text-white px-4 py-2 rounded-lg">Retour au quiz</a>
+    </main>
+</body>
+</html>
