@@ -1,56 +1,60 @@
 <?php
-
 namespace App\Entity;
 
-use App\Repository\UserRepository;
 use Doctrine\ORM\Mapping as ORM;
-use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 
-#[ORM\Entity(repositoryClass: UserRepository::class)]
-#[ORM\UniqueConstraint(name: 'UNIQ_IDENTIFIER_EMAIL', fields: ['email'])]
-#[UniqueEntity(fields: ['email'], message: 'There is already an account with this email')]
+#[ORM\Entity]
+#[ORM\Table(name: "user")]
 class User implements UserInterface, PasswordAuthenticatedUserInterface
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
-    #[ORM\Column]
-    private ?int $id = null;
+    #[ORM\Column(type: "integer")]
+    private $id;
 
-    #[ORM\Column(length: 180)]
-    private ?string $email = null;
+    #[ORM\Column(type: "string", unique: true)]
+    private $email;
 
-    /**
-     * @var list<string> The user roles
-     */
-    #[ORM\Column]
-    private array $roles = [];
+    #[ORM\Column(type: "string")]
+    private $nom;
 
-    /**
-     * @var string The hashed password
-     */
-    #[ORM\Column]
-    private ?string $password = null;
+    #[ORM\Column(type: "string", nullable: true)]
+    private $phonenumber;
 
-    #[ORM\Column(length: 255)]
-    private ?string $nom = null;
+    #[ORM\Column(type: "string", nullable: true)]
+    private $matiere;
 
-    #[ORM\Column(length: 255, nullable: true)]
-    private ?string $phonenumber = null;
+    #[ORM\Column(type: "integer", nullable: true)]
+    private $experience;
 
-    #[ORM\Column(length: 255, nullable: true)]
-    private ?string $matiere = null;
+    #[ORM\Column(type: "string", nullable: true)]
+    private $reason;
 
-    #[ORM\Column(nullable: true)]
-    private ?int $experience = null;
+    #[ORM\Column(type: "string")]
+    private $password;
+
+    #[ORM\Column(type: "json")]
+    private $roles = [];
 
     #[ORM\Column(length: 255, nullable: true)]
-    private ?string $reason = null;
+    private ?string $work = null;
 
-    #[ORM\Column]
-    private bool $isVerified = false;
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $adress = null;
 
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $pref = null;
+
+    #[ORM\Column(type: "boolean")]
+    private ?bool $isActive = false; // Set default value to false
+
+    public function __construct() {
+        $this->isActive = false; // Default value set to false
+    }
+
+    // Getters and Setters...
     public function getId(): ?int
     {
         return $this->id;
@@ -61,69 +65,10 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this->email;
     }
 
-    public function setEmail(string $email): static
+    public function setEmail(string $email): self
     {
         $this->email = $email;
-
         return $this;
-    }
-
-    /**
-     * A visual identifier that represents this user.
-     *
-     * @see UserInterface
-     */
-    public function getUserIdentifier(): string
-    {
-        return (string) $this->email;
-    }
-
-    /**
-     * @see UserInterface
-     *
-     * @return list<string>
-     */
-    public function getRoles(): array
-    {
-        $roles = $this->roles;
-        // guarantee every user at least has ROLE_USER
-        $roles[] = 'ROLE_USER';
-
-        return array_unique($roles);
-    }
-
-    /**
-     * @param list<string> $roles
-     */
-    public function setRoles(array $roles): static
-    {
-        $this->roles = $roles;
-
-        return $this;
-    }
-
-    /**
-     * @see PasswordAuthenticatedUserInterface
-     */
-    public function getPassword(): ?string
-    {
-        return $this->password;
-    }
-
-    public function setPassword(string $password): static
-    {
-        $this->password = $password;
-
-        return $this;
-    }
-
-    /**
-     * @see UserInterface
-     */
-    public function eraseCredentials(): void
-    {
-        // If you store any temporary, sensitive data on the user, clear it here
-        // $this->plainPassword = null;
     }
 
     public function getNom(): ?string
@@ -131,10 +76,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this->nom;
     }
 
-    public function setNom(string $nom): static
+    public function setNom(string $nom): self
     {
         $this->nom = $nom;
-
         return $this;
     }
 
@@ -143,10 +87,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this->phonenumber;
     }
 
-    public function setPhonenumber(string $phonenumber): static
+    public function setPhonenumber(?string $phonenumber): self
     {
         $this->phonenumber = $phonenumber;
-
         return $this;
     }
 
@@ -155,10 +98,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this->matiere;
     }
 
-    public function setMatiere(?string $matiere): static
+    public function setMatiere(?string $matiere): self
     {
         $this->matiere = $matiere;
-
         return $this;
     }
 
@@ -167,10 +109,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this->experience;
     }
 
-    public function setExperience(?int $experience): static
+    public function setExperience(?int $experience): self
     {
         $this->experience = $experience;
-
         return $this;
     }
 
@@ -179,22 +120,91 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this->reason;
     }
 
-    public function setReason(?string $reason): static
+    public function setReason(?string $reason): self
     {
         $this->reason = $reason;
-
         return $this;
     }
 
-    public function isVerified(): bool
+    public function getPassword(): ?string
     {
-        return $this->isVerified;
+        return $this->password;
     }
 
-    public function setIsVerified(bool $isVerified): static
+    public function setPassword(string $password): self
     {
-        $this->isVerified = $isVerified;
+        $this->password = $password;
+        return $this;
+    }
 
+    public function getRoles(): array
+    {
+        return $this->roles;
+    }
+
+    public function setRoles(array $roles): self
+    {
+        $this->roles = $roles;
+        return $this;
+    }
+
+    public function getSalt(): ?string
+    {
+        return null;  // Not needed for modern password hashing algorithms
+    }
+
+    public function eraseCredentials(): void
+    {
+        // If you have temporary sensitive data, clear it here
+    }
+
+    public function getUserIdentifier(): string
+    {
+        return (string) $this->email;  // The unique identifier (email)
+    }
+
+    public function getWork(): ?string
+    {
+        return $this->work;
+    }
+
+    public function setWork(?string $work): static
+    {
+        $this->work = $work;
+        return $this;
+    }
+
+    public function getAdress(): ?string
+    {
+        return $this->adress;
+    }
+
+    public function setAdress(?string $adress): static
+    {
+        $this->adress = $adress;
+        return $this;
+    }
+
+    public function getPref(): ?string
+    {
+        return $this->pref;
+    }
+
+    public function setPref(?string $pref): static
+    {
+        $this->pref = $pref;
+        return $this;
+    }
+
+    public function isActive(): ?bool
+    {
+        return $this->isActive;
+    }
+
+    public function setIsActive(bool $isActive): static
+    {
+        $this->isActive = $isActive;
         return $this;
     }
 }
+

@@ -1,0 +1,208 @@
+{% block body %}
+<style>
+    /* Your existing CSS styles */
+    body {
+        font-family: Arial, sans-serif;
+        background-color: #C4DA36;
+        margin: 0;
+        padding: 0;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 100vh;
+        background-image: url("{{ asset('img/elearning.png') }}"); /* Use Twig's asset function for the image */
+        background-size: cover;
+        background-position: center;
+    }
+    .container {
+        background: rgba(255, 255, 255, 0.8); /* Fond légèrement transparent */
+        width: 100%;
+        max-width: 900px;
+        border-radius: 10px;
+        padding: 30px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        margin-top: 80px; /* Ajout d'un espace pour que le formulaire ne soit pas derrière le menu */
+    }
+    .logo {
+        display: flex;
+        align-items: center;
+        font-size: 30px;
+        font-weight: bold;
+        margin-bottom: 20px;
+        justify-content: center;
+    }
+    .logo img {
+        height: 50px;
+        width: auto;
+        margin-right: 10px;
+    }
+    .form-container {
+        background: transparent; /* Rendre le fond du formulaire transparent */
+        padding: 30px;
+        border-radius: 10px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+    h2 {
+        color: #333;
+        font-size: 28px;
+        margin-bottom: 20px;
+        text-align: center;
+    }
+    input, select {
+        width: 100%;
+        padding: 15px;
+        margin: 10px 0;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        font-size: 16px;
+        box-sizing: border-box;
+    }
+    input[type="radio"] {
+        width: auto;
+    }
+    .btn {
+        background: #8CC63F;
+        color: white;
+        padding: 15px 20px;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        font-size: 18px;
+        width: 100%;
+        transition: background 0.3s;
+    }
+    .btn:hover {
+        background: #7AB02F;
+    }
+    .top-nav {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 15px 30px;
+        background: white; /* Fond blanc pour le menu */
+        color: black;
+        border-radius: 0; 
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        z-index: 2;
+        box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    }
+    .top-nav .logo span {
+        margin-left: 10px;
+    }
+    .menu {
+        display: flex;
+        gap: 20px;
+    }
+    .menu a {
+        text-decoration: none;
+        color: black;
+        font-size: 16px;
+        padding: 10px 15px;
+        border-radius: 5px;
+        transition: background 0.3s;
+    }
+    .menu a:hover {
+        background-color: #FF5722;
+        color: white;
+    }
+    .get-started {
+        background: #FF5722;
+        color: white;
+        padding: 10px 15px;
+        border-radius: 5px;
+        text-decoration: none;
+    }
+    .form-container label {
+        font-weight: bold;
+        margin-bottom: 5px;
+        display: block;
+        color: #333;
+    }
+    .error-message {
+        color: red;
+        font-size: 14px;
+        margin-top: 5px;
+    }
+    .note {
+        font-style: italic;
+        color: #888;
+        margin-top: 10px;
+        text-align: center;
+    }
+</style>
+
+<div class="top-nav">
+    <div class="logo">
+        <img src="{{ asset('img/logo.png') }}" alt="Alpha Education Logo">
+    </div>
+    <div class="menu">
+        <a href="#">Accueil</a>
+        <a href="#" class="get-started">Commencer</a>
+        <a href="#" class="get-started"></a>
+    </div>
+</div>
+
+<div class="container">
+    <div class="form-container">
+        <h2>Créez votre compte</h2>
+        {{ form_start(form) }}
+            <!-- Nom et Email -->
+            {{ form_row(form.nom, {
+                'label': 'Nom complet',
+                'attr': {
+                    'placeholder': 'Entrez votre nom',
+                    'class': 'form-control'
+                }
+            }) }}
+            {{ form_row(form.email, {
+                'label': 'Email',
+                'attr': {
+                    'placeholder': 'Entrez votre email',
+                    'class': 'form-control'
+                }
+            }) }}
+            {{ form_row(form.password, {
+                'label': 'Mot de passe',
+                'attr': {
+                    'placeholder': 'Choisissez un mot de passe',
+                    'class': 'form-control'
+                }
+            }) }}
+            <!-- Informations supplémentaires sur le parent -->
+            {{ form_row(form.phonenumber, {
+                'label': 'Numéro de téléphone',
+                'attr': {
+                    'placeholder': 'Entrez votre numéro de téléphone',
+                    'class': 'form-control'
+                }
+            }) }}
+            {{ form_row(form.adress, {
+                'label': 'Adresse',
+                'attr': {
+                    'placeholder': 'Entrez votre adresse',
+                    'class': 'form-control'
+                }
+            }) }}
+            {{ form_row(form.work, {
+                'label': 'Profession',
+                'attr': {
+                    'placeholder': 'Votre profession',
+                    'class': 'form-control'
+                }
+            }) }}
+            {{ form_row(form.pref, {
+                'label': 'Préférence de communication',
+                'attr': {
+                    'class': 'form-control'
+                }
+            }) }}
+            <!-- Confirmation de l'inscription -->
+            <button type="submit" class="btn">Créer un compte</button>
+        {{ form_end(form) }}
+        <p class="note">Vous avez déjà un compte ? <a href="#">Se connecter</a></p>
+    </div>
+</div>
+{% endblock %}
