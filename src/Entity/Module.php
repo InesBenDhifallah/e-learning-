@@ -21,9 +21,16 @@ class Module
     #[ORM\OneToMany(mappedBy: "module", targetEntity: Chapitre::class, cascade: ["remove"])]
     private Collection $chapitres;
 
+    /**
+     * @var Collection<int, User>
+     */
+    #[ORM\OneToMany(targetEntity: User::class, mappedBy: 'idmatiere')]
+    private Collection $users;
+
     public function __construct()
     {
         $this->chapitres = new ArrayCollection();
+        $this->users = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -62,6 +69,36 @@ class Module
         if ($this->chapitres->removeElement($chapitre)) {
             if ($chapitre->getModule() === $this) {
                 $chapitre->setModule(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, User>
+     */
+    public function getUsers(): Collection
+    {
+        return $this->users;
+    }
+
+    public function addUser(User $user): static
+    {
+        if (!$this->users->contains($user)) {
+            $this->users->add($user);
+            $user->setIdmatiere($this);
+        }
+
+        return $this;
+    }
+
+    public function removeUser(User $user): static
+    {
+        if ($this->users->removeElement($user)) {
+            // set the owning side to null (unless already changed)
+            if ($user->getIdmatiere() === $this) {
+                $user->setIdmatiere(null);
             }
         }
 
