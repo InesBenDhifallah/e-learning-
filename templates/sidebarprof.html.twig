@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Gestion des Cours, Chapitres et Quiz - Primaire</title>
+    <title>Interface Professeur</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/flowbite/1.6.5/flowbite.min.css">
@@ -15,80 +15,43 @@
             <img src="{{ asset('images/alpha.png') }}" alt="Logo Alpha Education" class="w-48 mx-auto"> <!-- Logo -->
         </div>
         <ul class="space-y-4">
-            <li><button id="profilBtn" class="block hover:text-gray-200">👤 Profil</button></li>
-            <li><button id="coursBtn" class="block hover:text-gray-200">📚 Cours</button></li>
-            <li><button id="chapitresBtn" class="block hover:text-gray-200">📖 Chapitres</button></li>
-            <li><button id="quizBtn" class="block hover:text-gray-200">❓ Quiz</button></li>
+            <li><button id="dashboardBtn" class="block hover:text-gray-200">📊 Tableau de Bord</button></li>
+            <li><button id="coursBtn" class="block hover:text-gray-200">📚 Mes Cours</button></li>
+            <li><button id="etudiantsBtn" class="block hover:text-gray-200">👥 Étudiants</button></li>
+            <li><button id="statistiquesBtn" class="block hover:text-gray-200">📈 Statistiques</button></li>
             <li><a href="#" class="block hover:text-gray-200">🔒 Déconnexion</a></li>
         </ul>
     </aside>
 
     <!-- Main Content -->
     <main class="flex-1 p-6">
-        <!-- Interface Profil -->
-        <div id="profilInterface" class="hidden">
-            <h1 class="text-2xl font-bold mb-8">Profil Utilisateur</h1>
-            <div class="bg-white rounded-lg shadow-lg p-6 max-w-2xl mx-auto">
-                <!-- Informations personnelles -->
-                <div class="mb-6">
-                    <h2 class="text-xl font-semibold mb-4 flex items-center">
-                        <i class="fas fa-user-circle mr-2"></i> Informations Personnelles
-                    </h2>
-                    <div class="space-y-4">
-                        <div>
-                            <label for="nom" class="block text-gray-700">Nom</label>
-                            <input type="text" id="nom" class="w-full p-2 border border-gray-300 rounded-lg" value="John Doe" readonly>
-                        </div>
-                        <div>
-                            <label for="email" class="block text-gray-700">Email</label>
-                            <input type="email" id="email" class="w-full p-2 border border-gray-300 rounded-lg" value="john.doe@example.com" readonly>
-                        </div>
-                        <div>
-                            <label for="telephone" class="block text-gray-700">Téléphone</label>
-                            <input type="tel" id="telephone" class="w-full p-2 border border-gray-300 rounded-lg" value="+33 6 12 34 56 78" readonly>
-                        </div>
-                    </div>
+        <!-- Interface Tableau de Bord -->
+        <div id="dashboardInterface">
+            <h1 class="text-2xl font-bold mb-8">Tableau de Bord</h1>
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                <!-- Carte : Nombre de Cours -->
+                <div class="bg-white rounded-lg shadow-lg p-6">
+                    <h3 class="text-lg font-bold mb-2">Nombre de Cours</h3>
+                    <p class="text-3xl font-bold text-lime-500">12</p>
                 </div>
-
-                <!-- Mot de passe -->
-                <div class="mb-6">
-                    <h2 class="text-xl font-semibold mb-4 flex items-center">
-                        <i class="fas fa-lock mr-2"></i> Sécurité
-                    </h2>
-                    <div class="space-y-4">
-                        <div>
-                            <label for="password" class="block text-gray-700">Mot de passe</label>
-                            <input type="password" id="password" class="w-full p-2 border border-gray-300 rounded-lg" placeholder="********" readonly>
-                        </div>
-                        <div>
-                            <label for="confirmPassword" class="block text-gray-700">Confirmer le mot de passe</label>
-                            <input type="password" id="confirmPassword" class="w-full p-2 border border-gray-300 rounded-lg" placeholder="********" readonly>
-                        </div>
-                    </div>
+                <!-- Carte : Nombre d'Étudiants -->
+                <div class="bg-white rounded-lg shadow-lg p-6">
+                    <h3 class="text-lg font-bold mb-2">Nombre d'Étudiants</h3>
+                    <p class="text-3xl font-bold text-lime-500">45</p>
                 </div>
-
-                <!-- Boutons -->
-                <div class="flex justify-end space-x-4">
-                    <button id="editBtn" class="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600">
-                        <i class="fas fa-edit mr-2"></i> Modifier
-                    </button>
-                    <button id="saveBtn" class="bg-green-500 text-white px-4 py-2 rounded-lg hover:bg-green-600 hidden">
-                        <i class="fas fa-save mr-2"></i> Enregistrer
-                    </button>
-                </div>
-
-                <!-- Message de succès -->
-                <div id="successMessage" class="mt-4 text-green-600 hidden">
-                    <i class="fas fa-check-circle mr-2"></i> Modifications enregistrées avec succès !
+                <!-- Carte : Taux de Réussite -->
+                <div class="bg-white rounded-lg shadow-lg p-6">
+                    <h3 class="text-lg font-bold mb-2">Taux de Réussite</h3>
+                    <p class="text-3xl font-bold text-lime-500">85%</p>
                 </div>
             </div>
         </div>
 
-        <!-- Interface Cours -->
+        <!-- Interface Mes Cours -->
         <div id="coursInterface" class="hidden">
-            <h1 class="text-2xl font-bold mb-8">Gestion des Cours</h1>
+            <h1 class="text-2xl font-bold mb-8">Mes Cours</h1>
             <div class="mb-6">
-                <button id="addCourseBtn" class="bg-orange-500 text-white px-4 py-2 rounded-lg hover:bg-orange-600">
+                <button id="addCoursBtn" class="bg-orange-500 text-white px-4 py-2 rounded-lg hover:bg-orange-600">
                     + Ajouter un Cours
                 </button>
             </div>
@@ -96,18 +59,18 @@
                 <!-- Cours 1 -->
                 <div class="bg-white rounded-lg shadow-lg p-6">
                     <h3 class="text-lg font-bold mb-2">Mathématiques</h3>
-                    <p class="text-gray-600 mb-4">Thème : Calcul mental</p>
+                    <p class="text-gray-600 mb-4">Chapitres : 5</p>
                     <div class="flex items-center justify-between">
-                        <button class="bg-blue-500 text-white px-2 py-1 rounded text-sm hover:bg-blue-600">Modifier</button>
+                        <button class="bg-blue-500 text-white px-2 py-1 rounded text-sm hover:bg-blue-600" onclick="afficherChapitres('Mathématiques')">Voir les Chapitres</button>
                         <button class="bg-red-500 text-white px-2 py-1 rounded text-sm hover:bg-red-600">Supprimer</button>
                     </div>
                 </div>
                 <!-- Cours 2 -->
                 <div class="bg-white rounded-lg shadow-lg p-6">
-                    <h3 class="text-lg font-bold mb-2">Sciences</h3>
-                    <p class="text-gray-600 mb-4">Thème : Écosystèmes</p>
+                    <h3 class="text-lg font-bold mb-2">Physique</h3>
+                    <p class="text-gray-600 mb-4">Chapitres : 3</p>
                     <div class="flex items-center justify-between">
-                        <button class="bg-blue-500 text-white px-2 py-1 rounded text-sm hover:bg-blue-600">Modifier</button>
+                        <button class="bg-blue-500 text-white px-2 py-1 rounded text-sm hover:bg-blue-600" onclick="afficherChapitres('Physique')">Voir les Chapitres</button>
                         <button class="bg-red-500 text-white px-2 py-1 rounded text-sm hover:bg-red-600">Supprimer</button>
                     </div>
                 </div>
@@ -116,17 +79,20 @@
 
         <!-- Interface Chapitres -->
         <div id="chapitresInterface" class="hidden">
-            <h1 class="text-2xl font-bold mb-8">Gestion des Chapitres</h1>
+            <h1 class="text-2xl font-bold mb-8" id="chapitresTitre"></h1>
             <div class="mb-6">
-                <button id="addChapterBtn" class="bg-green-500 text-white px-4 py-2 rounded-lg hover:bg-green-600">
+                <button id="addChapitreBtn" class="bg-green-500 text-white px-4 py-2 rounded-lg hover:bg-green-600">
                     + Ajouter un Chapitre
+                </button>
+                <button onclick="retourCours()" class="bg-gray-500 text-white px-4 py-2 rounded-lg hover:bg-gray-600 ml-4">
+                    ← Retour aux Cours
                 </button>
             </div>
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
                 <!-- Chapitre 1 -->
                 <div class="bg-white rounded-lg shadow-lg p-6">
-                    <h3 class="text-lg font-bold mb-2">Chapitre 1 : Addition</h3>
-                    <p class="text-gray-600 mb-4">Cours : Mathématiques</p>
+                    <h3 class="text-lg font-bold mb-2">Chapitre 1 : Introduction</h3>
+                    <p class="text-gray-600 mb-4">Leçons : 4</p>
                     <div class="flex items-center justify-between">
                         <button class="bg-blue-500 text-white px-2 py-1 rounded text-sm hover:bg-blue-600">Modifier</button>
                         <button class="bg-red-500 text-white px-2 py-1 rounded text-sm hover:bg-red-600">Supprimer</button>
@@ -134,8 +100,8 @@
                 </div>
                 <!-- Chapitre 2 -->
                 <div class="bg-white rounded-lg shadow-lg p-6">
-                    <h3 class="text-lg font-bold mb-2">Chapitre 2 : Soustraction</h3>
-                    <p class="text-gray-600 mb-4">Cours : Mathématiques</p>
+                    <h3 class="text-lg font-bold mb-2">Chapitre 2 : Algèbre</h3>
+                    <p class="text-gray-600 mb-4">Leçons : 6</p>
                     <div class="flex items-center justify-between">
                         <button class="bg-blue-500 text-white px-2 py-1 rounded text-sm hover:bg-blue-600">Modifier</button>
                         <button class="bg-red-500 text-white px-2 py-1 rounded text-sm hover:bg-red-600">Supprimer</button>
@@ -144,32 +110,56 @@
             </div>
         </div>
 
-        <!-- Interface Quiz -->
-        <div id="quizInterface" class="hidden">
-            <h1 class="text-2xl font-bold mb-8">Gestion des Quiz</h1>
+        <!-- Interface Étudiants -->
+        <div id="etudiantsInterface" class="hidden">
+            <h1 class="text-2xl font-bold mb-8">Gestion des Étudiants</h1>
             <div class="mb-6">
-                <button id="addQuizBtn" class="bg-purple-500 text-white px-4 py-2 rounded-lg hover:bg-purple-600">
-                    + Ajouter un Quiz
+                <button id="addEtudiantBtn" class="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600">
+                    + Ajouter un Étudiant
                 </button>
             </div>
-            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                <!-- Quiz 1 -->
-                <div class="bg-white rounded-lg shadow-lg p-6">
-                    <h3 class="text-lg font-bold mb-2">Quiz 1 : Addition</h3>
-                    <p class="text-gray-600 mb-4">Cours : Mathématiques</p>
-                    <div class="flex items-center justify-between">
-                        <button class="bg-blue-500 text-white px-2 py-1 rounded text-sm hover:bg-blue-600">Modifier</button>
-                        <button class="bg-red-500 text-white px-2 py-1 rounded text-sm hover:bg-red-600">Supprimer</button>
-                    </div>
-                </div>
-                <!-- Quiz 2 -->
-                <div class="bg-white rounded-lg shadow-lg p-6">
-                    <h3 class="text-lg font-bold mb-2">Quiz 2 : Écosystèmes</h3>
-                    <p class="text-gray-600 mb-4">Cours : Sciences</p>
-                    <div class="flex items-center justify-between">
-                        <button class="bg-blue-500 text-white px-2 py-1 rounded text-sm hover:bg-blue-600">Modifier</button>
-                        <button class="bg-red-500 text-white px-2 py-1 rounded text-sm hover:bg-red-600">Supprimer</button>
-                    </div>
+            <div class="bg-white rounded-lg shadow-lg p-6">
+                <table class="w-full">
+                    <thead>
+                        <tr>
+                            <th class="text-left p-2">Nom</th>
+                            <th class="text-left p-2">Email</th>
+                            <th class="text-left p-2">Cours Suivis</th>
+                            <th class="text-left p-2">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td class="p-2">Jean Dupont</td>
+                            <td class="p-2">jean.dupont@example.com</td>
+                            <td class="p-2">Mathématiques, Physique</td>
+                            <td class="p-2">
+                                <button class="bg-blue-500 text-white px-2 py-1 rounded text-sm hover:bg-blue-600">Modifier</button>
+                                <button class="bg-red-500 text-white px-2 py-1 rounded text-sm hover:bg-red-600">Supprimer</button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="p-2">Marie Curie</td>
+                            <td class="p-2">marie.curie@example.com</td>
+                            <td class="p-2">Physique</td>
+                            <td class="p-2">
+                                <button class="bg-blue-500 text-white px-2 py-1 rounded text-sm hover:bg-blue-600">Modifier</button>
+                                <button class="bg-red-500 text-white px-2 py-1 rounded text-sm hover:bg-red-600">Supprimer</button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Interface Statistiques -->
+        <div id="statistiquesInterface" class="hidden">
+            <h1 class="text-2xl font-bold mb-8">Statistiques</h1>
+            <div class="bg-white rounded-lg shadow-lg p-6">
+                <h3 class="text-lg font-bold mb-4">Taux de Réussite par Cours</h3>
+                <div class="h-64 bg-gray-100 rounded-lg flex items-center justify-center">
+                    <!-- Graphique (à implémenter) -->
+                    <p class="text-gray-500">Graphique des statistiques</p>
                 </div>
             </div>
         </div>
@@ -177,19 +167,18 @@
 
     <!-- Modales -->
     <!-- Modal pour Ajouter un Cours -->
-    <div id="addCourseModal" class="hidden fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full">
+    <div id="addCoursModal" class="hidden fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full">
         <div class="relative top-20 mx-auto p-5 border w-96 shadow-lg rounded-md bg-white">
             <div class="mt-3 text-center">
                 <h3 class="text-lg leading-6 font-medium text-gray-900">Ajouter un Cours</h3>
                 <div class="mt-2 px-7 py-3">
-                    <input type="text" id="courseName" class="w-full p-2 border border-gray-300 rounded-lg" placeholder="Nom du Cours">
-                    <input type="text" id="courseTheme" class="w-full p-2 border border-gray-300 rounded-lg mt-3" placeholder="Thème du Cours">
+                    <input type="text" id="coursName" class="w-full p-2 border border-gray-300 rounded-lg" placeholder="Nom du Cours">
                 </div>
                 <div class="items-center px-4 py-3">
-                    <button id="saveCourseBtn" class="px-4 py-2 bg-green-500 text-white text-base font-medium rounded-md shadow-sm hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-green-300">
+                    <button id="saveCoursBtn" class="px-4 py-2 bg-green-500 text-white text-base font-medium rounded-md shadow-sm hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-green-300">
                         Enregistrer
                     </button>
-                    <button id="closeCourseModal" class="ml-3 px-4 py-2 bg-gray-500 text-white text-base font-medium rounded-md shadow-sm hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-gray-300">
+                    <button id="closeCoursModal" class="ml-3 px-4 py-2 bg-gray-500 text-white text-base font-medium rounded-md shadow-sm hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-gray-300">
                         Annuler
                     </button>
                 </div>
@@ -197,41 +186,20 @@
         </div>
     </div>
 
-    <!-- Modal pour Ajouter un Chapitre -->
-    <div id="addChapterModal" class="hidden fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full">
+    <!-- Modal pour Ajouter un Étudiant -->
+    <div id="addEtudiantModal" class="hidden fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full">
         <div class="relative top-20 mx-auto p-5 border w-96 shadow-lg rounded-md bg-white">
             <div class="mt-3 text-center">
-                <h3 class="text-lg leading-6 font-medium text-gray-900">Ajouter un Chapitre</h3>
+                <h3 class="text-lg leading-6 font-medium text-gray-900">Ajouter un Étudiant</h3>
                 <div class="mt-2 px-7 py-3">
-                    <input type="text" id="chapterName" class="w-full p-2 border border-gray-300 rounded-lg" placeholder="Nom du Chapitre">
-                    <input type="text" id="chapterCourse" class="w-full p-2 border border-gray-300 rounded-lg mt-3" placeholder="Cours associé">
+                    <input type="text" id="etudiantName" class="w-full p-2 border border-gray-300 rounded-lg" placeholder="Nom de l'Étudiant">
+                    <input type="email" id="etudiantEmail" class="w-full p-2 border border-gray-300 rounded-lg mt-3" placeholder="Email de l'Étudiant">
                 </div>
                 <div class="items-center px-4 py-3">
-                    <button id="saveChapterBtn" class="px-4 py-2 bg-green-500 text-white text-base font-medium rounded-md shadow-sm hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-green-300">
+                    <button id="saveEtudiantBtn" class="px-4 py-2 bg-green-500 text-white text-base font-medium rounded-md shadow-sm hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-green-300">
                         Enregistrer
                     </button>
-                    <button id="closeChapterModal" class="ml-3 px-4 py-2 bg-gray-500 text-white text-base font-medium rounded-md shadow-sm hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-gray-300">
-                        Annuler
-                    </button>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Modal pour Ajouter un Quiz -->
-    <div id="addQuizModal" class="hidden fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full">
-        <div class="relative top-20 mx-auto p-5 border w-96 shadow-lg rounded-md bg-white">
-            <div class="mt-3 text-center">
-                <h3 class="text-lg leading-6 font-medium text-gray-900">Ajouter un Quiz</h3>
-                <div class="mt-2 px-7 py-3">
-                    <input type="text" id="quizName" class="w-full p-2 border border-gray-300 rounded-lg" placeholder="Nom du Quiz">
-                    <input type="text" id="quizCourse" class="w-full p-2 border border-gray-300 rounded-lg mt-3" placeholder="Cours associé">
-                </div>
-                <div class="items-center px-4 py-3">
-                    <button id="saveQuizBtn" class="px-4 py-2 bg-green-500 text-white text-base font-medium rounded-md shadow-sm hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-green-300">
-                        Enregistrer
-                    </button>
-                    <button id="closeQuizModal" class="ml-3 px-4 py-2 bg-gray-500 text-white text-base font-medium rounded-md shadow-sm hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-gray-300">
+                    <button id="closeEtudiantModal" class="ml-3 px-4 py-2 bg-gray-500 text-white text-base font-medium rounded-md shadow-sm hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-gray-300">
                         Annuler
                     </button>
                 </div>
@@ -242,175 +210,110 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/flowbite/1.6.5/flowbite.min.js"></script>
     <script>
         // Gestion des interfaces
-        const profilBtn = document.getElementById('profilBtn');
+        const dashboardBtn = document.getElementById('dashboardBtn');
         const coursBtn = document.getElementById('coursBtn');
-        const chapitresBtn = document.getElementById('chapitresBtn');
-        const quizBtn = document.getElementById('quizBtn');
+        const etudiantsBtn = document.getElementById('etudiantsBtn');
+        const statistiquesBtn = document.getElementById('statistiquesBtn');
 
-        const profilInterface = document.getElementById('profilInterface');
+        const dashboardInterface = document.getElementById('dashboardInterface');
         const coursInterface = document.getElementById('coursInterface');
         const chapitresInterface = document.getElementById('chapitresInterface');
-        const quizInterface = document.getElementById('quizInterface');
+        const etudiantsInterface = document.getElementById('etudiantsInterface');
+        const statistiquesInterface = document.getElementById('statistiquesInterface');
 
-        // Afficher l'interface Profil
-        profilBtn.addEventListener('click', () => {
-            profilInterface.classList.remove('hidden');
+        // Afficher l'interface Tableau de Bord
+        dashboardBtn.addEventListener('click', () => {
+            dashboardInterface.classList.remove('hidden');
             coursInterface.classList.add('hidden');
             chapitresInterface.classList.add('hidden');
-            quizInterface.classList.add('hidden');
+            etudiantsInterface.classList.add('hidden');
+            statistiquesInterface.classList.add('hidden');
         });
 
-        // Afficher l'interface Cours
+        // Afficher l'interface Mes Cours
         coursBtn.addEventListener('click', () => {
             coursInterface.classList.remove('hidden');
-            profilInterface.classList.add('hidden');
+            dashboardInterface.classList.add('hidden');
             chapitresInterface.classList.add('hidden');
-            quizInterface.classList.add('hidden');
+            etudiantsInterface.classList.add('hidden');
+            statistiquesInterface.classList.add('hidden');
+        });
+
+        // Afficher l'interface Étudiants
+        etudiantsBtn.addEventListener('click', () => {
+            etudiantsInterface.classList.remove('hidden');
+            dashboardInterface.classList.add('hidden');
+            coursInterface.classList.add('hidden');
+            chapitresInterface.classList.add('hidden');
+            statistiquesInterface.classList.add('hidden');
+        });
+
+        // Afficher l'interface Statistiques
+        statistiquesBtn.addEventListener('click', () => {
+            statistiquesInterface.classList.remove('hidden');
+            dashboardInterface.classList.add('hidden');
+            coursInterface.classList.add('hidden');
+            chapitresInterface.classList.add('hidden');
+            etudiantsInterface.classList.add('hidden');
         });
 
         // Afficher l'interface Chapitres
-        chapitresBtn.addEventListener('click', () => {
+        function afficherChapitres(cours) {
+            document.getElementById('chapitresTitre').textContent = `Chapitres pour ${cours}`;
+            coursInterface.classList.add('hidden');
             chapitresInterface.classList.remove('hidden');
-            profilInterface.classList.add('hidden');
-            coursInterface.classList.add('hidden');
-            quizInterface.classList.add('hidden');
-        });
+        }
 
-        // Afficher l'interface Quiz
-        quizBtn.addEventListener('click', () => {
-            quizInterface.classList.remove('hidden');
-            profilInterface.classList.add('hidden');
-            coursInterface.classList.add('hidden');
+        // Retour à l'interface Cours
+        function retourCours() {
             chapitresInterface.classList.add('hidden');
-        });
+            coursInterface.classList.remove('hidden');
+        }
 
-        // Gestion du formulaire de profil
-        const editBtn = document.getElementById('editBtn');
-        const saveBtn = document.getElementById('saveBtn');
-        const successMessage = document.getElementById('successMessage');
+        // Gestion des modales
+        const addCoursBtn = document.getElementById('addCoursBtn');
+        const addCoursModal = document.getElementById('addCoursModal');
+        const closeCoursModal = document.getElementById('closeCoursModal');
+        const saveCoursBtn = document.getElementById('saveCoursBtn');
 
-        const nomInput = document.getElementById('nom');
-        const emailInput = document.getElementById('email');
-        const telephoneInput = document.getElementById('telephone');
-        const passwordInput = document.getElementById('password');
-        const confirmPasswordInput = document.getElementById('confirmPassword');
-
-        // Activer le mode édition
-        editBtn.addEventListener('click', () => {
-            // Rendre les champs modifiables
-            nomInput.readOnly = false;
-            emailInput.readOnly = false;
-            telephoneInput.readOnly = false;
-            passwordInput.readOnly = false;
-            confirmPasswordInput.readOnly = false;
-
-            // Afficher le bouton "Enregistrer"
-            saveBtn.classList.remove('hidden');
-            editBtn.classList.add('hidden');
-        });
-
-        // Enregistrer les modifications
-        saveBtn.addEventListener('click', () => {
-            // Rendre les champs en lecture seule
-            nomInput.readOnly = true;
-            emailInput.readOnly = true;
-            telephoneInput.readOnly = true;
-            passwordInput.readOnly = true;
-            confirmPasswordInput.readOnly = true;
-
-            // Afficher le message de succès
-            successMessage.classList.remove('hidden');
-            setTimeout(() => successMessage.classList.add('hidden'), 3000); // Masquer après 3 secondes
-
-            // Revenir au bouton "Modifier"
-            saveBtn.classList.add('hidden');
-            editBtn.classList.remove('hidden');
-        });
-
-        // Gestion des boutons "Ajouter"
-        const addCourseBtn = document.getElementById('addCourseBtn');
-        const addChapterBtn = document.getElementById('addChapterBtn');
-        const addQuizBtn = document.getElementById('addQuizBtn');
-
-        const addCourseModal = document.getElementById('addCourseModal');
-        const addChapterModal = document.getElementById('addChapterModal');
-        const addQuizModal = document.getElementById('addQuizModal');
-
-        const closeCourseModal = document.getElementById('closeCourseModal');
-        const closeChapterModal = document.getElementById('closeChapterModal');
-        const closeQuizModal = document.getElementById('closeQuizModal');
-
-        const saveCourseBtn = document.getElementById('saveCourseBtn');
-        const saveChapterBtn = document.getElementById('saveChapterBtn');
-        const saveQuizBtn = document.getElementById('saveQuizBtn');
+        const addEtudiantBtn = document.getElementById('addEtudiantBtn');
+        const addEtudiantModal = document.getElementById('addEtudiantModal');
+        const closeEtudiantModal = document.getElementById('closeEtudiantModal');
+        const saveEtudiantBtn = document.getElementById('saveEtudiantBtn');
 
         // Ouvrir la modal pour ajouter un cours
-        addCourseBtn.addEventListener('click', () => {
-            addCourseModal.classList.remove('hidden');
+        addCoursBtn.addEventListener('click', () => {
+            addCoursModal.classList.remove('hidden');
         });
 
         // Fermer la modal pour ajouter un cours
-        closeCourseModal.addEventListener('click', () => {
-            addCourseModal.classList.add('hidden');
+        closeCoursModal.addEventListener('click', () => {
+            addCoursModal.classList.add('hidden');
         });
 
         // Enregistrer un cours
-        saveCourseBtn.addEventListener('click', () => {
-            const courseName = document.getElementById('courseName').value;
-            const courseTheme = document.getElementById('courseTheme').value;
-            alert(`Cours "${courseName}" (Thème : ${courseTheme}) enregistré !`);
-            addCourseModal.classList.add('hidden');
+        saveCoursBtn.addEventListener('click', () => {
+            const coursName = document.getElementById('coursName').value;
+            alert(`Cours "${coursName}" enregistré !`);
+            addCoursModal.classList.add('hidden');
         });
 
-        // Ouvrir la modal pour ajouter un chapitre
-        addChapterBtn.addEventListener('click', () => {
-            addChapterModal.classList.remove('hidden');
+        // Ouvrir la modal pour ajouter un étudiant
+        addEtudiantBtn.addEventListener('click', () => {
+            addEtudiantModal.classList.remove('hidden');
         });
 
-        // Fermer la modal pour ajouter un chapitre
-        closeChapterModal.addEventListener('click', () => {
-            addChapterModal.classList.add('hidden');
+        // Fermer la modal pour ajouter un étudiant
+        closeEtudiantModal.addEventListener('click', () => {
+            addEtudiantModal.classList.add('hidden');
         });
 
-        // Enregistrer un chapitre
-        saveChapterBtn.addEventListener('click', () => {
-            const chapterName = document.getElementById('chapterName').value;
-            const chapterCourse = document.getElementById('chapterCourse').value;
-            alert(`Chapitre "${chapterName}" (Cours : ${chapterCourse}) enregistré !`);
-            addChapterModal.classList.add('hidden');
-        });
-
-        // Ouvrir la modal pour ajouter un quiz
-        addQuizBtn.addEventListener('click', () => {
-            addQuizModal.classList.remove('hidden');
-        });
-
-        // Fermer la modal pour ajouter un quiz
-        closeQuizModal.addEventListener('click', () => {
-            addQuizModal.classList.add('hidden');
-        });
-
-        // Enregistrer un quiz
-        saveQuizBtn.addEventListener('click', () => {
-            const quizName = document.getElementById('quizName').value;
-            const quizCourse = document.getElementById('quizCourse').value;
-            alert(`Quiz "${quizName}" (Cours : ${quizCourse}) enregistré !`);
-            addQuizModal.classList.add('hidden');
-        });
-
-        // Gestion des boutons "Modifier" et "Supprimer"
-        document.querySelectorAll('.bg-blue-500').forEach(button => {
-            button.addEventListener('click', () => {
-                alert('Modifier');
-            });
-        });
-
-        document.querySelectorAll('.bg-red-500').forEach(button => {
-            button.addEventListener('click', () => {
-                if (confirm('Êtes-vous sûr de vouloir supprimer cet élément ?')) {
-                    alert('Supprimé');
-                }
-            });
+        // Enregistrer un étudiant
+        saveEtudiantBtn.addEventListener('click', () => {
+            const etudiantName = document.getElementById('etudiantName').value;
+            const etudiantEmail = document.getElementById('etudiantEmail').value;
+            alert(`Étudiant "${etudiantName}" (${etudiantEmail}) enregistré !`);
+            addEtudiantModal.classList.add('hidden');
         });
     </script>
 </body>
