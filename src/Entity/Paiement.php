@@ -21,18 +21,32 @@ class Paiement
     private ?string $nom = null;
 
     #[ORM\Column(length: 255)]
+    #[Assert\NotBlank(message: "L'email est obligatoire.")]
+    #[Assert\Email(message: "Veuillez entrer une adresse e-mail valide.")]
     private ?string $email = null;
 
+
     #[ORM\Column(length: 255)]
+    #[Assert\NotBlank(message: "Veuillez selectionner le type de votre carte.")]
     private ?string $type_carte = null;
 
-    #[ORM\Column]
+    #[Assert\Regex(
+        pattern: "/^(4\d{15}|5[1-5]\d{14}|2(2[2-9]\d|[3-6]\d{2}|7[0-1]\d|720)\d{12})$/",
+        message: "Le numéro de carte doit être un Visa ou Mastercard valide de 16 chiffres."
+    )]
+    #[Assert\NotBlank(message: "Veuillez selectionner le numéro de votre carte.")]
     private ?int $num_carte = null;
 
     #[ORM\Column(type: Types::DATE_MUTABLE)]
+    #[Assert\NotBlank(message: "La date d'expiration est obligatoire.")]
     private ?\DateTimeInterface $date_expiration = null;
 
     #[ORM\Column]
+    #[Assert\NotBlank(message: "Le CVV est obligatoire.")]
+    #[Assert\Regex(
+    pattern: "/^\d{3}$/",
+    message: "Le CVV doit contenir exactement 3 chiffres."
+)]
     private ?int $cvv = null;
 
     #[ORM\Column]
@@ -105,12 +119,14 @@ class Paiement
         return $this->date_expiration;
     }
 
-    public function setDateExpiration(\DateTimeInterface $date_expiration): static
+    public function setDateExpiration(?\DateTimeInterface $date_expiration): static
     {
         $this->date_expiration = $date_expiration;
 
         return $this;
     }
+
+
 
     public function getCvv(): ?int
     {
