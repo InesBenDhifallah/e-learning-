@@ -31,11 +31,12 @@ class Paiement
     private ?string $type_carte = null;
 
     #[Assert\Regex(
-        pattern: "/^(4\d{15}|5[1-5]\d{14}|2(2[2-9]\d|[3-6]\d{2}|7[0-1]\d|720)\d{12})$/",
+        pattern: "/^\d{16}$/",  // Validation pour accepter uniquement 16 chiffres
         message: "Le numéro de carte doit être un Visa ou Mastercard valide de 16 chiffres."
     )]
     #[Assert\NotBlank(message: "Veuillez selectionner le numéro de votre carte.")]
-    private ?int $num_carte = null;
+    #[ORM\Column(length: 16)]  // Gardez le type `string` avec une longueur maximale de 16 caractères
+    private ?string $num_carte = null;
 
     #[ORM\Column(type: Types::DATE_MUTABLE)]
     #[Assert\NotBlank(message: "La date d'expiration est obligatoire.")]
@@ -102,12 +103,12 @@ class Paiement
         return $this;
     }
 
-    public function getNumCarte(): ?int
+    public function getNumCarte(): ?string
     {
         return $this->num_carte;
     }
 
-    public function setNumCarte(int $num_carte): static
+    public function setNumCarte(string $num_carte): static
     {
         $this->num_carte = $num_carte;
 

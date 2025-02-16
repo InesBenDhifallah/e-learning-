@@ -1,35 +1,63 @@
-{% extends 'base.html.twig' %}
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Abonnement Index</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+</head>
+<body class="bg-gray-100 min-h-screen">
+    <div class="flex min-h-screen">
+        <!-- Sidebar -->
+        <div class="w-64 bg-gray-800 text-white">
+            {% include 'sidebaradmin.html.twig' %}
+        </div>
 
-{% block title %}Module index{% endblock %}
+        {% block body %}
+        <div class="flex-1 p-8 bg-gray-100">
+            <header class="flex justify-between items-center mb-6">
+                <h1 class="text-3xl font-bold text-gray-800">Liste des modules</h1>
+                <a href="{{ path('app_module_new') }}" class="bg-blue-500 text-white py-2 px-4 rounded-lg hover:bg-blue-600 transition duration-200 ease-in-out mt-4">
+                    <i class="fas fa-plus mr-2"></i> Create New
+                </a>
+            </header>
 
-{% block body %}
-    <h1>Module index</h1>
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                {% for module in modules %}
+                <div class="bg-white rounded-xl shadow-lg hover:shadow-xl transition duration-300 ease-in-out p-6 border border-gray-100 transform hover:-translate-y-1">
+                    <div class="flex justify-between items-center mb-4">
+                        <h1 class="text-xl font-bold text-black-600">{{ module.nom }}</h1>
 
-    <table class="table">
-        <thead>
-            <tr>
-                <th>Id</th>
-                <th>Nom</th>
-                <th>actions</th>
-            </tr>
-        </thead>
-        <tbody>
-        {% for module in modules %}
-            <tr>
-                <td>{{ module.id }}</td>
-                <td>{{ module.nom }}</td>
-                <td>
-                    <a href="{{ path('app_module_show', {'id': module.id}) }}">show</a>
-                    <a href="{{ path('app_module_edit', {'id': module.id}) }}">edit</a>
-                </td>
-            </tr>
-        {% else %}
-            <tr>
-                <td colspan="3">no records found</td>
-            </tr>
-        {% endfor %}
-        </tbody>
-    </table>
+                        <!-- Icônes (poubelle et œil) côte à côte -->
+                        <div class="flex space-x-4">
+                            <!-- Formulaire de suppression (poubelle) -->
+                            <form method="post" action="{{ path('app_module_delete', {'id': module.id}) }}" onsubmit="return confirm('Are you sure you want to delete this item?');">
+                                <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ module.id) }}">
+                                <button type="submit" class="text-red-500 hover:text-red-700 transition duration-200">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            </form>
 
-    <a href="{{ path('app_module_new') }}">Create new</a>
-{% endblock %}
+                            <!-- Lien vers la page de détails (œil) -->
+                            <a href="{{ path('app_module_show', {'id': module.id}) }}" class="text-blue-500 hover:text-blue-700 transition duration-200">
+                                <i class="fas fa-eye"></i>
+                            </a>
+                        </div>
+                    </div>
+
+                    <div class="flex justify-center space-x-4">
+                        <!-- Autres actions (si nécessaire) -->
+                    </div>
+                </div>
+                {% else %}
+                <div class="bg-white rounded-lg shadow-md p-6 text-center col-span-3">
+                    <p class="text-gray-600">No modules found</p>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+        {% endblock %}
+    </div>
+</body>
+</html>
