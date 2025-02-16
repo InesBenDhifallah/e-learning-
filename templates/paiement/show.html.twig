@@ -1,0 +1,67 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Détails du Paiement{% endblock %}
+
+{% block body %}
+    <div class="max-w-4xl mx-auto p-6 bg-white rounded-lg shadow-lg">
+        <h1 class="text-3xl font-bold text-gray-800 mb-6">Détails du Paiement</h1>
+
+        <table class="min-w-full bg-white table-auto rounded-lg shadow-sm">
+            <thead class="bg-gray-200">
+                <tr>
+                    <th class="px-6 py-4 text-left font-semibold text-gray-600">Champ</th>
+                    <th class="px-6 py-4 text-left font-semibold text-gray-600">Valeur</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr class="border-t border-b hover:bg-gray-50">
+                    <td class="px-6 py-4 text-gray-600">Id</td>
+                    <td class="px-6 py-4 text-gray-800">{{ paiement.id }}</td>
+                </tr>
+                <tr class="border-t border-b hover:bg-gray-50">
+                    <td class="px-6 py-4 text-gray-600">Nom</td>
+                    <td class="px-6 py-4 text-gray-800">{{ paiement.nom }}</td>
+                </tr>
+                <tr class="border-t border-b hover:bg-gray-50">
+                    <td class="px-6 py-4 text-gray-600">Email</td>
+                    <td class="px-6 py-4 text-gray-800">{{ paiement.email }}</td>
+                </tr>
+                <tr class="border-t border-b hover:bg-gray-50">
+                    <td class="px-6 py-4 text-gray-600">Type de carte</td>
+                    <td class="px-6 py-4 text-gray-800">{{ paiement.typeCarte }}</td>
+                </tr>
+                <tr class="border-t border-b hover:bg-gray-50">
+                    <td class="px-6 py-4 text-gray-600">Numéro de carte</td>
+                    <td class="px-6 py-4 text-gray-800">{{ paiement.numCarte }}</td>
+                </tr>
+                <tr class="border-t border-b hover:bg-gray-50">
+                    <td class="px-6 py-4 text-gray-600">Date d'expiration</td>
+                    <td class="px-6 py-4 text-gray-800">{{ paiement.dateExpiration ? paiement.dateExpiration|date('Y-m-d') : '' }}</td>
+                </tr>
+                <tr class="border-t border-b hover:bg-gray-50">
+                    <td class="px-6 py-4 text-gray-600">CVV</td>
+                    <td class="px-6 py-4 text-gray-800">{{ paiement.cvv }}</td>
+                </tr>
+                <tr class="border-t border-b hover:bg-gray-50">
+                    <td class="px-6 py-4 text-gray-600">Montant</td>
+                    <td class="px-6 py-4 text-gray-800">{{ paiement.montant }}</td>
+                </tr>
+                <tr class="border-t border-b hover:bg-gray-50">
+                    <td class="px-6 py-4 text-gray-600">Date du paiement</td>
+                    <td class="px-6 py-4 text-gray-800">{{ paiement.datePaiement ? paiement.datePaiement|date('Y-m-d') : '' }}</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <div class="mt-6 flex justify-between">
+            <a href="{{ path('app_paiement_index') }}" 
+               class="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600">
+               Retour à la liste
+            </a>
+
+            
+        </div>
+
+        
+    </div>
+{% endblock %}
