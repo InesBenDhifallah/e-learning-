@@ -1,0 +1,26 @@
+{% extends 'base1.html.twig' %}
+
+{% block title %}Modifier {{ article.title }} - Alpha Education{% endblock %}
+
+{% block body %}
+    <div class="flex justify-center items-center min-h-screen bg-gray-100">
+        <div class="w-full max-w-lg p-6 bg-white shadow-lg rounded-lg">
+            <h1 class="text-2xl font-bold mb-6 text-center text-gray-800">Modifier l'article</h1>
+            
+            {{ form_start(form, {'attr': {'class': 'space-y-4'}}) }}
+
+                {{ form_row(form.title, {'attr': {'class': 'w-full p-2 border rounded-lg focus:ring focus:ring-lime-300'}}) }}
+                {{ form_row(form.content, {'attr': {'class': 'w-full p-2 border rounded-lg focus:ring focus:ring-lime-300'}}) }}
+                {{ form_row(form.author, {'attr': {'class': 'w-full p-2 border rounded-lg focus:ring focus:ring-lime-300'}}) }}
+                {{ form_row(form.category, {'attr': {'class': 'w-full p-2 border rounded-lg focus:ring focus:ring-lime-300'}}) }}
+                {{ form_row(form.createdAt, {'attr': {'class': 'w-full p-2 border rounded-lg focus:ring focus:ring-lime-300'}}) }}
+
+                <!-- Bouton d'enregistrement stylisé -->
+                <button type="submit" class="bg-lime-500 text-white px-4 py-2 rounded-lg font-bold shadow-md hover:bg-lime-600 transition duration-300 ease-in-out transform hover:scale-105 w-full">
+                    Enregistrer les modifications
+                </button>
+
+            {{ form_end(form) }}
+        </div>
+    </div>
+{% endblock %}
