@@ -1,13 +1,50 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Edit User{% endblock %}
+{% block title %}Modifier votre profil{% endblock %}
 
 {% block body %}
-    <h1>Edit User</h1>
+    <div class="min-h-screen flex flex-col items-center py-8 bg-gray-100">
+        <div class="profile-card w-full max-w-md p-8 rounded-lg bg-white shadow-md">
+            <div class="text-center relative">
+                <h2 class="text-2xl font-bold text-gray-800 mt-4">{{ app.user.nom }}</h2>
+            </div>
 
-    {{ include('user/_form.html.twig', {'button_label': 'Update'}) }}
+            {# Affichage des messages flash (succès ou erreurs) #}
+            {% for message in app.flashes('success') %}
+                <div class="alert alert-success text-green-600 p-2 mb-4 bg-green-100 rounded-lg">
+                    {{ message }}
+                </div>
+            {% endfor %}
 
-    <a href="{{ path('app_user_index') }}">back to list</a>
+            {# Formulaire pour modifier les informations de l'utilisateur #}
+            {{ form_start(form) }}
+                <div class="space-y-4">
+                    {# Nom #}
+                    <div>
+                        {{ form_label(form.nom, 'Nom', {'label_attr': {'class': 'text-gray-700 font-medium'}}) }}
+                        {{ form_widget(form.nom, { 'attr': { 'class': 'mt-1 w-full p-3 border border-gray-300 rounded-lg focus:ring focus:ring-green-300 focus:outline-none' } }) }}
+                    </div>
 
-    {{ include('user/_delete_form.html.twig') }}
+                    {# Email #}
+                    <div>
+                        {{ form_label(form.email, 'Adresse e-mail', {'label_attr': {'class': 'text-gray-700 font-medium'}}) }}
+                        {{ form_widget(form.email, { 'attr': { 'class': 'mt-1 w-full p-3 border border-gray-300 rounded-lg focus:ring focus:ring-green-300 focus:outline-none' } }) }}
+                    </div>
+
+                    {# Numéro de téléphone #}
+                    <div>
+                        {{ form_label(form.phonenumber, 'Numéro de téléphone', {'label_attr': {'class': 'text-gray-700 font-medium'}}) }}
+                        {{ form_widget(form.phonenumber, { 'attr': { 'class': 'mt-1 w-full p-3 border border-gray-300 rounded-lg focus:ring focus:ring-green-300 focus:outline-none' } }) }}
+                    </div>
+
+                    <button type="submit" class="w-full py-3 mt-6 bg-green-500 text-white rounded-lg text-lg font-semibold hover:bg-green-600">Enregistrer les modifications</button>
+
+                </div>
+            {{ form_end(form) }}
+
+            <div class="text-center mt-4">
+                Modifier le mot de passe
+            </div>
+        </div>
+    </div>
 {% endblock %}
