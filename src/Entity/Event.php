@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Entity;
 
 use App\Repository\EventRepository;
@@ -14,46 +15,42 @@ class Event
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
-    private ?string $name = null;
+    private ?string $titre = null;
 
     #[ORM\Column(length: 255)]
     private ?string $description = null;
 
-    #[ORM\Column(type: Types::DATE_MUTABLE)]
-    private ?\DateTimeInterface $date = null;
+    #[ORM\Column(type: Types::DATETIME_MUTABLE)]
+    private ?\DateTimeInterface $dateDebut = null;
 
-    // Change from \DateTimeInterface to string
-    #[ORM\Column(type: 'string')]
-    private ?string $time = null;  // Store time as string 'H:i:s'
-
-    #[ORM\Column(length: 255)]
-    private ?string $place = null;
+    #[ORM\Column(type: Types::DATETIME_MUTABLE)]
+    private ?\DateTimeInterface $dateFin = null;
 
     #[ORM\Column(length: 255)]
-    private ?string $category = null;
+    private ?string $type = null;
 
-    #[ORM\Column(length: 255)]
-    private ?string $speaker = null;
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $localisation = null;
+
+    #[ORM\Column]
+    private ?float $prix = null;
 
     #[ORM\Column(length: 255)]
     private ?string $image = null;
-
-    #[ORM\Column(length: 255)]
-    private ?string $created_by = null;
 
     public function getId(): ?int
     {
         return $this->id;
     }
 
-    public function getName(): ?string
+    public function getTitre(): ?string
     {
-        return $this->name;
+        return $this->titre;
     }
 
-    public function setName(string $name): static
+    public function setTitre(string $titre): static
     {
-        $this->name = $name;
+        $this->titre = $titre;
 
         return $this;
     }
@@ -70,66 +67,62 @@ class Event
         return $this;
     }
 
-    public function getDate(): ?\DateTimeInterface
+    public function getDateDebut(): ?\DateTimeInterface
     {
-        return $this->date;
+        return $this->dateDebut;
     }
 
-    public function setDate(\DateTimeInterface $date): static
+    public function setDateDebut(\DateTimeInterface $dateDebut): static
     {
-        $this->date = $date;
+        $this->dateDebut = $dateDebut;
 
         return $this;
     }
 
-    public function getTime(): ?string
+    public function getDateFin(): ?\DateTimeInterface
     {
-        return $this->time;
+        return $this->dateFin;
     }
 
-    // Update setter to handle string time format
-    public function setTime($time): self
-{
-    if ($time instanceof \DateTimeInterface) {
-        $this->time = $time->format('H:i:s'); // Convert DateTime to string
-    } else {
-        $this->time = $time; // If it's already a string, store it directly
-    }
-    return $this;
-}
-
-    public function getPlace(): ?string
+    public function setDateFin(\DateTimeInterface $dateFin): static
     {
-        return $this->place;
-    }
-
-    public function setPlace(string $place): static
-    {
-        $this->place = $place;
+        $this->dateFin = $dateFin;
 
         return $this;
     }
 
-    public function getCategory(): ?string
+    public function getType(): ?string
     {
-        return $this->category;
+        return $this->type;
     }
 
-    public function setCategory(string $category): static
+    public function setType(string $type): static
     {
-        $this->category = $category;
+        $this->type = $type;
 
         return $this;
     }
 
-    public function getSpeaker(): ?string
+    public function getLocalisation(): ?string
     {
-        return $this->speaker;
+        return $this->localisation;
     }
 
-    public function setSpeaker(string $speaker): static
+    public function setLocalisation(?string $localisation): static
     {
-        $this->speaker = $speaker;
+        $this->localisation = $localisation;
+
+        return $this;
+    }
+
+    public function getPrix(): ?float
+    {
+        return $this->prix;
+    }
+
+    public function setPrix(float $prix): static
+    {
+        $this->prix = $prix;
 
         return $this;
     }
@@ -142,18 +135,6 @@ class Event
     public function setImage(string $image): static
     {
         $this->image = $image;
-
-        return $this;
-    }
-
-    public function getCreatedBy(): ?string
-    {
-        return $this->created_by;
-    }
-
-    public function setCreatedBy(string $created_by): static
-    {
-        $this->created_by = $created_by;
 
         return $this;
     }
