@@ -4,36 +4,53 @@ namespace App\Controller;
 
 use App\Entity\User;
 use Doctrine\ORM\EntityManagerInterface;
-use Knp\Component\Pager\PaginatorInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Routing\Annotation\Route;
 
 final class ListusersController extends AbstractController
 {
     #[Route('/listusers', name: 'app_listusers')]
     public function index(
         EntityManagerInterface $entityManager,
-        PaginatorInterface $paginator,
         Request $request
     ): Response {
-        // Fetch all users from the database
+        // Define how many items per page
+        $limit = 5;
+        
+        // Get the current page (default is 1 if not set)
+        $page = $request->query->getInt('page', 1);
+        
+        // Calculate the offset for the query (for pagination)
+        $offset = ($page - 1) * $limit;
+        
+        // Fetch the users with pagination
         $query = $entityManager->createQueryBuilder()
-            ->select('u.id, u.email, u.nom, u.phonenumber, u.roles, u.work, u.adress, u.pref, u.isActive')
+            ->select('u')
             ->from(User::class, 'u')
+            ->setFirstResult($offset)
+            ->setMaxResults($limit)
             ->getQuery();
+        
+        // Execute query to get users for this page
+        $users = $query->getResult();
+        
+        // Get the total number of users for pagination
+        $totalCount = $entityManager->createQueryBuilder()
+            ->select('count(u.id)')
+            ->from(User::class, 'u')
+            ->getQuery()
+            ->getSingleScalarResult();
+        
+        // Calculate the total number of pages
+        $totalPages = ceil($totalCount / $limit);
 
-        // Paginate the query results
-        $users = $paginator->paginate(
-            $query, // Query to paginate
-            $request->query->getInt('page', 1), // Current page number (default: 1)
-            10 // Number of items per page
-        );
-
-        // Render the Twig template and pass the paginated users
+        // Return the result to the Twig template
         return $this->render('listusers/index.html.twig', [
             'users' => $users,
+            'page' => $page,
+            'totalPages' => $totalPages,
         ]);
     }
 }

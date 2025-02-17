@@ -1,31 +1,39 @@
 {# templates/pagination/custom_pagination.html.twig #}
-<div class="pagination flex justify-center space-x-2 my-6">
-    {% if pagination.isFirstPage %}
-        <span class="px-4 py-2 bg-gray-200 text-gray-600 rounded-lg cursor-not-allowed">&laquo;</span>
-    {% else %}
-        <a href="{{ path(app.request.attributes.get('_route'), app.request.query.all|merge({'page': 1})) }}"
-           class="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition duration-300">
-            &laquo;
-        </a>
-    {% endif %}
 
-    {% for page in pagination.pagesInRange %}
-        {% if page == pagination.current %}
-            <span class="px-4 py-2 bg-indigo-600 text-white rounded-lg">{{ page }}</span>
+{% if pagination is defined %}
+    <div class="pagination flex justify-center space-x-2 my-6">
+        {# Previous Page Button #}
+        {% if pagination.currentPageNumber == 1 %}
+            <span class="px-4 py-2 bg-gray-200 text-gray-600 rounded-lg cursor-not-allowed">&laquo;</span>
         {% else %}
-            <a href="{{ path(app.request.attributes.get('_route'), app.request.query.all|merge({'page': page})) }}"
-               class="px-4 py-2 bg-white text-indigo-600 rounded-lg hover:bg-indigo-100 transition duration-300">
-                {{ page }}
+            <a href="{{ path(app.request.attributes.get('_route'), app.request.query.all|merge({'page': 1})) }}"
+               class="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition duration-300">
+                &laquo;
             </a>
         {% endif %}
-    {% endfor %}
 
-    {% if pagination.isLastPage %}
-        <span class="px-4 py-2 bg-gray-200 text-gray-600 rounded-lg cursor-not-allowed">&raquo;</span>
-    {% else %}
-        <a href="{{ path(app.request.attributes.get('_route'), app.request.query.all|merge({'page': pagination.pageCount})) }}"
-           class="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition duration-300">
-            &raquo;
-        </a>
-    {% endif %}
-</div>
+        {# Page Numbers #}
+        {% for page in pagination.pagesInRange %}
+            {% if page == pagination.currentPageNumber %}
+                <span class="px-4 py-2 bg-indigo-600 text-white rounded-lg">{{ page }}</span>
+            {% else %}
+                <a href="{{ path(app.request.attributes.get('_route'), app.request.query.all|merge({'page': page})) }}"
+                   class="px-4 py-2 bg-white text-indigo-600 rounded-lg hover:bg-indigo-100 transition duration-300">
+                    {{ page }}
+                </a>
+            {% endif %}
+        {% endfor %}
+
+        {# Next Page Button #}
+        {% if pagination.currentPageNumber == pagination.pageCount %}
+            <span class="px-4 py-2 bg-gray-200 text-gray-600 rounded-lg cursor-not-allowed">&raquo;</span>
+        {% else %}
+            <a href="{{ path(app.request.attributes.get('_route'), app.request.query.all|merge({'page': pagination.pageCount})) }}"
+               class="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition duration-300">
+                &raquo;
+            </a>
+        {% endif %}
+    </div>
+{% else %}
+    <p>No pagination available.</p>
+{% endif %}
