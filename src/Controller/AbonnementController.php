@@ -14,7 +14,7 @@ use Symfony\Component\Routing\Attribute\Route;
 #[Route('/abonnement')]
 final class AbonnementController extends AbstractController
 {
-    #[Route(name: 'app_abonnement_index', methods: ['GET'])]
+    #[Route('/index',name: 'abonnement_index', methods: ['GET'])]
     public function index(AbonnementRepository $abonnementRepository): Response
     {
         return $this->render('abonnement/index.html.twig', [
