@@ -12,6 +12,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Security\Core\User\UserInterface;
 
 #[Route('/paiement')]
 final class PaiementController extends AbstractController
@@ -29,45 +30,52 @@ final class PaiementController extends AbstractController
     #[Route('/new/{abonnementId}', name: 'app_paiement_new', methods: ['GET', 'POST'])]
     public function new(Request $request, EntityManagerInterface $entityManager, AbonnementRepository $abonnementRepository, int $abonnementId): Response
     {
-        // Récupérer l'abonnement sélectionné
-        $abonnement = $abonnementRepository->find($abonnementId);
-        if (!$abonnement) {
-            throw $this->createNotFoundException("L'abonnement n'existe pas.");
-        }
-        $montant=$abonnement->getPrix();
+         // Récupérer l'abonnement sélectionné
+    $abonnement = $abonnementRepository->find($abonnementId);
+    if (!$abonnement) {
+        throw $this->createNotFoundException("L'abonnement n'existe pas.");
+    }
 
-        
-        $paiement = new Paiement();
-        $paiement->setIdAbonnement($abonnement);
-        $paiement->setMontant($montant);
-    
-        
-        $paiement->setDatePaiement(new \DateTime()); 
+    // Récupérer l'utilisateur connecté
+    $user = $this->getUser();
+    $montant = $abonnement->getPrix();
 
-        $form = $this->createForm(PaiementType::class, $paiement);
-        $form->handleRequest($request);
+    // Créer un nouvel objet Paiement
+    $paiement = new Paiement();
+    $paiement->setIdAbonnement($abonnement);
+    $paiement->setMontant($montant);
+    $paiement->setDatePaiement(new \DateTime());
 
-        if ($form->isSubmitted() && $form->isValid()) {
-            $entityManager->persist($paiement);
-            $entityManager->flush();
+    // Assigner l'utilisateur connecté au paiement
+    $paiement->setUserid($user);  // Ici, nous associons l'utilisateur connecté au paiement
 
-            return $this->redirectToRoute('app_paiement_index', [], Response::HTTP_SEE_OTHER);
-        }
+    $form = $this->createForm(PaiementType::class, $paiement);
+    $form->handleRequest($request);
 
-        return $this->render('paiement/new.html.twig', [
-            'paiement' => $paiement,
-            'form' => $form,
-            'montant'=>$montant,
-        ]);
+    if ($form->isSubmitted() && $form->isValid()) {
+        $entityManager->persist($paiement);
+        $entityManager->flush();
+
+        return $this->redirectToRoute('app_paiement_index', [], Response::HTTP_SEE_OTHER);
+    }
+
+    return $this->render('paiement/new.html.twig', [
+        'paiement' => $paiement,
+        'form' => $form,
+        'montant' => $montant,
+    ]);
     }
 
     #[Route('/index', name: 'app_paiement_index', methods: ['GET'])]
-    public function index(PaiementRepository $paiementRepository): Response
+    public function index(PaiementRepository $paiementRepository,UserInterface $user): Response
     {
+            // Récupérer les paiements pour l'utilisateur connecté
+            $paiements = $paiementRepository->findBy(['userid' => $user]);
         
-        return $this->render('paiement/index.html.twig', [
-            'paiements' => $paiementRepository->findAll(),
-        ]);
+            return $this->render('paiement/index.html.twig', [
+                'paiements' => $paiements,
+            ]);
+        
     }
 
     #[Route('/{id}', name: 'app_paiement_show', methods: ['GET'])]
