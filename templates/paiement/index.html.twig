@@ -11,7 +11,7 @@
     <div class="flex min-h-screen">
         <!-- Sidebar -->
         <div class="w-64 bg-gray-800 text-white">
-            {% include 'sidebaradmin.html.twig' %}
+            {% include 'sidebarparenteleve.html.twig' %}
         </div>
 
         <!-- Contenu principal -->
@@ -28,48 +28,50 @@
             <div class="bg-white rounded-xl shadow-lg overflow-hidden">
                 <table class="w-full text-left">
                     <thead class="bg-lime-600 text-white">
-                        <tr>
-                            <th class="py-4 px-6">Id</th>
-                            <th class="py-4 px-6">Nom</th>
-                            <th class="py-4 px-6">Email</th>
-                            <th class="py-4 px-6">Type Carte</th>
-                            <th class="py-4 px-6">Numéro Carte</th>
-                            <th class="py-4 px-6">Date Expiration</th>
-                            <th class="py-4 px-6">CVV</th>
-                            <th class="py-4 px-6">Montant</th>
-                            <th class="py-4 px-6">Date Paiement</th>
-                            <th class="py-4 px-6">Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for paiement in paiements %}
-                            <tr class="hover:bg-gray-50">
-                                <td class="py-4 px-6">{{ paiement.id }}</td>
-                                <td class="py-4 px-6">{{ paiement.nom }}</td>
-                                <td class="py-4 px-6">{{ paiement.email }}</td>
-                                <td class="py-4 px-6">{{ paiement.typeCarte }}</td>
-                                <td class="py-4 px-6">{{ paiement.numCarte }}</td>
-                                <td class="py-4 px-6">{{ paiement.dateExpiration ? paiement.dateExpiration|date('Y-m-d') : '' }}</td>
-                                <td class="py-4 px-6">{{ paiement.cvv }}</td>
-                                <td class="py-4 px-6">{{ paiement.montant }}</td>
-                                <td class="py-4 px-6">{{ paiement.datePaiement ? paiement.datePaiement|date('Y-m-d') : '' }}</td>
-                                <td class="py-4 px-6">
-                                    <a href="{{ path('app_paiement_show', {'id': paiement.id}) }}" 
-                                       class="text-blue-500 hover:text-blue-700">
-                                        Show
-                                    </a>
-                                    
-                                </td>
-                            </tr>
-                        {% else %}
-                            <tr>
-                                <td colspan="10" class="py-4 px-6 text-center">Aucun paiement trouvé</td>
-                            </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
-            </div>
-        </div>
-    </div>
-</body>
-</html>
+    <tr>
+        <th class="py-4 px-6">Id</th>
+        <th class="py-4 px-6">Nom</th>
+        <th class="py-4 px-6">Email</th>
+        <th class="py-4 px-6">Type d'Abonnement</th> {# Nouvelle colonne #}
+        <th class="py-4 px-6">Montant</th>
+        <th class="py-4 px-6">Date Paiement</th>
+        <th class="py-4 px-6">Date Expiration</th>
+        <th class="py-4 px-6">Actions</th>
+    </tr>
+</thead>
+<tbody>
+    {% for paiement in paiements %}
+        <tr class="hover:bg-gray-50">
+            <td class="py-4 px-6">{{ paiement.id }}</td>
+            <td class="py-4 px-6">{{ paiement.nom }}</td>
+            <td class="py-4 px-6">{{ paiement.email }}</td>
+            <td class="py-4 px-6 font-semibold text-gray-700">
+                {{ paiement.idAbonnement ? paiement.idAbonnement.type : 'Non défini' }} 
+            </td> {# Affichage du type d'abonnement #}
+            <td class="py-4 px-6">{{ paiement.montant }} Dinars</td>
+            <td class="py-4 px-6">{{ paiement.datePaiement ? paiement.datePaiement|date('Y-m-d') : '' }}</td>
+            <td class="py-4 px-6 font-bold text-red-600">
+                {% if paiement.idAbonnement and paiement.datePaiement %}
+                    {% set duree = paiement.idAbonnement.duree %}
+                    {% set dateExpiration = paiement.datePaiement|date_modify(
+                        duree matches '/mois/' ? '+' ~ duree|replace({'mois': '', ' ': ''}) ~ ' months' : 
+                        (duree matches '/année/' ? '+' ~ duree|replace({'année': '', ' ': ''}) ~ ' years' : '')
+                    ) %}
+                    {{ dateExpiration|date('Y-m-d') }}
+                {% else %}
+                    -
+                {% endif %}
+            </td>
+            <td class="py-4 px-6">
+                <a href="{{ path('app_paiement_show', {'id': paiement.id}) }}" 
+                   class="text-blue-500 hover:text-blue-700">
+                    Afficher
+                </a>
+            </td>
+        </tr>
+    {% else %}
+        <tr>
+            <td colspan="10" class="py-4 px-6 text-center">Aucun paiement trouvé</td>
+        </tr>
+    {% endfor %}
+</tbody>

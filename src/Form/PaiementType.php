@@ -10,6 +10,9 @@ use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Form\Extension\Core\Type\DateType;
+
+
 
 class PaiementType extends AbstractType
 {
@@ -30,10 +33,13 @@ public function buildForm(FormBuilderInterface $builder, array $options): void
             'placeholder' => 'Sélectionnez un type de carte',
         ])
         ->add('num_carte')
-        ->add('date_expiration', null, [
-            'widget' => 'single_text',
-        ])
-        ->add('cvv')
+        
+->add('date_expiration', DateType::class, [
+    'widget' => 'single_text',
+    'required' => false, // Permet d'accepter un champ vide
+    'input' => 'datetime', // Assure que la valeur sera bien un objet DateTime
+])
+        ->add('cvv');
        
         
         ;

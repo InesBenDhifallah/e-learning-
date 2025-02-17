@@ -21,18 +21,33 @@ class Paiement
     private ?string $nom = null;
 
     #[ORM\Column(length: 255)]
+    #[Assert\NotBlank(message: "L'email est obligatoire.")]
+    #[Assert\Email(message: "Veuillez entrer une adresse e-mail valide.")]
     private ?string $email = null;
 
+
     #[ORM\Column(length: 255)]
+    #[Assert\NotBlank(message: "Veuillez selectionner le type de votre carte.")]
     private ?string $type_carte = null;
 
-    #[ORM\Column]
-    private ?int $num_carte = null;
+    #[Assert\Regex(
+        pattern: "/^\d{16}$/",  // Validation pour accepter uniquement 16 chiffres
+        message: "Le numéro de carte doit être un Visa ou Mastercard valide de 16 chiffres."
+    )]
+    #[Assert\NotBlank(message: "Veuillez selectionner le numéro de votre carte.")]
+    #[ORM\Column(length: 16)]  // Gardez le type `string` avec une longueur maximale de 16 caractères
+    private ?string $num_carte = null;
 
     #[ORM\Column(type: Types::DATE_MUTABLE)]
+    #[Assert\NotBlank(message: "La date d'expiration est obligatoire.")]
     private ?\DateTimeInterface $date_expiration = null;
 
     #[ORM\Column]
+    #[Assert\NotBlank(message: "Le CVV est obligatoire.")]
+    #[Assert\Regex(
+    pattern: "/^\d{3}$/",
+    message: "Le CVV doit contenir exactement 3 chiffres."
+)]
     private ?int $cvv = null;
 
     #[ORM\Column]
@@ -88,12 +103,12 @@ class Paiement
         return $this;
     }
 
-    public function getNumCarte(): ?int
+    public function getNumCarte(): ?string
     {
         return $this->num_carte;
     }
 
-    public function setNumCarte(int $num_carte): static
+    public function setNumCarte(string $num_carte): static
     {
         $this->num_carte = $num_carte;
 
@@ -105,12 +120,14 @@ class Paiement
         return $this->date_expiration;
     }
 
-    public function setDateExpiration(\DateTimeInterface $date_expiration): static
+    public function setDateExpiration(?\DateTimeInterface $date_expiration): static
     {
         $this->date_expiration = $date_expiration;
 
         return $this;
     }
+
+
 
     public function getCvv(): ?int
     {

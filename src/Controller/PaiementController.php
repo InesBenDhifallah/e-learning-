@@ -25,7 +25,7 @@ final class PaiementController extends AbstractController
         ]);
     }
 
-    // ✅ 2. Formulaire de paiement avec le pack sélectionné
+    
     #[Route('/new/{abonnementId}', name: 'app_paiement_new', methods: ['GET', 'POST'])]
     public function new(Request $request, EntityManagerInterface $entityManager, AbonnementRepository $abonnementRepository, int $abonnementId): Response
     {
@@ -64,6 +64,7 @@ final class PaiementController extends AbstractController
     #[Route('/index', name: 'app_paiement_index', methods: ['GET'])]
     public function index(PaiementRepository $paiementRepository): Response
     {
+        
         return $this->render('paiement/index.html.twig', [
             'paiements' => $paiementRepository->findAll(),
         ]);
