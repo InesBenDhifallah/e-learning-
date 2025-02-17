@@ -59,22 +59,7 @@
     {% endblock %}
 </head>
 <body>
-    <!-- Sidebar -->
-    <div class="sidebar">
-        <div class="text-center mb-6">
-            <img src="{{asset('img/logo.png')}}" alt="Logo" class="h-12 mx-auto">
-        </div>
-        <nav>
-            <a href="#"><i class="fas fa-user-circle mr-3"></i> Profil</a>
-           <a href="{{ path('app_paiement_index') }}">
-    <i class="fas fa-credit-card mr-3"></i> Paiements
-</a>
-
-            <a href="#"><i class="fas fa-child mr-3"></i> Ajouter mon enfant</a>
-            <a href="#"><i class="fas fa-chart-line mr-3"></i> Suivre mon enfant</a>
-            <a href="#"><i class="fas fa-sign-out-alt mr-3"></i> Déconnexion</a>
-        </nav>
-    </div>
+   {% include 'sidebarparenteleve.html.twig'%}
 
     <!-- Main Content -->
     <div class="main-content">
