@@ -1,13 +1,79 @@
-{% extends 'base.html.twig' %}
 
-{% block title %}Edit User{% endblock %}
 
-{% block body %}
-    <h1>Edit User</h1>
 
-    {{ include('user/_form.html.twig', {'button_label': 'Update'}) }}
 
-    <a href="{{ path('app_user_index') }}">back to list</a>
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Modifier Profil</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+</head>
+<body class="bg-gray-100 min-h-screen">
 
-    {{ include('user/_delete_form.html.twig') }}
-{% endblock %}
+    <div class="flex min-h-screen">
+        <!-- Sidebar -->
+        <div class="w-64 bg-white shadow-md">
+            {% include 'sidebarparenteleve.html.twig' %}
+        </div>
+
+        <!-- Contenu principal -->
+        <div class="flex-grow p-10">
+            {% block body %}
+            <div class="flex flex-col items-center bg-gray-100">
+                <div class="w-full max-w-md p-8 rounded-lg bg-white shadow-md">
+                    <div class="text-center relative">
+                       <h2 class="text-2xl font-bold text-gray-800 mt-4">
+                         Votre Profil
+                        </h2>
+
+                    </div>
+
+                    {# Affichage des messages flash (succès ou erreurs) #}
+                    {% for message in app.flashes('success') %}
+                        <div class="alert alert-success text-green-600 p-2 mb-4 bg-green-100 rounded-lg">
+                            {{ message }}
+                        </div>
+                    {% endfor %}
+
+                    {# Formulaire pour modifier les informations de l'utilisateur #}
+                    {{ form_start(form, {'attr': {'class': 'space-y-4', 'novalidate': 'novalidate'}}) }}
+                        <div class="space-y-4">
+                            {# Nom #}
+                            <div>
+                                {{ form_label(form.nom, 'Nom', {'label_attr': {'class': 'text-gray-700 font-medium'}}) }}
+                                {{ form_widget(form.nom, { 'attr': { 'class': 'mt-1 w-full p-3 border border-gray-300 rounded-lg focus:ring focus:ring-green-300 focus:outline-none' } }) }}
+                                <div class="text-red-500">{{ form_errors(form.nom) }}</div>
+                            </div>
+
+                            {# Email #}
+                            <div>
+                                {{ form_label(form.email, 'Adresse e-mail', {'label_attr': {'class': 'text-gray-700 font-medium'}}) }}
+                                {{ form_widget(form.email, { 'attr': { 'class': 'mt-1 w-full p-3 border border-gray-300 rounded-lg focus:ring focus:ring-green-300 focus:outline-none' } }) }}
+                                <div class="text-red-500">{{ form_errors(form.email) }}</div>
+                            </div>
+
+                            {# Numéro de téléphone #}
+                            <div>
+                                {{ form_label(form.phonenumber, 'Numéro de téléphone', {'label_attr': {'class': 'text-gray-700 font-medium'}}) }}
+                                {{ form_widget(form.phonenumber, { 'attr': { 'class': 'mt-1 w-full p-3 border border-gray-300 rounded-lg focus:ring focus:ring-green-300 focus:outline-none' } }) }}
+                                <div class="text-red-500">{{ form_errors(form.phonenumber) }}</div>
+                            </div>
+
+                            <button type="submit" class="w-full py-3 mt-6 bg-green-500 text-white rounded-lg text-lg font-semibold hover:bg-green-600">
+                                Enregistrer les modifications
+                            </button>
+                        </div>
+                    {{ form_end(form) }}
+
+                    
+                </div>
+            </div>
+            {% endblock %}
+        </div>
+    </div>
+
+</body>
+</html>

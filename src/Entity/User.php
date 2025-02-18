@@ -4,6 +4,7 @@ namespace App\Entity;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity]
 #[ORM\Table(name: "user")]
@@ -15,12 +16,20 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private $id;
 
     #[ORM\Column(type: "string", unique: true)]
+    #[Assert\NotBlank(message: "L'adresse e-mail est obligatoire.")]
+    #[Assert\Email(message: "L'adresse e-mail '{{ value }}' n'est pas valide.")]
     private $email;
 
     #[ORM\Column(type: "string")]
+    #[Assert\NotBlank(message: "Le nom est obligatoire.")]
+    #[Assert\Regex(
+        pattern: "/^[A-Za-zÀ-ÿ\s]+$/u", 
+        message: "Le nom ne doit contenir que des lettres et des espaces."
+    )]
     private $nom;
 
     #[ORM\Column(type: "string", nullable: true)]
+    #[Assert\NotBlank(message: "Le numéro de téléphone est obligatoire.")]
     private $phonenumber;
 
     #[ORM\Column(type: "string", nullable: true)]
@@ -79,7 +88,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this->nom;
     }
 
-    public function setNom(string $nom): self
+    public function setNom(?string $nom): self
     {
         $this->nom = $nom;
         return $this;
