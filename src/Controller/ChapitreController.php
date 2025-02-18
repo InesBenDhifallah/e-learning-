@@ -3,7 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\Chapitre;
-use App\Form\Chapitre1Type;
+use App\Form\ChapitreType;
 use App\Repository\ChapitreRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -26,7 +26,7 @@ final class ChapitreController extends AbstractController
     public function new(Request $request, EntityManagerInterface $entityManager): Response
     {
         $chapitre = new Chapitre();
-        $form = $this->createForm(Chapitre1Type::class, $chapitre);
+        $form = $this->createForm(ChapitreType::class, $chapitre);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
