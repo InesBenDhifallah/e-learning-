@@ -7,6 +7,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: ArticleRepository::class)]
 class Article
@@ -17,18 +18,35 @@ class Article
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
+    #[Assert\NotBlank(message: "Title should not be blank.")]
+    #[Assert\Length(
+        max: 255,
+        maxMessage: "Title should not exceed {{ limit }} characters."
+    )]
     private ?string $title = null;
 
     #[ORM\Column(type: Types::TEXT)]
+    #[Assert\NotBlank(message: "Content should not be blank.")]
+    #[Assert\Length(
+        min: 10,
+        minMessage: "Content should be at least {{ limit }} characters long."
+    )]
     private ?string $content = null;
 
     #[ORM\Column(length: 255)]
+    #[Assert\NotBlank(message: "Author should not be blank.")]
+    #[Assert\Length(
+        max: 255,
+        maxMessage: "Author name should not exceed {{ limit }} characters."
+    )]
     private ?string $author = null;
 
     #[ORM\Column(length: 255)]
+    #[Assert\NotBlank(message: "Category should not be blank.")]
     private ?string $category = null;
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: false)]
+    #[Assert\NotNull(message: "Creation date cannot be null.")]
     private ?\DateTimeInterface $createdAt = null;
 
     /**
