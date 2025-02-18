@@ -1,0 +1,35 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Commentaire - Alpha Education{% endblock %}
+
+{% block body %}
+    <div class="max-w-2xl mx-auto bg-white rounded-xl shadow-lg p-8 space-y-6">
+        <h1 class="text-3xl font-bold text-gray-800 mb-4 text-center">Commentaire</h1>
+
+        <div class="space-y-4">
+            <p class="text-gray-800 text-lg">{{ comment.content }}</p>
+        </div>
+
+        <div class="mt-6 flex justify-center space-x-4">
+            <a href="{{ path('comment_edit', {'id': comment.id}) }}" 
+               class="bg-yellow-500 text-white px-6 py-3 rounded-full font-semibold shadow-lg hover:bg-yellow-600 transition duration-300 transform hover:scale-105">
+                ✏️ Modifier
+            </a>
+
+            <form method="post" action="{{ path('comment_delete', {'id': comment.id}) }}" onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer ce commentaire ?');">
+                <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ comment.id) }}">
+                <button type="submit" 
+                        class="bg-red-500 text-white px-6 py-3 rounded-full font-semibold shadow-lg hover:bg-red-600 transition duration-300 transform hover:scale-105">
+                    🗑️ Supprimer
+                </button>
+            </form>
+        </div>
+
+        <div class="mt-4 text-center">
+            <button onclick="history.back()" 
+                    class="bg-gray-500 text-white px-6 py-3 rounded-full font-semibold shadow-lg hover:bg-gray-600 transition duration-300 transform hover:scale-105">
+                ⬅ Retour
+            </button>
+        </div>
+    </div>
+{% endblock %}
