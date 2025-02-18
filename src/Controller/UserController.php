@@ -30,6 +30,7 @@ class UserController extends AbstractController
         
         // Gérer la soumission du formulaire
         $form->handleRequest($request);
+        
 
         if ($form->isSubmitted() && $form->isValid()) {
             // Sauvegarder les changements dans la base de données
@@ -37,6 +38,7 @@ class UserController extends AbstractController
 
             // Ajouter un message flash de succès
             $this->addFlash('success', 'Votre profil a été mis à jour avec succès.');
+            
 
             // Rediriger vers la même page pour éviter la resoumission du formulaire
             return $this->redirectToRoute('app_user_edit');
@@ -45,6 +47,7 @@ class UserController extends AbstractController
         // Afficher le formulaire
         return $this->render('user/edit.html.twig', [
             'form' => $form->createView(),
+            
         ]);
     }
 }

@@ -1,34 +1,31 @@
-{% extends 'base.html.twig' %}
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Abonnement Index</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+</head>
+<body class="bg-gray-100 min-h-screen">
+    <div class="flex min-h-screen">
+        <!-- Sidebar -->
+        <div class="w-64 bg-white shadow-lg">
+            {% include 'sidebaradmin.html.twig' %}
+        </div>
 
-{% block title %}Modifier mon profil{% endblock %}
+        <!-- Contenu principal -->
+        <div class="flex-grow p-8 flex justify-center items-center">
+            <div class="bg-white w-full max-w-md mx-auto rounded-xl shadow-lg p-8">
+                <h2 class="text-2xl font-bold text-center mb-6">Modifier un Pack</h2>
 
-{% block body %}
-<div class="min-h-screen flex flex-col items-center py-8">
-    <div class="profile-card w-full max-w-md p-8 rounded-lg bg-white shadow">
-        <h2 class="text-2xl font-bold text-gray-800 text-center mb-4">Modifier mon profil</h2>
+                {{ include('abonnement/_form.html.twig', {'button_label': 'Modifier le pack'}) }}
 
-        {{ form_start(form, {'attr': {'class': 'space-y-4'}}) }}
-            <div>
-                {{ form_label(form.nom, 'Nom :', {'label_attr': {'class': 'text-gray-700 font-medium'}}) }}
-                {{ form_widget(form.nom, {'attr': {'class': 'w-full p-3 border border-gray-300 rounded-lg focus:ring focus:ring-green-300 focus:outline-none'}}) }}
+                <div class="text-center mt-4">
+                    <a href="{{ path('abonnement_index') }}" class="text-blue-600 hover:underline">Retour à la liste</a>
+                </div>
             </div>
-
-            <div>
-                {{ form_label(form.email, 'Adresse e-mail :', {'label_attr': {'class': 'text-gray-700 font-medium'}}) }}
-                {{ form_widget(form.email, {'attr': {'class': 'w-full p-3 border border-gray-300 rounded-lg focus:ring focus:ring-green-300 focus:outline-none'}}) }}
-            </div>
-
-            <div>
-                {{ form_label(form.phonenumber, 'Numéro de téléphone :', {'label_attr': {'class': 'text-gray-700 font-medium'}}) }}
-                {{ form_widget(form.phonenumber, {'attr': {'class': 'w-full p-3 border border-gray-300 rounded-lg focus:ring focus:ring-green-300 focus:outline-none'}}) }}
-            </div>
-
-            <button type="submit" class="btn-primary w-full py-3 mt-4 rounded-lg text-white text-lg font-semibold bg-green-500 hover:bg-green-600">Enregistrer</button>
-        {{ form_end(form) }}
-
-        <div class="text-center mt-4">
-            <a href="{{ path('app_user_index') }}" class="text-red-500 hover:underline">Annuler</a>
         </div>
     </div>
-</div>
-{% endblock %}
+</body>
+</html>
