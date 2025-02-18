@@ -40,6 +40,7 @@ class Paiement
 
     #[ORM\Column(type: Types::DATE_MUTABLE)]
     #[Assert\NotBlank(message: "La date d'expiration est obligatoire.")]
+    #[Assert\GreaterThan("today", message: "Votre carte a été expirée")]
     private ?\DateTimeInterface $date_expiration = null;
 
     #[ORM\Column]
