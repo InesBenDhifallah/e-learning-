@@ -3,8 +3,10 @@
 namespace App\Controller;
 
 use App\Entity\Event;
+use App\Entity\Participation;
 use App\Form\EventType;
 use App\Repository\EventRepository;
+use App\Repository\ParticipationRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\File\Exception\FileException;
@@ -12,6 +14,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Filesystem\Filesystem;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 #[Route('/event')]
 final class EventController extends AbstractController
@@ -25,6 +28,7 @@ final class EventController extends AbstractController
     }
 
     #[Route('/new', name: 'app_event_new', methods: ['GET', 'POST'])]
+    #[IsGranted('ROLE_ADMIN')]
     public function new(Request $request, EntityManagerInterface $entityManager): Response
     {
         $event = new Event();
@@ -32,7 +36,6 @@ final class EventController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            // Validate localisation for "presentiel" events
             if ($event->getType() === "presentiel" && !$event->getLocalisation()) {
                 $this->addFlash('error', 'Localisation is required for presentiel events.');
                 return $this->render('event/new.html.twig', [
@@ -45,15 +48,12 @@ final class EventController extends AbstractController
             $imageFile = $form->get('image')->getData();
             if ($imageFile) {
                 $uploadDir = $this->getParameter('events_images_directory');
-                
-                // Ensure the directory exists
                 $filesystem = new Filesystem();
                 if (!$filesystem->exists($uploadDir)) {
                     $filesystem->mkdir($uploadDir, 0777);
                 }
 
                 $newFilename = uniqid().'.'.$imageFile->guessExtension();
-
                 try {
                     $imageFile->move($uploadDir, $newFilename);
                     $event->setImage($newFilename);
@@ -76,21 +76,32 @@ final class EventController extends AbstractController
     }
 
     #[Route('/{id}', name: 'app_event_show', methods: ['GET'])]
-    public function show(Event $event): Response
+    public function show(Event $event, ParticipationRepository $participationRepository): Response
     {
+        $user = $this->getUser();
+        $participation = null;
+    
+        if ($user) {
+            $participation = $participationRepository->findOneBy([
+                'event' => $event,
+                'user' => $user
+            ]);
+        }
+    
         return $this->render('event/show.html.twig', [
             'event' => $event,
+            'participation' => $participation,
         ]);
     }
 
     #[Route('/{id}/edit', name: 'app_event_edit', methods: ['GET', 'POST'])]
+    #[IsGranted('ROLE_ADMIN')]
     public function edit(Request $request, Event $event, EntityManagerInterface $entityManager): Response
     {
         $form = $this->createForm(EventType::class, $event);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            // Validate localisation for "presentiel" events
             if ($event->getType() === "presentiel" && !$event->getLocalisation()) {
                 $this->addFlash('error', 'Localisation is required for presentiel events.');
                 return $this->render('event/edit.html.twig', [
@@ -103,15 +114,12 @@ final class EventController extends AbstractController
             $imageFile = $form->get('image')->getData();
             if ($imageFile) {
                 $uploadDir = $this->getParameter('events_images_directory');
-                
-                // Ensure the directory exists
                 $filesystem = new Filesystem();
                 if (!$filesystem->exists($uploadDir)) {
                     $filesystem->mkdir($uploadDir, 0777);
                 }
 
                 $newFilename = uniqid().'.'.$imageFile->guessExtension();
-
                 try {
                     $imageFile->move($uploadDir, $newFilename);
                     $event->setImage($newFilename);
@@ -133,12 +141,12 @@ final class EventController extends AbstractController
     }
 
     #[Route('/{id}/delete', name: 'app_event_delete', methods: ['POST'])]
+    #[IsGranted('ROLE_ADMIN')]
     public function delete(Request $request, Event $event, EntityManagerInterface $entityManager): Response
     {
         if ($this->isCsrfTokenValid('delete' . $event->getId(), $request->request->get('_token'))) {
             $entityManager->remove($event);
             $entityManager->flush();
-
             $this->addFlash('success', 'Event deleted successfully.');
         }
 
