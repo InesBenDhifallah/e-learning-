@@ -31,12 +31,12 @@ class ParticipationController extends AbstractController
 
         if ($existingParticipation) {
             $this->addFlash('warning', 'You are already participating in this event.');
-            return $this->redirectToRoute('app_event_index');
+            return $this->redirectToRoute('app_participation_list', ['id' => $event->getId()]);
         }
 
         // Handle participation logic
         if ($event->getPrix() > 0) {
-            $this->addFlash('info', 'Please complete the payment before joining.');
+            $this->addFlash('info', 'This event requires payment. Please proceed to checkout.');
             return $this->redirectToRoute('app_payment', ['eventId' => $event->getId()]);
         }
 
@@ -50,7 +50,9 @@ class ParticipationController extends AbstractController
         $entityManager->flush();
 
         $this->addFlash('success', 'You have successfully joined the event!');
-        return $this->redirectToRoute('app_event_index');
+
+        // ✅ Redirect to the list of participants after joining
+        return $this->redirectToRoute('app_participation_list', ['id' => $event->getId()]);
     }
 
     #[Route('/cancel/{id}', name: 'app_participation_cancel', methods: ['POST'])]
@@ -66,7 +68,9 @@ class ParticipationController extends AbstractController
         $entityManager->flush();
 
         $this->addFlash('success', 'You have successfully canceled your participation.');
-        return $this->redirectToRoute('app_event_index');
+
+        // ✅ Redirect to the list of participants after canceling
+        return $this->redirectToRoute('app_participation_list', ['id' => $participation->getEvent()->getId()]);
     }
 
     #[Route('/list/{id}', name: 'app_participation_list', methods: ['GET'])]

@@ -18,9 +18,9 @@ class Participation
     #[ORM\JoinColumn(nullable: false, onDelete: "CASCADE")]  // Ensures deletion of participations when event is deleted
     private ?Event $event = null;
 
-   // #[ORM\ManyToOne(targetEntity: User::class, inversedBy: "participations")]
-    //#[ORM\JoinColumn(nullable: false, onDelete: "CASCADE")]  // Fixes foreign key constraint issue
-    //private ?User $user = null;
+    #[ORM\ManyToOne(targetEntity: User::class, inversedBy: "participations")]
+    #[ORM\JoinColumn(nullable: false, onDelete: "CASCADE")]  // Fixes foreign key constraint issue
+    private ?User $user = null;
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
     private ?\DateTimeInterface $createdAt = null;
@@ -46,16 +46,16 @@ class Participation
         return $this;
     }
 
-   // public function getUser(): ?User
-    //{
-      //  return $this->user;
-    //}
+    public function getUser(): ?User
+    {
+       return $this->user;
+    }
 
-    //public function setUser(User $user): static
-    //{
-        //$this->user = $user;
-      //  return $this;
-    //}
+    public function setUser(User $user): static
+    {
+        $this->user = $user;
+        return $this;
+    }
 
     public function getCreatedAt(): ?\DateTimeInterface
     {

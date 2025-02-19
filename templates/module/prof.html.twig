@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mes Modules</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+</head>
+<body class="bg-gray-100 flex min-h-screen">
+    <!-- Sidebar -->
+    <aside class="w-72 bg-[#AFC92C] text-black p-6 min-h-screen fixed">
+        {% include 'sidebarprof.html.twig' %}
+    </aside>
+
+    <!-- Main Content -->
+    <main class="flex-1 ml-80 p-10">
+        <div class="bg-white w-full max-w-6xl mx-auto rounded-xl shadow-lg p-8">
+            <h1 class="text-3xl font-bold text-gray-800 mb-6">Mes Modules</h1>
+
+            <ul class="space-y-4">
+                {% for module in modules %}
+                    <li class="bg-gray-200 p-4 rounded-lg shadow-md flex justify-between items-center">
+                        <span class="font-semibold text-gray-700">{{ module.nom }}</span>
+                    </li>
+                {% else %}
+                    <p class="text-gray-600">Aucun module assigné.</p>
+                {% endfor %}
+            </ul>
+        </div>
+    </main>
+</body>
+</html>
