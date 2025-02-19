@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Modifier l'Événement</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+</head>
+<body class="bg-gray-100 flex min-h-screen">
+    <!-- Sidebar -->
+    <aside class="w-72 bg-[#AFC92C] text-black p-6 min-h-screen fixed">
+        {% include 'sidebaradmin.html.twig' %}
+    </aside>
+
+    <!-- Main Content -->
+    <main class="flex-1 flex justify-center items-center ml-80 p-10">
+        <div class="bg-white w-full max-w-lg mx-auto rounded-xl shadow-lg p-8">
+            <h2 class="text-3xl font-bold text-center mb-6">Modifier l'Événement</h2>
+
+            {{ form_start(form, {'attr': {'class': 'space-y-4', 'id': 'event-form'}}) }}
+
+            <div>
+                <label for="{{ form.titre.vars.id }}" class="block text-sm font-medium text-gray-600">Titre</label>
+                {{ form_widget(form.titre, {'attr': {'class': 'mt-2 w-full p-3 border border-gray-300 rounded-lg'}}) }}
+            </div>
+
+            <div>
+                <label for="{{ form.description.vars.id }}" class="block text-sm font-medium text-gray-600">Description</label>
+                {{ form_widget(form.description, {'attr': {'class': 'mt-2 w-full p-3 border border-gray-300 rounded-lg'}}) }}
+            </div>
+
+            <div>
+                <label for="{{ form.type.vars.id }}" class="block text-sm font-medium text-gray-600">Type d'événement</label>
+                {{ form_widget(form.type, {'attr': {'class': 'mt-2 w-full p-3 border border-gray-300 rounded-lg', 'id': 'event-type'}}) }}
+            </div>
+
+            <!-- Localisation field (Hidden by default) -->
+            <div id="localisation-container" style="display: none;">
+                <label for="{{ form.localisation.vars.id }}" class="block text-sm font-medium text-gray-600">Localisation</label>
+                {{ form_widget(form.localisation, {'attr': {'class': 'mt-2 w-full p-3 border border-gray-300 rounded-lg'}}) }}
+            </div>
+
+            <div class="grid grid-cols-2 gap-4">
+                <div>
+                    <label for="{{ form.dateDebut.vars.id }}" class="block text-sm font-medium text-gray-600">Date de début</label>
+                    {{ form_widget(form.dateDebut, {'attr': {'class': 'mt-2 w-full p-3 border border-gray-300 rounded-lg'}}) }}
+                </div>
+                <div>
+                    <label for="{{ form.dateFin.vars.id }}" class="block text-sm font-medium text-gray-600">Date de fin</label>
+                    {{ form_widget(form.dateFin, {'attr': {'class': 'mt-2 w-full p-3 border border-gray-300 rounded-lg'}}) }}
+                </div>
+            </div>
+
+            <div>
+                <label for="{{ form.prix.vars.id }}" class="block text-sm font-medium text-gray-600">Prix</label>
+                {{ form_widget(form.prix, {'attr': {'class': 'mt-2 w-full p-3 border border-gray-300 rounded-lg'}}) }}
+            </div>
+
+            <div>
+                <label for="{{ form.image.vars.id }}" class="block text-sm font-medium text-gray-600">Image</label>
+                {{ form_widget(form.image, {'attr': {'class': 'mt-2 w-full p-3 border border-gray-300 rounded-lg'}}) }}
+            </div>
+
+            <div class="flex justify-between mt-6">
+                <!-- Back to Event List Button -->
+                <a href="{{ path('app_event_index') }}" class="py-3 px-4 bg-gray-600 text-white font-medium rounded-lg hover:bg-gray-700 transition duration-300 flex items-center">
+                    <i class="fas fa-arrow-left mr-2"></i> Retour aux événements
+                </a>
+                
+                <!-- Submit Button -->
+                <button type="submit" class="py-3 px-4 bg-blue-500 text-white font-medium rounded-lg hover:bg-blue-600 transition duration-300">
+                    Modifier l'Événement
+                </button>
+            </div>
+
+            {{ form_end(form) }}
+        </div>
+    </main>
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+    function initLocalisationToggle() {
+        let typeField = document.querySelector('select[name="event[type]"]');
+        let localisationContainer = document.querySelector('#localisation-container');
+
+        console.log("JS Loaded!");
+        console.log("Type Field Found? ", typeField);
+        console.log("Localisation Container Found? ", localisationContainer);
+
+        if (!typeField) {
+            console.warn("event-type NOT FOUND! Retrying in 500ms...");
+            setTimeout(initLocalisationToggle, 500);
+            return;
+        }
+
+        function toggleLocalisation() {
+            console.log("Type selected:", typeField.value);
+            console.log("Does it match 'presentiel'? ", typeField.value === "presentiel");
+
+            if (typeField.value === "presentiel") {
+                localisationContainer.style.display = "block";
+            } else {
+                localisationContainer.style.display = "none";
+            }
+        }
+
+        toggleLocalisation();
+        typeField.addEventListener("change", toggleLocalisation);
+    }
+
+    initLocalisationToggle();
+});
+</script>
+
+</body>
+</html>

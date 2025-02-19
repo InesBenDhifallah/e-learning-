@@ -1,111 +1,155 @@
 <?php
+
 namespace App\Controller;
 
 use App\Entity\Event;
+use App\Entity\Participation;
 use App\Form\EventType;
+use App\Repository\EventRepository;
+use App\Repository\ParticipationRepository;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\File\Exception\FileException;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Routing\Annotation\Route;
-use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Component\HttpFoundation\File\UploadedFile;
+use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Filesystem\Filesystem;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 
+#[Route('/event')]
 final class EventController extends AbstractController
 {
-    private EntityManagerInterface $entityManager;
-
-    public function __construct(EntityManagerInterface $entityManager)
+    #[Route(name: 'app_event_index', methods: ['GET'])]
+    public function index(EventRepository $eventRepository): Response
     {
-        $this->entityManager = $entityManager;
+        return $this->render('event/index.html.twig', [
+            'events' => $eventRepository->findAll(),
+        ]);
     }
 
-    #[Route('/events', name: 'event_index')]
-    public function index(): Response
+    #[Route('/new', name: 'app_event_new', methods: ['GET', 'POST'])]
+    #[IsGranted('ROLE_ADMIN')]
+    public function new(Request $request, EntityManagerInterface $entityManager): Response
     {
-        $events = $this->entityManager->getRepository(Event::class)->findAll();
-        
-        return $this->render('event/event.html.twig', ['events' => $events]);
-    }
-
-    #[Route('/event/add', name: 'event_add')]
-    public function add(Request $request): Response
-    {
-        $event = new Event(); 
+        $event = new Event();
         $form = $this->createForm(EventType::class, $event);
-
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $image = $form->get('image')->getData();
-
-            if ($image instanceof UploadedFile) {
-                $newFilename = uniqid().'.'.$image->guessExtension();
-
-                $image->move(
-                    $this->getParameter('event_image_directory'),
-                    $newFilename
-                );
-
-                $event->setImage($newFilename);
+            if ($event->getType() === "presentiel" && !$event->getLocalisation()) {
+                $this->addFlash('error', 'Localisation is required for presentiel events.');
+                return $this->render('event/new.html.twig', [
+                    'form' => $form->createView(),
+                    'event' => $event
+                ]);
             }
 
-            // time is stored in the database as a string
-            $time = $event->getTime();
-            if ($time instanceof \DateTimeInterface) {
-                $event->setTime($time->format('H:i'));
+            // Handle image upload
+            $imageFile = $form->get('image')->getData();
+            if ($imageFile) {
+                $uploadDir = $this->getParameter('events_images_directory');
+                $filesystem = new Filesystem();
+                if (!$filesystem->exists($uploadDir)) {
+                    $filesystem->mkdir($uploadDir, 0777);
+                }
+
+                $newFilename = uniqid().'.'.$imageFile->guessExtension();
+                try {
+                    $imageFile->move($uploadDir, $newFilename);
+                    $event->setImage($newFilename);
+                } catch (FileException $e) {
+                    $this->addFlash('error', 'Image upload failed.');
+                }
             }
 
-            $this->entityManager->persist($event);
-            $this->entityManager->flush();
+            $entityManager->persist($event);
+            $entityManager->flush();
 
-            $this->addFlash('success', 'Event added successfully!');
-            return $this->redirectToRoute('event_index');
+            $this->addFlash('success', 'Event created successfully.');
+            return $this->redirectToRoute('app_event_index', [], Response::HTTP_SEE_OTHER);
         }
 
-        return $this->render('event/add.html.twig', [
+        return $this->render('event/new.html.twig', [
+            'event' => $event,
             'form' => $form->createView(),
         ]);
     }
 
-    #[Route('/event/{id}', name: 'event_show')]
-    public function show(int $id): Response
+    #[Route('/{id}', name: 'app_event_show', methods: ['GET'])]
+    public function show(Event $event, ParticipationRepository $participationRepository): Response
     {
-        $event = $this->entityManager->getRepository(Event::class)->find($id);
-
-        if (!$event) {
-            throw $this->createNotFoundException('Event not found');
+        $user = $this->getUser();
+        $participation = null;
+    
+        if ($user) {
+            $participation = $participationRepository->findOneBy([
+                'event' => $event,
+                'user' => $user
+            ]);
         }
-
+    
         return $this->render('event/show.html.twig', [
             'event' => $event,
+            'participation' => $participation,
         ]);
     }
-    #[Route('/event/{id}/edit', name: 'event_edit')]
-    public function edit(Request $request, Event $event): Response {
-    $form = $this->createForm(EventType::class, $event);
-    $form->handleRequest($request);
 
-    if ($form->isSubmitted() && $form->isValid()) {
-        $this->entityManager->flush();
-        $this->addFlash('success', 'Event updated successfully!');
-        return $this->redirectToRoute('event_index');
+    #[Route('/{id}/edit', name: 'app_event_edit', methods: ['GET', 'POST'])]
+    #[IsGranted('ROLE_ADMIN')]
+    public function edit(Request $request, Event $event, EntityManagerInterface $entityManager): Response
+    {
+        $form = $this->createForm(EventType::class, $event);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            if ($event->getType() === "presentiel" && !$event->getLocalisation()) {
+                $this->addFlash('error', 'Localisation is required for presentiel events.');
+                return $this->render('event/edit.html.twig', [
+                    'form' => $form->createView(),
+                    'event' => $event
+                ]);
+            }
+
+            // Handle image upload
+            $imageFile = $form->get('image')->getData();
+            if ($imageFile) {
+                $uploadDir = $this->getParameter('events_images_directory');
+                $filesystem = new Filesystem();
+                if (!$filesystem->exists($uploadDir)) {
+                    $filesystem->mkdir($uploadDir, 0777);
+                }
+
+                $newFilename = uniqid().'.'.$imageFile->guessExtension();
+                try {
+                    $imageFile->move($uploadDir, $newFilename);
+                    $event->setImage($newFilename);
+                } catch (FileException $e) {
+                    $this->addFlash('error', 'Image upload failed.');
+                }
+            }
+
+            $entityManager->flush();
+
+            $this->addFlash('success', 'Event updated successfully.');
+            return $this->redirectToRoute('app_event_index', [], Response::HTTP_SEE_OTHER);
+        }
+
+        return $this->render('event/edit.html.twig', [
+            'event' => $event,
+            'form' => $form->createView(),
+        ]);
     }
 
-    return $this->render('event/add.html.twig', [
-        'form' => $form->createView(),
-        'editMode' => true,
-    ]);
-}
+    #[Route('/{id}/delete', name: 'app_event_delete', methods: ['POST'])]
+    #[IsGranted('ROLE_ADMIN')]
+    public function delete(Request $request, Event $event, EntityManagerInterface $entityManager): Response
+    {
+        if ($this->isCsrfTokenValid('delete' . $event->getId(), $request->request->get('_token'))) {
+            $entityManager->remove($event);
+            $entityManager->flush();
+            $this->addFlash('success', 'Event deleted successfully.');
+        }
 
-#[Route('/event/{id}/delete', name: 'event_delete', methods: ['POST'])]
-public function delete(Request $request, Event $event): Response {
-    if ($this->isCsrfTokenValid('delete' . $event->getId(), $request->request->get('_token'))) {
-        $this->entityManager->remove($event);
-        $this->entityManager->flush();
-        $this->addFlash('success', 'Event deleted successfully!');
+        return $this->redirectToRoute('app_event_index', [], Response::HTTP_SEE_OTHER);
     }
-
-    return $this->redirectToRoute('event_index');
-}
-
 }
