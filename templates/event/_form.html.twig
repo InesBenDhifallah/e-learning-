@@ -1,6 +1,27 @@
-{% extends 'base.html.twig' %}
-
 {{ form_start(form) }}
-    {{ form_widget(form) }}
-    <button class="btn">{{ button_label|default('Save') }}</button>
+
+<!-- Display Flash Messages -->
+{% for message in app.flashes('success') %}
+    <div class="bg-green-500 text-white p-2 rounded mb-2">{{ message }}</div>
+{% endfor %}
+{% for message in app.flashes('error') %}
+    <div class="bg-red-500 text-white p-2 rounded mb-2">{{ message }}</div>
+{% endfor %}
+
+<!-- Loop Through Each Field for Validation -->
+{% for field in form %}
+    <div class="mb-4">
+        <label class="block text-gray-700 font-bold mb-2">{{ field.vars.label }}</label>
+        {{ form_widget(field, {'attr': {'class': 'border rounded w-full py-2 px-3'}}) }}
+
+        {% if field.vars.errors|length > 0 %}
+            <p class="text-red-500 text-xs italic">
+                {{ field.vars.errors[0].message }}
+            </p>
+        {% endif %}
+    </div>
+{% endfor %}
+
+<button class="btn bg-blue-500 text-white px-4 py-2 rounded">{{ button_label|default('Save') }}</button>
+
 {{ form_end(form) }}

@@ -78,4 +78,21 @@ final class ModuleController extends AbstractController
 
         return $this->redirectToRoute('app_module_index', [], Response::HTTP_SEE_OTHER);
     }
+
+    #[Route('/prof/modules', name: 'app_prof_modules')]
+public function modulesProfesseur(ModuleRepository $moduleRepository): Response
+{
+    $user = $this->getUser(); // Récupère le professeur connecté
+
+    if (!$user) {
+        throw $this->createAccessDeniedException('Vous devez être connecté.');
+    }
+
+    // Récupérer les modules assignés au professeur
+    $modules = $moduleRepository->findModulesByProfesseur($user);
+
+    return $this->render('module/prof.html.twig', [
+        'modules' => $modules
+    ]);
+}
 }
