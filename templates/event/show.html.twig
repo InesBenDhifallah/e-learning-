@@ -1,49 +1,83 @@
-{% extends 'base.html.twig' %}
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ event.titre }}</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+</head>
+<body class="bg-gray-100 min-h-screen flex">
 
-{% block title %}Event Details{% endblock %}
-
-{% block body %}
-<div class="container mt-5">
-    <div class="card shadow-lg p-4">
-        <h2 class="mb-4">{{ event.name }}</h2>
-        
-        <div class="mb-3">
-            <strong>Date:</strong> {{ event.date|date('d-m-Y') }}
-        </div>
-        
-        <div class="mb-3">
-            <strong>Time:</strong> {{ event.time }}
-        </div>
-
-        <div class="mb-3">
-            <strong>Category:</strong> {{ event.category }}
-        </div>
-
-        <div class="mb-3">
-            <strong>Speaker:</strong> {{ event.speaker }}
-        </div>
-
-        <div class="mb-3">
-            <strong>Place:</strong> {{ event.place }}
-        </div>
-
-        <div class="mb-3">
-            <strong>Description:</strong>
-            <p>{{ event.description }}</p>
-        </div>
-
-        {% if event.image %}
-            <div class="mb-3">
-                <img src="{{ asset('uploads/events/' ~ event.image) }}" alt="Event Image" class="img-fluid rounded" style="max-width: 300px;">
-            </div>
-        {% endif %}
-
-        <a href="{{ path('event_index') }}" class="btn btn-primary">Back to Events</a>
-        <a href="{{ path('event_edit', {'id': event.id}) }}" class="btn btn-warning">Edit Event</a>
-        <form action="{{ path('event_delete', {'id': event.id}) }}" method="post" style="display:inline;" onsubmit="return confirm('Are you sure you want to delete this event?');">
-            <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ event.id) }}">
-            <button type="submit" class="btn btn-danger">Delete Event</button>
-        </form>
+    <!-- Sidebar -->
+    <div class="w-64 bg-gray-800 text-white">
+        {% include 'sidebaradmin.html.twig' %}
     </div>
-</div>
-{% endblock %}
+
+    <!-- Main Content -->
+    <div class="flex-1 p-8">
+        <div class="bg-white rounded-xl shadow-lg p-6 max-w-2xl mx-auto">
+            <h2 class="text-3xl font-bold mb-4">{{ event.titre }}</h2>
+            <p class="text-gray-700">{{ event.description }}</p>
+            <p class="text-gray-600 mt-2"><strong>Date:</strong> {{ event.dateDebut|date('Y-m-d') }} to {{ event.dateFin|date('Y-m-d') }}</p>
+            <p class="text-gray-600"><strong>Type:</strong> {{ event.type }}</p>
+            {% if event.type == "presentiel" %}
+                <p class="text-gray-600"><strong>Localisation:</strong> {{ event.localisation }}</p>
+            {% endif %}
+            <p class="text-gray-800 font-semibold mt-2">Prix: {{ event.prix }} €</p>
+
+            {% if event.image %}
+                <div class="mt-4">
+                    <img src="{{ asset('uploads/events/' ~ event.image) }}" alt="Event Image" class="w-full rounded-lg shadow-md">
+                </div>
+            {% endif %}
+
+            <!-- Participation Logic -->
+            <div class="flex mt-6 space-x-4">
+                <a href="{{ path('app_event_index') }}" class="py-2 px-4 bg-gray-500 text-white rounded-lg hover:bg-gray-700">
+                    <i class="fas fa-arrow-left"></i> Retour aux événements
+                </a>
+
+                {% if is_granted('ROLE_ADMIN') %}
+                    <a href="{{ path('app_event_edit', {id: event.id}) }}" class="py-2 px-4 bg-blue-500 text-white rounded-lg hover:bg-blue-700">
+                        <i class="fas fa-edit"></i> Modifier
+                    </a>
+                    <form method="post" action="{{ path('app_event_delete', {id: event.id}) }}" onsubmit="return confirm('Voulez-vous vraiment supprimer cet événement ?');">
+                        <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ event.id) }}">
+                        <button type="submit" class="py-2 px-4 bg-red-600 text-white rounded-lg hover:bg-red-800">
+                            <i class="fas fa-trash"></i> Supprimer
+                        </button>
+                    </form>
+                {% else %}
+                    {% if participation is not null %}
+                        <!-- User already participating -->
+                        <form method="post" action="{{ path('app_participation_cancel', {id: participation.id}) }}">
+                            <button type="submit" class="py-2 px-4 bg-red-600 text-white rounded-lg hover:bg-red-800">
+                                <i class="fas fa-times"></i> Annuler la participation
+                            </button>
+                        </form>
+                    {% else %}
+                        <!-- User not yet participating -->
+                        <form method="post" action="{{ path('app_participation_join', {id: event.id}) }}">
+                            <button type="submit" class="py-2 px-4 bg-green-600 text-white rounded-lg hover:bg-green-800">
+                                <i class="fas fa-check"></i> Participer
+                            </button>
+                        </form>
+                    {% endif %}
+                {% endif %}
+            </div>
+
+            {% if is_granted('ROLE_ADMIN') %}
+                <div class="mt-6">
+                    <form method="post" action="{{ path('app_participation_join', { id: event.id }) }}">
+            <button type="submit" class="py-2 px-4 bg-green-600 text-white rounded-lg hover:bg-green-800">
+                <i class="fas fa-user-plus"></i> Participer
+            </button>
+        </form> 
+                </div>
+            {% endif %}
+        </div>
+    </div>  
+
+</body>
+</html>
