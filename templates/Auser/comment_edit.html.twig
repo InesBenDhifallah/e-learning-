@@ -1,0 +1,13 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Modifier le commentaire{% endblock %}
+
+{% block body %}
+    <div class="bg-white p-6 rounded-lg shadow-md">
+        <h1 class="text-2xl font-bold">Modifier votre commentaire</h1>
+        {{ form_start(form) }}
+            {{ form_row(form.content, {'attr': {'class': 'w-full p-2 border rounded'}}) }}
+            <button type="submit" class="mt-2 bg-blue-500 text-white px-4 py-2 rounded">Modifier</button>
+        {{ form_end(form) }}
+    </div>
+{% endblock %}
