@@ -1,10 +1,10 @@
 <?php
 
-
 namespace App\Entity;
 
 use App\Repository\CoursRepository;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\HttpFoundation\File\File;
 use Vich\UploaderBundle\Mapping\Annotation as Vich;
 
@@ -18,9 +18,22 @@ class Cours
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
+    #[Assert\NotBlank(message: "Le titre du cours est obligatoire.")]
     private ?string $titre = null;
 
     #[Vich\UploadableField(mapping: "cours_files", fileNameProperty: "contenuFichier")]
+    #[Assert\NotNull(message: "Veuillez télécharger un fichier pour ce cours.")]
+    #[Assert\File(
+        maxSize: "5M",
+        mimeTypes: [
+            "application/pdf",
+            "application/msword",
+            "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+            "application/vnd.ms-powerpoint",
+            "application/vnd.openxmlformats-officedocument.presentationml.presentation"
+        ],
+        mimeTypesMessage: "Seuls les fichiers PDF, DOC, DOCX, PPT et PPTX sont autorisés."
+    )]
     private ?File $contenuFile = null;
 
     #[ORM\Column(nullable: true)]
@@ -28,15 +41,15 @@ class Cours
 
     #[ORM\ManyToOne(targetEntity: Chapitre::class, inversedBy: "cours")]
     #[ORM\JoinColumn(nullable: false)]
+    #[Assert\NotNull(message: "Veuillez sélectionner un chapitre.")]
     private ?Chapitre $chapitre = null;
 
     #[ORM\Column(type: 'datetime', nullable: true)]
     private ?\DateTimeInterface $updatedAt = null;
 
-
     public function __construct()
     {
-        $this->updatedAt = new \DateTime();
+        $this->updatedAt = new \DateTimeImmutable();
     }
 
     public function getId(): ?int
@@ -66,7 +79,6 @@ class Cours
         if ($contenuFile) {
             $this->updatedAt = new \DateTimeImmutable();
         }
-        
     }
 
     public function getContenuFichier(): ?string
@@ -90,6 +102,7 @@ class Cours
         $this->chapitre = $chapitre;
         return $this;
     }
+
     public function getUpdatedAt(): ?\DateTimeInterface
     {
         return $this->updatedAt;
@@ -100,10 +113,10 @@ class Cours
         $this->updatedAt = $updatedAt;
         return $this;
     }
+
     #[ORM\PreUpdate]
     public function updateTimestamp(): void
     {
-        $this->updatedAt = new \DateTime();
+        $this->updatedAt = new \DateTimeImmutable();
     }
 }
-
