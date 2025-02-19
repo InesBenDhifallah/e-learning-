@@ -30,24 +30,17 @@ final class PaiementController extends AbstractController
     #[Route('/new/{abonnementId}', name: 'app_paiement_new', methods: ['GET', 'POST'])]
     public function new(Request $request, EntityManagerInterface $entityManager, AbonnementRepository $abonnementRepository, int $abonnementId): Response
     {
-         // Récupérer l'abonnement sélectionné
     $abonnement = $abonnementRepository->find($abonnementId);
     if (!$abonnement) {
-        throw $this->createNotFoundException("L'abonnement n'existe pas.");
+        throw $this->createNotFoundException("L'abonnement n'existe pas");
     }
-
-    // Récupérer l'utilisateur connecté
     $user = $this->getUser();
     $montant = $abonnement->getPrix();
-
-    // Créer un nouvel objet Paiement
     $paiement = new Paiement();
     $paiement->setIdAbonnement($abonnement);
     $paiement->setMontant($montant);
     $paiement->setDatePaiement(new \DateTime());
-
-    // Assigner l'utilisateur connecté au paiement
-    $paiement->setUserid($user);  // Ici, nous associons l'utilisateur connecté au paiement
+    $paiement->setUserid($user);  
 
     $form = $this->createForm(PaiementType::class, $paiement);
     $form->handleRequest($request);
@@ -69,7 +62,6 @@ final class PaiementController extends AbstractController
     #[Route('/index', name: 'app_paiement_index', methods: ['GET'])]
     public function index(PaiementRepository $paiementRepository,UserInterface $user): Response
     {
-            // Récupérer les paiements pour l'utilisateur connecté
             $paiements = $paiementRepository->findBy(['userid' => $user]);
         
             return $this->render('paiement/index.html.twig', [
