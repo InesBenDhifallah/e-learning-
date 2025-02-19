@@ -1,0 +1,16 @@
+[33m5db40b9[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mgestion-event[m[33m, [m[1;31morigin/master[m[33m, [m[1;31morigin/gestion-event[m[33m, [m[1;31morigin/HEAD[m[33m, [m[1;32mmaster[m[33m)[m HEAD@{0}: merge master: Fast-forward
+[33mac1e39d[m HEAD@{1}: checkout: moving from master to gestion-event
+[33m5db40b9[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mgestion-event[m[33m, [m[1;31morigin/master[m[33m, [m[1;31morigin/gestion-event[m[33m, [m[1;31morigin/HEAD[m[33m, [m[1;32mmaster[m[33m)[m HEAD@{2}: pull origin master: Fast-forward
+[33mac1e39d[m HEAD@{3}: checkout: moving from gestion-event to master
+[33mac1e39d[m HEAD@{4}: checkout: moving from master to gestion-event
+[33mac1e39d[m HEAD@{5}: rebase (finish): returning to refs/heads/master
+[33mac1e39d[m HEAD@{6}: checkout: moving from a94237ddc6d45be221bb1907bf592fae3594b2b1 to gestion-event
+[33ma94237d[m[33m ([m[1;32mbackup-commit[m[33m)[m HEAD@{7}: commit: Saving work before switching branches
+[33md7d99e0[m HEAD@{8}: pull origin master --rebase (start): checkout d7d99e0191910ead4ba2e072daebdd43f979b4bc
+[33m5c00dd1[m HEAD@{9}: commit (merge): Resolved merge conflicts and finalized merge
+[33m7170fe4[m HEAD@{10}: commit (merge): Resolved merge conflict in .env
+[33m333a3ec[m HEAD@{11}: pull origin master: Fast-forward
+[33md11fa16[m HEAD@{12}: checkout: moving from gestion-event to master
+[33mac1e39d[m HEAD@{13}: commit: Initialized new gestion-event branch with latest changes
+[33md11fa16[m HEAD@{14}: checkout: moving from master to gestion-event
+[33md11fa16[m HEAD@{15}: clone: from https://github.com/Medusq/e-learning-.git

@@ -14,21 +14,21 @@ class Participation
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\ManyToOne(targetEntity: Event::class)]
-    #[ORM\JoinColumn(nullable: false)]
+    #[ORM\ManyToOne(targetEntity: Event::class, inversedBy: "participations")]
+    #[ORM\JoinColumn(nullable: false, onDelete: "CASCADE")]  // Ensures deletion of participations when event is deleted
     private ?Event $event = null;
 
-    #[ORM\Column(type: 'integer')]
-    private ?int $nbrTickets = null;
-   
-    #[ORM\Column(type: "decimal", precision: 10, scale: 2)]  
-    private ?string $somme = null;
+    #[ORM\ManyToOne(targetEntity: User::class, inversedBy: "participations")]
+    #[ORM\JoinColumn(nullable: false, onDelete: "CASCADE")]  // Fixes foreign key constraint issue
+    private ?User $user = null;
 
-    #[ORM\Column(length: 20)]
-    private ?string $paymentMethod = null;
+    #[ORM\Column(type: Types::DATETIME_MUTABLE)]
+    private ?\DateTimeInterface $createdAt = null;
 
-    #[ORM\Column(length: 20)]
-    private ?string $status = 'pending';
+    public function __construct()
+    {
+        $this->createdAt = new \DateTime(); // Set default timestamp when created
+    }
 
     public function getId(): ?int
     {
@@ -46,47 +46,25 @@ class Participation
         return $this;
     }
 
-    public function getNbrTickets(): ?int
+    public function getUser(): ?User
     {
-        return $this->nbrTickets;
+       return $this->user;
     }
 
-    public function setNbrTickets(int $nbrTickets): static
+    public function setUser(User $user): static
     {
-        $this->nbrTickets = $nbrTickets;
+        $this->user = $user;
         return $this;
     }
 
-    public function getSomme(): ?string
+    public function getCreatedAt(): ?\DateTimeInterface
     {
-        return $this->somme;
+        return $this->createdAt;
     }
 
-    public function setSomme(string $somme): static
+    public function setCreatedAt(\DateTimeInterface $createdAt): static
     {
-        $this->somme = $somme;
-        return $this;
-    }
-
-    public function getPaymentMethod(): ?string
-    {
-        return $this->paymentMethod;
-    }
-
-    public function setPaymentMethod(string $paymentMethod): static
-    {
-        $this->paymentMethod = $paymentMethod;
-        return $this;
-    }
-
-    public function getStatus(): ?string
-    {
-        return $this->status;
-    }
-
-    public function setStatus(string $status): static
-    {
-        $this->status = $status;
+        $this->createdAt = $createdAt;
         return $this;
     }
 }

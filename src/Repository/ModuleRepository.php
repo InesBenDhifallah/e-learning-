@@ -16,6 +16,18 @@ class ModuleRepository extends ServiceEntityRepository
         parent::__construct($registry, Module::class);
     }
 
+   
+public function findModulesByProfesseur(User $professeur)
+{
+    return $this->createQueryBuilder('m')
+        ->innerJoin('m.users', 'u')
+        ->where('u.id = :professeurId')
+        ->setParameter('professeurId', $professeur->getId())
+        ->getQuery()
+        ->getResult();
+}
+
+
     //    /**
     //     * @return Module[] Returns an array of Module objects
     //     */
