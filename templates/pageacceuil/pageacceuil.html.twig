@@ -224,8 +224,8 @@
             <img src="{{asset('img/logo.png')}}" alt="Alpha Education Logo">
         </div>
         <div class="menu">
-            <a href="addenseignant.html">S'inscrire</a>
-            <a href="applyenseignant.html">rejoignez notre equipe</a>
+            <a href="{{ path('app_parentsignup') }}">S'inscrire</a>
+            <a href="#">rejoignez notre equipe</a>
             <a href="#"></a>
         </div>
     </div>
@@ -234,7 +234,7 @@
     <div class="hero">
         <h1>Apprenez et Grandissez avec Alpha Education</h1>
         <p>Des cours interactifs pour les enfants, adaptés à chaque âge et niveau scolaire.</p>
-        <a href="#" class="cta-button">Commencez maintenant</a>
+        <a href="{{ path('app_login') }}" class="cta-button">Commencez maintenant</a>
     </div>
 
     <!-- Introduction Section -->

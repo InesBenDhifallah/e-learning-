@@ -16,6 +16,7 @@ security:
             custom_authenticator: App\Security\UserAuthenticator
             logout:
                 path: app_logout
+                target: /pageacceuil
             # Remove the form_login since we are using a custom authenticator
     access_control:
         # Control access for specific pages if necessary

@@ -43,21 +43,23 @@ class UserAuthenticator extends AbstractLoginFormAuthenticator
     }
 
     public function onAuthenticationSuccess(Request $request, TokenInterface $token, string $firewallName): ?Response
-    {
-        $user = $token->getUser();
-        $roles = $user->getRoles();
+{
+    $user = $token->getUser();
+    $roles = $user->getRoles();
 
-        // Redirect based on role
-        if (in_array('ROLE_Parent', $roles, true)) {
-            return new RedirectResponse($this->router->generate('app_stat')); // Change to your actual route name
-        } elseif (in_array('ROLE_TEACHER', $roles, true)) {
-            return new RedirectResponse($this->router->generate('app_cours_index')); // Change to your actual route name
-        }
 
-        // Default fallback redirection
-        return new RedirectResponse($this->router->generate('homepage'));
+    // Redirect based on role
+    if (in_array('ROLE_ADMIN', $roles, true)) {
+        return new RedirectResponse($this->router->generate('app_listusers')); // Redirect admin to /listusers
+    } elseif (in_array('ROLE_Parent', $roles, true)) {
+        return new RedirectResponse($this->router->generate('app_stat')); 
+    } elseif (in_array('ROLE_TEACHER', $roles, true)) {
+        return new RedirectResponse($this->router->generate('app_cours_index'));
     }
 
+    // Default fallback redirection
+    return new RedirectResponse($this->router->generate('app_pageacceuil'));
+}
     public function onAuthenticationFailure(Request $request, AuthenticationException $exception): Response
     {
         return new RedirectResponse($this->router->generate('app_login'));
