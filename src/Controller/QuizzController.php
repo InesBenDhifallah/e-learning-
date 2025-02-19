@@ -103,12 +103,20 @@ class QuizzController extends AbstractController
     public function delete(Request $request, Quizz $quizz, EntityManagerInterface $entityManager): Response
     {
         if ($this->isCsrfTokenValid('delete' . $quizz->getId(), $request->request->get('_token'))) {
+            // Supprimer d'abord les questions associées
+            $questions = $entityManager->getRepository(Question::class)->findBy(['idq' => $quizz]);
+            foreach ($questions as $question) {
+                $entityManager->remove($question);
+            }
+            
+            // Maintenant, supprimer le quiz
             $entityManager->remove($quizz);
             $entityManager->flush();
         }
 
         return $this->redirectToRoute('quizz_index');
     }
+
 
     // Route to add a question to a quiz
     // Route pour afficher le formulaire d'ajout de question
@@ -144,5 +152,35 @@ class QuizzController extends AbstractController
         ]);
         
     }
+    #[Route('/{id}/edit', name: 'quizz_edit', methods: ['GET', 'POST'])]
+    public function edit(Request $request, Quizz $quizz, EntityManagerInterface $entityManager): Response
+    {
+        if ($request->isMethod('POST')) {
+            $quizz->setMatiere($request->request->get('matiere'));
+            $quizz->setChapitre((int)$request->request->get('chapitre'));
+            $quizz->setDifficulte((int)$request->request->get('difficulte'));
+
+            $entityManager->flush();
+            return $this->redirectToRoute('quizz_index');
+        }
+
+        return $this->render('quizz/update_quizz.html.twig', [
+            'quiz' => $quizz,
+        ]);
+    }
+    #[Route('/{id}/start', name: 'quizz_start', methods: ['GET'])]
+    public function start(Quizz $quizz, EntityManagerInterface $entityManager, SessionInterface $session): Response
+    {
+        $role = $session->get('role', 'eleve');
+
+        if ($role === 'eleve' && $quizz->isEtat()) {  // Vérifie si le quiz est actif (etat = 1)
+            $quizz->setEtat(false);  // Passe l'état à 0 (terminé)
+            $entityManager->flush();
+        }
+
+        return $this->redirectToRoute('quizz_questions', ['id' => $quizz->getId()]);
+    }
+
+
 
 }

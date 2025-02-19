@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\QuizzRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: QuizzRepository::class)]
@@ -31,6 +33,14 @@ class Quizz
     #[ORM\Column]
     private ?int $gain = null;
 
+    #[ORM\OneToMany(mappedBy: "idq", targetEntity: Question::class, cascade: ["persist", "remove"])]
+    private Collection $questions;
+
+    public function __construct()
+    {
+        $this->questions = new ArrayCollection();
+    }
+
     public function getId(): ?int
     {
         return $this->id;
@@ -44,7 +54,6 @@ class Quizz
     public function setMatiere(string $matiere): static
     {
         $this->matiere = $matiere;
-
         return $this;
     }
 
@@ -56,7 +65,6 @@ class Quizz
     public function setChapitre(int $chapitre): static
     {
         $this->chapitre = $chapitre;
-
         return $this;
     }
 
@@ -68,7 +76,6 @@ class Quizz
     public function setBestg(float $bestg): static
     {
         $this->bestg = $bestg;
-
         return $this;
     }
 
@@ -80,7 +87,6 @@ class Quizz
     public function setDifficulte(int $difficulte): static
     {
         $this->difficulte = $difficulte;
-
         return $this;
     }
 
@@ -92,7 +98,6 @@ class Quizz
     public function setEtat(bool $etat): static
     {
         $this->etat = $etat;
-
         return $this;
     }
 
@@ -104,7 +109,20 @@ class Quizz
     public function setGain(int $gain): static
     {
         $this->gain = $gain;
+        return $this;
+    }
 
+    public function getQuestions(): Collection
+    {
+        return $this->questions;
+    }
+
+    public function addQuestion(Question $question): static
+    {
+        if (!$this->questions->contains($question)) {
+            $this->questions->add($question);
+            $question->setIdq($this);
+        }
         return $this;
     }
 }

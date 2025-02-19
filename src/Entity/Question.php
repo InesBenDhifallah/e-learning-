@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\QuestionRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: QuestionRepository::class)]
@@ -20,11 +22,22 @@ class Question
     #[ORM\Column(length: 255)]
     private ?string $question = null;
 
-    #[ORM\Column(length: 255)]
-    private ?string $reponse = null;
+    #[ORM\ManyToOne(targetEntity: Suggestion::class)]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?Suggestion $solution = null;
 
-    #[ORM\Column(length: 255)]
-    private ?string $solution = null;
+    #[ORM\OneToMany(mappedBy: "question", targetEntity: Suggestion::class, cascade: ["persist", "remove"])]
+    private Collection $suggestions;
+
+    public function __construct()
+    {
+        $this->suggestions = new ArrayCollection();
+    }
+
+    public function getSuggestions(): Collection
+    {
+        return $this->suggestions;
+    }
 
     public function getId(): ?int
     {
@@ -39,7 +52,6 @@ class Question
     public function setIdq(?Quizz $idq): static
     {
         $this->idq = $idq;
-
         return $this;
     }
 
@@ -51,31 +63,37 @@ class Question
     public function setQuestion(string $question): static
     {
         $this->question = $question;
-
         return $this;
     }
 
-    public function getReponse(): ?string
-    {
-        return $this->reponse;
-    }
-
-    public function setReponse(string $reponse): static
-    {
-        $this->reponse = $reponse;
-
-        return $this;
-    }
-
-    public function getSolution(): ?string
+    public function getSolution(): ?Suggestion
     {
         return $this->solution;
     }
 
-    public function setSolution(string $solution): static
+    public function setSolution(?Suggestion $solution): static
     {
         $this->solution = $solution;
-
         return $this;
     }
+
+    public function addSuggestion(Suggestion $suggestion): static
+    {
+        if (!$this->suggestions->contains($suggestion)) {
+            $this->suggestions->add($suggestion);
+            $suggestion->setQuestion($this);
+        }
+        return $this;
+    }
+
+    public function removeSuggestion(Suggestion $suggestion): static
+    {
+        if ($this->suggestions->removeElement($suggestion)) {
+            if ($suggestion->getQuestion() === $this) {
+                $suggestion->setQuestion(null);
+            }
+        }
+        return $this;
+    }
+    
 }

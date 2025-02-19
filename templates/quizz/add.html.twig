@@ -5,6 +5,16 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Créer un Quiz</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        .stars {
+            font-size: 24px;
+            cursor: pointer;
+            color: gray;
+        }
+        .stars .filled {
+            color: gold;
+        }
+    </style>
 </head>
 <body class="flex bg-gray-100">
     <aside class="w-64 bg-lime-500 text-white p-5 min-h-screen">
@@ -13,30 +23,111 @@
             <li><a href="#" class="block hover:text-gray-200">👤 Profil</a></li>
             <li><a href="#" class="block hover:text-gray-200">📚 Cours</a></li>
             <li><a href="#" class="block hover:text-gray-200">📊 Chapitres</a></li>
+            <li><a href="{{ path('quizz_index') }}" class="block hover:text-gray-200">📝 Quiz</a></li>
             <li><a href="#" class="block hover:text-gray-200">🔒 Déconnexion</a></li>
         </ul>
     </aside>
 
     <main class="flex-1 p-6">
         <h1 class="text-2xl font-bold">Créer un nouveau Quiz</h1>
-        <form action="{{ path('quizz_new') }}" method="POST">
+        <form id="quizzForm" action="{{ path('quizz_new') }}" method="POST" onsubmit="return validateForm(event)">
             <div class="mb-4">
                 <label for="matiere" class="block">Matière</label>
                 <input type="text" name="matiere" id="matiere" class="w-full p-2 border border-gray-300 rounded-lg">
+                <p id="matiereError" class="text-red-500 text-sm"></p>
             </div>
             <div class="mb-4">
                 <label for="chapitre" class="block">Chapitre</label>
                 <input type="number" name="chapitre" id="chapitre" class="w-full p-2 border border-gray-300 rounded-lg">
+                <p id="chapitreError" class="text-red-500 text-sm"></p>
             </div>
             <div class="mb-4">
                 <label for="difficulte" class="block">Difficulté</label>
-                <input type="number" name="difficulte" id="difficulte" class="w-full p-2 border border-gray-300 rounded-lg">
+                <div id="starContainer" class="stars">
+                    <span data-value="1">☆</span>
+                    <span data-value="2">☆</span>
+                    <span data-value="3">☆</span>
+                    <span data-value="4">☆</span>
+                    <span data-value="5">☆</span>
+                </div>
+                <input type="hidden" name="difficulte" id="difficulte">
+                <p id="difficulteError" class="text-red-500 text-sm"></p>
             </div>
             <div class="mb-4">
                 <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded-lg">Créer</button>
             </div>
         </form>
+
+        <!-- 🔹 Bouton Ajouter les questions qui s'affiche après la création du quiz -->
+        <div id="addQuestionsSection" class="hidden">
+            <a id="addQuestionsButton" href="#" class="bg-green-500 text-white px-4 py-2 rounded-lg">Ajouter les questions</a>
+        </div>
+
         <a href="{{ path('quizz_index') }}" class="mt-8 inline-block bg-gray-500 text-white px-4 py-2 rounded-lg">Retour à la liste des quiz</a>
     </main>
+
+    <script>
+        function validateForm(event) {
+            event.preventDefault();  // Empêcher la soumission par défaut
+
+            let isValid = true;
+            
+            let matiere = document.getElementById("matiere").value.trim();
+            let chapitre = document.getElementById("chapitre").value.trim();
+            let difficulte = document.getElementById("difficulte").value.trim();
+            
+            document.getElementById("matiereError").innerText = "";
+            document.getElementById("chapitreError").innerText = "";
+            document.getElementById("difficulteError").innerText = "";
+            
+            if (matiere === "") {
+                document.getElementById("matiereError").innerText = "Veuillez entrer une matière.";
+                isValid = false;
+            }
+            
+            if (chapitre === "" || isNaN(chapitre) || chapitre <= 0) {
+                document.getElementById("chapitreError").innerText = "Veuillez entrer un numéro de chapitre valide.";
+                isValid = false;
+            }
+            
+            if (difficulte === "") {
+                document.getElementById("difficulteError").innerText = "Veuillez sélectionner une difficulté.";
+                isValid = false;
+            }
+            
+            if (isValid) {
+                // 🔹 Simulation de l'enregistrement en Ajax (remplace par une requête fetch si besoin)
+                fetch("{{ path('quizz_new') }}", {
+                    method: "POST",
+                    body: new FormData(document.getElementById("quizzForm"))
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        // 🔹 Afficher le bouton "Ajouter les questions"
+                        document.getElementById("addQuestionsSection").classList.remove("hidden");
+                        document.getElementById("addQuestionsButton").href = "{{ path('question_add', {'id': 'QUIZ_ID'}) }}".replace("QUIZ_ID", data.quiz_id);
+                    }
+                });
+
+                return false; // 🔹 Empêche l'envoi traditionnel du formulaire
+            }
+
+            return isValid;
+        }
+        
+        document.querySelectorAll("#starContainer span").forEach(star => {
+            star.addEventListener("click", function() {
+                let value = this.getAttribute("data-value");
+                document.getElementById("difficulte").value = value;
+                document.querySelectorAll("#starContainer span").forEach(s => {
+                    s.classList.remove("filled");
+                });
+                for (let i = 0; i < value; i++) {
+                    document.querySelectorAll("#starContainer span")[i].classList.add("filled");
+                }
+            });
+        });
+    </script>
 </body>
 </html>

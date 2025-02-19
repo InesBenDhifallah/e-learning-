@@ -10,42 +10,61 @@
     <aside class="w-64 bg-lime-500 text-white p-5 min-h-screen">
         <div class="text-lg font-bold mb-5">Alpha Education</div>
         <ul class="space-y-4">
-            <li><a href="{{ path('quizz_index') }}" class="block hover:text-gray-200">📚 Liste des Quiz</a></li>
+            <li><a href="#" class="block hover:text-gray-200">👤 Profil</a></li>
+            <li><a href="#" class="block hover:text-gray-200">📚 Cours</a></li>
+            <li><a href="#" class="block hover:text-gray-200">📊 Chapitres</a></li>
+            <li><a href="{{ path('quizz_index') }}" class="block hover:text-gray-200">📝 Quiz</a></li>
             <li><a href="#" class="block hover:text-gray-200">🔒 Déconnexion</a></li>
         </ul>
     </aside>
 
-<main class="flex-1 p-6">
-    <h1 class="text-2xl font-bold">{{ quiz.matiere }}</h1>
-    <h2 class="mt-4 text-xl font-semibold">Questions</h2>
+    <main class="flex-1 p-6">
+        <h1 class="text-2xl font-bold">{{ quiz.matiere }}</h1>
+        <h2 class="mt-4 text-xl font-semibold">Questions</h2>
 
-    <!-- 🔹 Formulaire pour l'élève -->
-    {% if role == 'eleve' %}
-        <form method="post">
+        <!-- 🔹 Formulaire pour l'élève -->
+        {% if role == 'eleve' %}
+            <form method="post">
+                {% for question in questions %}
+                    <div class="bg-white p-4 shadow-lg rounded-lg mb-4">
+                        <p class="font-bold">{{ question.question }}</p>
+                        <div>
+                            {% for suggestion in question.suggestions %}
+                                <label class="block">
+                                    <input type="radio" name="question_{{ question.id }}" value="{{ suggestion.id }}" required>
+                                    {{ suggestion.contenu }}
+                                </label>
+                            {% endfor %}
+                        </div>
+                    </div>
+                {% endfor %}
+                <button type="submit" class="bg-green-500 text-white px-4 py-2 rounded-lg">Valider</button>
+            </form>
+
+        {% else %}
+            <!-- 🔹 Liste des questions pour l'admin -->
             {% for question in questions %}
                 <div class="bg-white p-4 shadow-lg rounded-lg mb-4">
                     <p class="font-bold">{{ question.question }}</p>
-                    <div>
-                        <input type="radio" name="question_{{ question.id }}" value="Vrai"> Vrai
-                        <input type="radio" name="question_{{ question.id }}" value="Faux"> Faux
-                    </div>
+                    <ul class="mt-2">
+                        {% for suggestion in question.suggestions %}
+                            <li {% if suggestion.estCorrecte %} class="font-bold text-green-600" {% endif %}>
+                                - {{ suggestion.contenu }}
+                                {% if suggestion.estCorrecte %} ✅ {% endif %}
+                            </li>
+                        {% endfor %}
+                    </ul>
                 </div>
             {% endfor %}
-            <button type="submit" class="bg-green-500 text-white px-4 py-2 rounded-lg">Valider</button>
-        </form>
-    {% else %}
-        <!-- 🔹 Liste des questions pour l'admin -->
-        {% for question in questions %}
-            <div class="bg-white p-4 shadow-lg rounded-lg mb-4">
-                <p class="font-bold">{{ question.question }}</p>
-                <p>Réponse correcte : {{ question.reponse }}</p>
-            </div>
-        {% endfor %}
 
-        <!-- 🔹 Bouton pour ajouter une question (Admin uniquement) -->
-        <a href="{{ path('question_add', {id: quiz.id}) }}" class="bg-blue-500 text-white px-4 py-2 rounded-lg">Ajouter une Question</a>
-    {% endif %}
-</main>
+            <!-- 🔹 Bouton pour ajouter une question (Admin uniquement) -->
+            <div class="mt-8 text-center">
+                <a href="{{ path('question_add', {id: quiz.id}) }}" class="bg-blue-500 text-white px-6 py-3 rounded-lg shadow-lg hover:bg-blue-600 transition">
+                    ➕ Ajouter une Question
+                </a>
+            </div>
+        {% endif %}
+    </main>
 
 </body>
 </html>

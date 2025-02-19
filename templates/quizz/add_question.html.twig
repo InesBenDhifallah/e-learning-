@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ajouter une Question</title>
+    <title>Ajouter des Questions</title>
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
 <body class="flex bg-gray-100">
@@ -13,32 +13,97 @@
             <li><a href="#" class="block hover:text-gray-200">👤 Profil</a></li>
             <li><a href="#" class="block hover:text-gray-200">📚 Cours</a></li>
             <li><a href="#" class="block hover:text-gray-200">📊 Chapitres</a></li>
+            <li><a href="{{ path('quizz_index') }}" class="block hover:text-gray-200">📝 Quiz</a></li>
             <li><a href="#" class="block hover:text-gray-200">🔒 Déconnexion</a></li>
         </ul>
     </aside>
 
     <main class="flex-1 p-6">
-        <h1 class="text-2xl font-bold">Ajouter une Question pour {{ quiz.matiere }}</h1>
+        <h1 class="text-2xl font-bold">Ajouter des questions pour le quiz : {{ quiz.matiere }}</h1>
 
-        <form action="{{ path('question_add', {'id': quiz.id}) }}" method="POST">
-            <div class="mb-4">
-                <label for="question" class="block">Question</label>
-                <input type="text" name="question" id="question" class="w-full p-2 border border-gray-300 rounded-lg">
+        <form id="questionsForm" action="{{ path('question_add', {'id': quiz.id}) }}" method="POST" onsubmit="return validateForm(event)">
+            <div id="questions-container">
+                <!-- Premier champ de question par défaut -->
+                <div class="question-block mb-6 p-4 border rounded-lg bg-white">
+                    <label class="block font-bold">Question</label>
+                    <input type="text" name="questions[0][question]" class="w-full p-2 border border-gray-300 rounded-lg" required>
+                    <p class="text-red-500 text-sm hidden question-error">La question ne peut pas être vide.</p>
+
+                    <fieldset class="mb-4 border p-4 rounded-lg">
+                        <legend class="font-bold">Suggestions</legend>
+                        <div class="suggestions-container">
+                            <div class="flex space-x-2 mb-2">
+                                <input type="text" name="questions[0][suggestions][]" class="w-full p-2 border border-gray-300 rounded-lg" required>
+                                <input type="radio" name="questions[0][correct_index]" value="0" required>
+                            </div>
+                        </div>
+                        <p class="text-red-500 text-sm hidden suggestion-error">Ajoutez au moins deux suggestions.</p>
+                        <p class="text-red-500 text-sm hidden solution-error">Sélectionnez une seule réponse correcte.</p>
+                        <button type="button" onclick="addSuggestion(this)" class="bg-green-500 text-white px-3 py-1 rounded">
+                            ➕ Ajouter une suggestion
+                        </button>
+                    </fieldset>
+                </div>
             </div>
+
+            <button type="button" onclick="addQuestion()" class="mb-4 bg-blue-500 text-white px-4 py-2 rounded-lg">
+                ➕ Ajouter une autre question
+            </button>
+
             <div class="mb-4">
-                <label for="reponse" class="block">Réponse</label>
-                <input type="text" name="reponse" id="reponse" class="w-full p-2 border border-gray-300 rounded-lg">
-            </div>
-            <div class="mb-4">
-                <label for="solution" class="block">Solution</label>
-                <input type="text" name="solution" id="solution" class="w-full p-2 border border-gray-300 rounded-lg">
-            </div>
-            <div class="mb-4">
-                <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded-lg">Ajouter</button>
+                <button type="submit" class="bg-green-500 text-white px-4 py-2 rounded-lg">Enregistrer toutes les questions</button>
             </div>
         </form>
 
         <a href="{{ path('quizz_show', {'id': quiz.id}) }}" class="mt-8 inline-block bg-gray-500 text-white px-4 py-2 rounded-lg">Retour au quiz</a>
     </main>
+
+    <script>
+        let questionIndex = 1;
+
+        function addQuestion() {
+            let container = document.getElementById('questions-container');
+
+            let questionBlock = document.createElement('div');
+            questionBlock.classList.add('question-block', 'mb-6', 'p-4', 'border', 'rounded-lg', 'bg-white');
+            questionBlock.innerHTML = `
+                <label class="block font-bold">Question</label>
+                <input type="text" name="questions[${questionIndex}][question]" class="w-full p-2 border border-gray-300 rounded-lg" required>
+                <p class="text-red-500 text-sm hidden question-error">La question ne peut pas être vide.</p>
+
+                <fieldset class="mb-4 border p-4 rounded-lg">
+                    <legend class="font-bold">Suggestions</legend>
+                    <div class="suggestions-container">
+                        <div class="flex space-x-2 mb-2">
+                            <input type="text" name="questions[${questionIndex}][suggestions][]" class="w-full p-2 border border-gray-300 rounded-lg" required>
+                            <input type="radio" name="questions[${questionIndex}][correct_index]" value="0" required>
+                        </div>
+                    </div>
+                    <p class="text-red-500 text-sm hidden suggestion-error">Ajoutez au moins deux suggestions.</p>
+                    <p class="text-red-500 text-sm hidden solution-error">Sélectionnez une seule réponse correcte.</p>
+                    <button type="button" onclick="addSuggestion(this)" class="bg-green-500 text-white px-3 py-1 rounded">
+                        ➕ Ajouter une suggestion
+                    </button>
+                </fieldset>
+            `;
+            container.appendChild(questionBlock);
+            questionIndex++;
+        }
+
+        function addSuggestion(button) {
+            let questionBlock = button.closest('.question-block');
+            let suggestionsContainer = questionBlock.querySelector('.suggestions-container');
+            let questionIndex = [...document.querySelectorAll('.question-block')].indexOf(questionBlock);
+            let suggestionIndex = suggestionsContainer.querySelectorAll('.flex').length;
+            
+            let div = document.createElement('div');
+            div.classList.add('flex', 'space-x-2', 'mb-2');
+            div.innerHTML = `
+                <input type="text" name="questions[${questionIndex}][suggestions][]" class="w-full p-2 border border-gray-300 rounded-lg" required>
+                <input type="radio" name="questions[${questionIndex}][correct_index]" value="${suggestionIndex}" required>
+            `;
+            suggestionsContainer.appendChild(div);
+        }
+    </script>
 </body>
 </html>
