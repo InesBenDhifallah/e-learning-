@@ -53,7 +53,7 @@ final class ChapitreController extends AbstractController
     #[Route('/{id}/edit', name: 'app_chapitre_edit', methods: ['GET', 'POST'])]
     public function edit(Request $request, Chapitre $chapitre, EntityManagerInterface $entityManager): Response
     {
-        $form = $this->createForm(Chapitre1Type::class, $chapitre);
+        $form = $this->createForm(ChapitreType::class, $chapitre);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
