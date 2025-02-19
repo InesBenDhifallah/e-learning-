@@ -1,0 +1,52 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Liste des articles{% endblock %}
+
+{% block body %}
+    <div class="container mx-auto px-4">
+        <h1 class="text-3xl font-extrabold text-gray-800 mb-8 text-center">📰 Liste des Articles</h1>
+        
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            {% for article in articles %}
+                <div class="bg-white rounded-xl shadow-md hover:shadow-xl transition-shadow duration-300 transform hover:-translate-y-1 p-6 flex flex-col justify-between">
+                    <div>
+                        
+                        <!-- Titre de l'article -->
+                        <h3 class="text-xl font-bold text-gray-800 truncate">{{ article.title }}</h3>
+
+                        <!-- Auteur + Date de création -->
+                        <p class="text-gray-600 text-sm mb-2">
+                            Par <strong class="text-lime-600 truncate">{{ article.author }}</strong> 
+                            | <span class="text-gray-500">{{ article.createdAt|date('d/m/Y H:i') }}</span>
+                        </p>
+
+                        <!-- Contenu tronqué -->
+                        <p class="text-gray-700 text-sm overflow-hidden text-ellipsis whitespace-nowrap">
+                            {{ article.content|slice(0, 100) ~ '...' }}
+                        </p>
+                    </div>
+                    
+                    
+                    <div class="flex items-center justify-between mt-4">
+                        <!-- Catégorie -->
+                        <span class="bg-blue-100 text-blue-600 px-3 py-1 rounded-full text-xs font-semibold truncate">
+                            {{ article.category }}
+                        </span>
+
+                        <!-- Bouton Lire l'article -->
+                        <a href="{{ path('user_article_show', {'id': article.id}) }}" 
+                           class="bg-blue-500 text-white px-4 py-2 rounded-full font-bold shadow-md hover:bg-blue-600 transition duration-300 transform hover:scale-105">
+                           📖 Lire l'article
+                        </a>
+                    </div>
+
+
+
+
+                </div>
+            {% else %}
+                <p class="text-gray-500 text-center col-span-3">Aucun article disponible.</p>
+            {% endfor %}
+        </div>
+    </div>
+{% endblock %}

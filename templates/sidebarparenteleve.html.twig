@@ -4,13 +4,13 @@
         <img src="{{ asset('img/logo.png') }}" alt="Logo" class="h-10 mx-auto">
     </div>
     <nav class="space-y-4">
-        <a href="#" class="flex items-center py-2 px-4 rounded-lg transition-all hover:bg-[#6D9B25] hover:translate-x-1">
+        <a href="{{ path('app_user_edit') }}" class="flex items-center py-2 px-4 rounded-lg transition-all hover:bg-[#6D9B25] hover:translate-x-1">
             <i class="fas fa-user-circle mr-3"></i> Profil
         </a>
         <a href="{{ path('app_paiement_index') }}" class="flex items-center py-2 px-4 rounded-lg transition-all hover:bg-[#6D9B25] hover:translate-x-1">
             <i class="fas fa-credit-card mr-3"></i> Paiements
         </a>
-        <a href="#" class="flex items-center py-2 px-4 rounded-lg transition-all hover:bg-[#6D9B25] hover:translate-x-1">
+        <a href="{{ path('app_cours_index') }}" class="flex items-center py-2 px-4 rounded-lg transition-all hover:bg-[#6D9B25] hover:translate-x-1">
             <i class="fas fa-child mr-3"></i> Cours
         </a>
         <a href="{{ path('app_stat') }}" class="flex items-center py-2 px-4 rounded-lg transition-all hover:bg-[#6D9B25] hover:translate-x-1">
