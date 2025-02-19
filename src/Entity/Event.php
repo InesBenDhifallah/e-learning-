@@ -159,15 +159,4 @@ class Event
         return $this;
     }
 
-    public function removeParticipation(Participation $participation): static
-    {
-        if ($this->participations->removeElement($participation)) {
-            // set the owning side to null (unless already changed)
-            if ($participation->getEvent() === $this) {
-                $participation->setEvent(null);
-            }
-        }
-
-        return $this;
-    }
 }

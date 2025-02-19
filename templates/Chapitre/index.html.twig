@@ -1,35 +1,48 @@
-{% extends 'base.html.twig' %}
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Liste des Chapitres</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+</head>
+<body class="bg-gray-100 min-h-screen flex overflow-hidden">
 
-{% block title %}Chapitre index{% endblock %}
+    <!-- Sidebar -->
+    <div class="w-72 bg-gray-800 text-white min-h-screen p-6">
+        {% include 'sidebarprof.html.twig' %}
+    </div>
 
-{% block body %}
-    <h1>Chapitre index</h1>
+    <!-- Contenu principal -->
+    <div class="flex-1 p-10 overflow-auto">
+        <h1 class="text-3xl font-bold text-gray-800 mb-8 text-center">Liste des Chapitres</h1>
 
-    <table class="table">
-        <thead>
-            <tr>
-                <th>Id</th>
-                <th>Nom</th>
-                <th>actions</th>
-            </tr>
-        </thead>
-        <tbody>
-        {% for chapitre in chapitres %}
-            <tr>
-                <td>{{ chapitre.id }}</td>
-                <td>{{ chapitre.nom }}</td>
-                <td>
-                    <a href="{{ path('app_chapitre_show', {'id': chapitre.id}) }}">show</a>
-                    <a href="{{ path('app_chapitre_edit', {'id': chapitre.id}) }}">edit</a>
-                </td>
-            </tr>
-        {% else %}
-            <tr>
-                <td colspan="3">no records found</td>
-            </tr>
-        {% endfor %}
-        </tbody>
-    </table>
+        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
+            {% for chapitre in chapitres %}
+                <div class="bg-white rounded-lg shadow-lg p-6 hover:shadow-xl transition duration-300">
+                    <h2 class="text-xl font-semibold text-gray-900">{{ chapitre.nom }}</h2>
+                    <p class="text-gray-500 text-sm mt-1">ID: {{ chapitre.id }}</p>
+                    <div class="mt-4 flex justify-between">
+                        <a href="{{ path('app_chapitre_show', {'id': chapitre.id}) }}" class="text-blue-500 hover:text-blue-700 font-medium">
+                            <i class="fas fa-eye"></i> Voir
+                        </a>
+                        <a href="{{ path('app_chapitre_edit', {'id': chapitre.id}) }}" class="text-yellow-500 hover:text-yellow-700 font-medium">
+                            <i class="fas fa-edit"></i> Modifier
+                        </a>
+                    </div>
+                </div>
+            {% else %}
+                <p class="col-span-full text-gray-500 text-center text-lg">Aucun chapitre trouvé.</p>
+            {% endfor %}
+        </div>
 
-    <a href="{{ path('app_chapitre_new') }}">Create new</a>
-{% endblock %}
+        <div class="mt-8 text-center">
+            <a href="{{ path('app_chapitre_new') }}" class="px-6 py-3 bg-green-500 text-white text-lg rounded-lg shadow-md hover:bg-green-600 transition">
+                <i class="fas fa-plus"></i> Créer un nouveau chapitre
+            </a>
+        </div>
+    </div>
+
+</body>
+</html>
