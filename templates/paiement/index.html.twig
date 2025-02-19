@@ -14,7 +14,7 @@
             {% include 'sidebarparenteleve.html.twig' %}
         </div>
 
-        <!-- Contenu principal -->
+        
         <div class="flex-1 p-8">
             <header class="flex justify-between items-center mb-6">
                 <h1 class="text-3xl font-bold text-gray-800">Gestion des Paiements</h1>
@@ -24,7 +24,7 @@
                 </a>
             </header>
 
-            <!-- Tableau des paiements -->
+           
             <div class="bg-white rounded-xl shadow-lg overflow-hidden">
                 <table class="w-full text-left">
                     <thead class="bg-lime-600 text-white">
@@ -32,7 +32,7 @@
         <th class="py-4 px-6">Id</th>
         <th class="py-4 px-6">Nom</th>
         <th class="py-4 px-6">Email</th>
-        <th class="py-4 px-6">Type d'Abonnement</th> {# Nouvelle colonne #}
+        <th class="py-4 px-6">Type d'Abonnement</th> 
         <th class="py-4 px-6">Montant</th>
         <th class="py-4 px-6">Date Paiement</th>
         <th class="py-4 px-6">Date Expiration</th>
@@ -47,21 +47,26 @@
             <td class="py-4 px-6">{{ paiement.email }}</td>
             <td class="py-4 px-6 font-semibold text-gray-700">
                 {{ paiement.idAbonnement ? paiement.idAbonnement.type : 'Non défini' }} 
-            </td> {# Affichage du type d'abonnement #}
+            </td> 
             <td class="py-4 px-6">{{ paiement.montant }} Dinars</td>
             <td class="py-4 px-6">{{ paiement.datePaiement ? paiement.datePaiement|date('Y-m-d') : '' }}</td>
             <td class="py-4 px-6 font-bold text-red-600">
-                {% if paiement.idAbonnement and paiement.datePaiement %}
-                    {% set duree = paiement.idAbonnement.duree %}
+            {% if paiement.idAbonnement and paiement.datePaiement %}
+                {% set duree = paiement.idAbonnement.duree %}
+                {% if duree %}
                     {% set dateExpiration = paiement.datePaiement|date_modify(
                         duree matches '/mois/' ? '+' ~ duree|replace({'mois': '', ' ': ''}) ~ ' months' : 
-                        (duree matches '/année/' ? '+' ~ duree|replace({'année': '', ' ': ''}) ~ ' years' : '')
+                        (duree matches '/an/' ? '+' ~ duree|replace({'an': '', ' ': ''}) ~ ' year' : '')
                     ) %}
                     {{ dateExpiration|date('Y-m-d') }}
                 {% else %}
-                    -
+                    
                 {% endif %}
-            </td>
+            {% else %}
+                
+            {% endif %}
+        </td>
+
             <td class="py-4 px-6">
                 <a href="{{ path('app_paiement_show', {'id': paiement.id}) }}" 
                    class="text-blue-500 hover:text-blue-700">
