@@ -1,11 +1,66 @@
-{% extends 'base.html.twig' %}
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ajouter un Cours</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+</head>
+<body class="bg-gray-100 flex min-h-screen">
+    <!-- Sidebar -->
+    <aside class="w-72 bg-[#AFC92C] text-black p-6 min-h-screen fixed">
+        {% include 'sidebarparenteleve.html.twig' %}
+    </aside>
 
-{% block title %}New Cours{% endblock %}
+    <!-- Main Content -->
+    <main class="flex-1 flex justify-center items-center ml-80 p-10">
+        <div class="bg-white w-full max-w-lg mx-auto rounded-xl shadow-lg p-8">
+            <h2 class="text-3xl font-bold text-center mb-6">Ajouter un Cours</h2>
 
-{% block body %}
-    <h1>Create new Cours</h1>
+            {{ form_start(form, {'attr': {'class': 'space-y-4', 'enctype': 'multipart/form-data'}}) }}
 
-    {{ include('cours/_form.html.twig') }}
+            <!-- Titre -->
+            <div>
+                <label for="{{ form.titre.vars.id }}" class="block text-sm font-medium text-gray-600">Titre <span class="text-red-500">*</span></label>
+                {{ form_widget(form.titre, {'attr': {'class': 'mt-2 w-full p-3 border border-gray-300 rounded-lg'}}) }}
+                {% if form.titre.vars.errors|length > 0 %}
+                    <p class="text-red-500 text-sm">{{ form_errors(form.titre) }}</p>
+                {% endif %}
+            </div>
 
-    <a href="{{ path('app_cours_index') }}">back to list</a>
-{% endblock %}
+            <!-- Chapitre -->
+            <div>
+                <label for="{{ form.chapitre.vars.id }}" class="block text-sm font-medium text-gray-600">Chapitre <span class="text-red-500">*</span></label>
+                {{ form_widget(form.chapitre, {'attr': {'class': 'mt-2 w-full p-3 border border-gray-300 rounded-lg'}}) }}
+                {% if form.chapitre.vars.errors|length > 0 %}
+                    <p class="text-red-500 text-sm">{{ form_errors(form.chapitre) }}</p>
+                {% endif %}
+            </div>
+
+            <!-- Fichier -->
+            <div>
+                <label for="{{ form.contenuFile.vars.id }}" class="block text-sm font-medium text-gray-600">Fichier du Cours <span class="text-red-500">*</span></label>
+                {{ form_widget(form.contenuFile, {'attr': {'class': 'mt-2 w-full p-3 border border-gray-300 rounded-lg', 'accept': '.pdf,.doc,.docx,.ppt,.pptx'}}) }}
+                {% if form.contenuFile.vars.errors|length > 0 %}
+                    <p class="text-red-500 text-sm">{{ form_errors(form.contenuFile) }}</p>
+                {% endif %}
+            </div>
+
+            <div class="flex justify-between mt-6">
+                <!-- Retour à la liste -->
+                <a href="{{ path('app_cours_index') }}" class="py-3 px-4 bg-gray-600 text-white font-medium rounded-lg hover:bg-gray-700 transition duration-300 flex items-center">
+                    <i class="fas fa-arrow-left mr-2"></i> Retour aux cours
+                </a>
+                
+                <!-- Bouton d'envoi -->
+                <button type="submit" class="py-3 px-4 bg-lime-500 text-white font-medium rounded-lg hover:bg-lime-600 transition duration-300">
+                    Ajouter le Cours
+                </button>
+            </div>
+
+            {{ form_end(form) }}
+        </div>
+    </main>
+</body>
+</html>

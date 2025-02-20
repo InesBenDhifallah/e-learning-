@@ -1,0 +1,47 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Liste des Participants - {{ event.titre }}{% endblock %}
+
+{% block body %}
+<div class="min-h-screen bg-gray-100 flex flex-col items-center justify-center p-6">
+    <div class="bg-white shadow-lg rounded-lg p-6 w-full max-w-3xl">
+        <h2 class="text-2xl font-bold text-gray-800 mb-4">Participants for {{ event.titre }}</h2>
+
+        <!-- Flash Messages -->
+        {% for message in app.flashes('success') %}
+            <div class="bg-green-500 text-white p-2 rounded mb-2">{{ message }}</div>
+        {% endfor %}
+        {% for message in app.flashes('warning') %}
+            <div class="bg-yellow-500 text-white p-2 rounded mb-2">{{ message }}</div>
+        {% endfor %}
+        {% for message in app.flashes('error') %}
+            <div class="bg-red-500 text-white p-2 rounded mb-2">{{ message }}</div>
+        {% endfor %}
+        {% for message in app.flashes('info') %}
+            <div class="bg-blue-500 text-white p-2 rounded mb-2">{{ message }}</div>
+        {% endfor %}
+
+        {% if participants is empty %}
+            <p class="text-gray-600">No participants for this event yet.</p>
+        {% else %}
+            <ul class="divide-y divide-gray-200">
+                {% for participation in participants %}
+                    <li class="py-3 flex justify-between items-center">
+                        <span class="text-gray-700">{{ participation.user.email }}</span>
+                        <form method="post" action="{{ path('app_participation_cancel', { id: participation.id }) }}">
+                            <input type="hidden" name="_token" value="{{ csrf_token('cancel' ~ participation.id) }}">
+                            <button type="submit" class="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-700">
+                                Cancel
+                            </button>
+                        </form>
+                    </li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+
+        <a href="{{ path('app_event_index') }}" class="mt-4 inline-block bg-gray-600 text-white px-4 py-2 rounded hover:bg-gray-800">
+            Back to Events
+        </a>
+    </div>
+</div>
+{% endblock %}

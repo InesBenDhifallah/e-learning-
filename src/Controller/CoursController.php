@@ -44,8 +44,7 @@ final class CoursController extends AbstractController
         }
 
         return $this->render('cours/new.html.twig', [
-            'cour' => $cour,
-            'form' => $form,
+            'form' => $form->createView(), // ✅ Envoi du formulaire au template `new.html.twig`
         ]);
     }
 
