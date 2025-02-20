@@ -3,6 +3,8 @@
 namespace App\Form;
 
 use App\Entity\Event;
+use Symfony\Component\Form\Extension\Core\Type\FileType;
+use Symfony\Component\Validator\Constraints\File;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
@@ -12,6 +14,8 @@ use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Component\Validator\Constraints\Callback;
+use Symfony\Component\Validator\Context\ExecutionContextInterface;
 
 class EventType extends AbstractType
 {
@@ -57,10 +61,7 @@ class EventType extends AbstractType
                 'label' => 'Localisation',
                 'required' => false,
                 'constraints' => [
-                    new Assert\When(
-                        condition: fn ($object) => $object->getType() === 'presentiel',
-                        then: [new Assert\NotBlank(['message' => 'La localisation est obligatoire pour un événement en présentiel.'])]
-                    ),
+                    new Callback([$this, 'validateLocalisation']),
                 ],
                 'attr' => ['class' => 'form-control']
             ])
@@ -99,17 +100,34 @@ class EventType extends AbstractType
                 ],
                 'attr' => ['class' => 'form-control']
             ])
-            ->add('image', TextType::class, [
-                'label' => 'Image (Nom du fichier)',
+            ->add('image', FileType::class, [
+                'label' => 'Image (Fichier JPG, PNG ou GIF)',
+                'mapped' => false, // This means that the field is not associated directly with an entity property
+                'required' => false,
                 'constraints' => [
-                    new Assert\NotBlank(['message' => 'Veuillez fournir une image.']),
-                    new Assert\Regex([
-                        'pattern' => '/\.(jpg|jpeg|png|gif)$/i',
-                        'message' => 'Le fichier doit être une image valide (JPG, JPEG, PNG, GIF).'
-                    ]),
+                    new File([
+                        'maxSize' => '2M',
+                        'mimeTypes' => [
+                            'image/jpeg',
+                            'image/png',
+                            'image/gif',
+                        ],
+                        'mimeTypesMessage' => 'Veuillez télécharger un fichier image valide (JPG, PNG ou GIF).',
+                    ])
                 ],
                 'attr' => ['class' => 'form-control']
             ]);
+    }
+
+    public function validateLocalisation($localisation, ExecutionContextInterface $context): void
+    {
+        $form = $context->getRoot();
+        $eventType = $form->get('type')->getData();
+
+        if ($eventType === 'presentiel' && empty($localisation)) {
+            $context->buildViolation('La localisation est obligatoire pour un événement en présentiel.')
+                ->addViolation();
+        }
     }
 
     public function configureOptions(OptionsResolver $resolver): void
