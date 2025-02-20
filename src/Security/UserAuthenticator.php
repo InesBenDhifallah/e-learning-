@@ -15,7 +15,6 @@ use Symfony\Component\Security\Http\Authenticator\Passport\Badge\UserBadge;
 use Symfony\Component\Security\Http\Authenticator\Passport\Credentials\PasswordCredentials;
 use Symfony\Component\Security\Http\Authenticator\Passport\Passport;
 use Symfony\Component\Security\Http\Util\TargetPathTrait;
-use Symfony\Component\Security\Core\User\UserProviderInterface;
 
 class UserAuthenticator extends AbstractLoginFormAuthenticator
 {
@@ -43,25 +42,25 @@ class UserAuthenticator extends AbstractLoginFormAuthenticator
     }
 
     public function onAuthenticationSuccess(Request $request, TokenInterface $token, string $firewallName): ?Response
-{
-    $user = $token->getUser();
-    $roles = $user->getRoles();
+    {
+        $user = $token->getUser();
+        $roles = $user->getRoles();
 
+        // Redirect based on role
+        if (in_array('ROLE_ADMIN', $roles, true)) {
+            return new RedirectResponse($this->router->generate('app_listusers')); // Redirect admin to /listusers
+        } elseif (in_array('ROLE_Parent', $roles, true)) {
+            return new RedirectResponse($this->router->generate('app_stat')); 
+        } elseif (in_array('ROLE_TEACHER', $roles, true)) {
+            return new RedirectResponse($this->router->generate('app_cours_index'));
+        }
 
-    // Redirect based on role
-    if (in_array('ROLE_ADMIN', $roles, true)) {
-        return new RedirectResponse($this->router->generate('app_listusers')); // Redirect admin to /listusers
-    } elseif (in_array('ROLE_Parent', $roles, true)) {
-        return new RedirectResponse($this->router->generate('app_stat')); 
-    } elseif (in_array('ROLE_TEACHER', $roles, true)) {
-        return new RedirectResponse($this->router->generate('app_cours_index'));
+        return new RedirectResponse($this->router->generate('app_pageacceuil'));
     }
 
-    // Default fallback redirection
-    return new RedirectResponse($this->router->generate('app_pageacceuil'));
-}
     public function onAuthenticationFailure(Request $request, AuthenticationException $exception): Response
     {
+        $request->getSession()->set(Security::AUTHENTICATION_ERROR, $exception);
         return new RedirectResponse($this->router->generate('app_login'));
     }
 

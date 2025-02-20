@@ -1,9 +1,9 @@
 <?php
-// src/Controller/RegistrationController.php
 
 namespace App\Controller;
 
 use App\Entity\User;
+use App\Entity\Module;
 use App\Form\RegistrationFormType;
 use App\Security\EmailVerifier;
 use Doctrine\ORM\EntityManagerInterface;
@@ -15,7 +15,7 @@ use Symfony\Component\Mime\Address;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Contracts\Translation\TranslatorInterface;
-use App\Repository\UserRepository; // Import the UserRepository
+use App\Repository\UserRepository;
 
 class RegistrationController extends AbstractController
 {
@@ -24,38 +24,41 @@ class RegistrationController extends AbstractController
     }
 
     #[Route('/register', name: 'app_register')]
-    public function register(Request $request, UserPasswordHasherInterface $userPasswordHasher, EntityManagerInterface $entityManager, UserRepository $userRepository): Response
-    {
+    public function register(
+        Request $request,
+        UserPasswordHasherInterface $userPasswordHasher,
+        EntityManagerInterface $entityManager,
+        UserRepository $userRepository
+    ): Response {
         $user = new User();
         $form = $this->createForm(RegistrationFormType::class, $user);
         $form->handleRequest($request);
 
-        // Check if form is submitted and valid
         if ($form->isSubmitted()) {
-            // Check if the email already exists
             $existingUser = $userRepository->findOneBy(['email' => $user->getEmail()]);
             if ($existingUser) {
-                // If email exists, set an error on the email field
                 $form->get('email')->addError(new \Symfony\Component\Form\FormError('This email is already registered.'));
             }
 
             if ($form->isValid()) {
-                // Handle password
-                /** @var string $plainPassword */
                 $plainPassword = $form->get('plainPassword')->getData();
-
-                // Encode and set the password
                 $user->setPassword($userPasswordHasher->hashPassword($user, $plainPassword));
 
-                // Set the role of the user to 'ROLE_TEACHER' specifically for this form
-                $user->setRoles(['ROLE_TEACHER']); // Set 'ROLE_TEACHER' role for this user
+                $user->setRoles(['ROLE_TEACHER']);
+                $matiereId = $form->get('matiere')->getData();
+                $matiere = $entityManager->getRepository(Module::class)->find($matiereId);
 
-                // Persist user data
+                if (!$matiere) {
+                    throw new \Exception("Module not found.");
+                }
+
+                $user->setIdmatiere($matiere);
                 $entityManager->persist($user);
                 $entityManager->flush();
 
-                // Send email verification
-                $this->emailVerifier->sendEmailConfirmation('app_verify_email', $user,
+                $this->emailVerifier->sendEmailConfirmation(
+                    'app_verify_email',
+                    $user,
                     (new TemplatedEmail())
                         ->from(new Address('aziz.bellagha@gmail.com', 'Alpha Education Mail Bot'))
                         ->to((string) $user->getEmail())
@@ -63,7 +66,6 @@ class RegistrationController extends AbstractController
                         ->htmlTemplate('registration/confirmation_email.html.twig')
                 );
 
-                // Redirect to sign-in page after successful registration
                 return $this->redirectToRoute('app_login');
             }
         }
