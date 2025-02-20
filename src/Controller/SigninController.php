@@ -16,11 +16,8 @@ final class SigninController extends AbstractController
     #[Route('/signin', name: 'app_signin')]
     public function index(AuthenticationUtils $authenticationUtils, Request $request): Response
     {
-        // Get login error if there is one
         $error = $authenticationUtils->getLastAuthenticationError();
         $lastUsername = $authenticationUtils->getLastUsername();
-
-        // Create a basic login form manually
         $loginForm = $this->createFormBuilder()
             ->add('email', EmailType::class, [
                 'attr' => ['placeholder' => 'Entrez votre email'],
@@ -39,7 +36,7 @@ final class SigninController extends AbstractController
             ->getForm();
 
         return $this->render('signin/signin.html.twig', [
-            'loginForm' => $loginForm->createView(), // Pass the form to Twig
+            'loginForm' => $loginForm->createView(),
             'error' => $error,
         ]);
     }

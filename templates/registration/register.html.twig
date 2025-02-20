@@ -118,9 +118,10 @@
         <img src="{{ asset('img/logo.png') }}" alt="Alpha Education Logo">
     </div>
     <div class="menu">
-        <a href="#">Accueil</a>
-        <a href="#">S'inscrire</a>
-        <a href="#">Connexion</a>
+        <a href="{{ path('app_pageacceuil') }}">Accueil</a>
+        <a href="{{ path('app_parentsignup') }}">S'inscrire</a>
+        <a href="{{ path('app_login') }}">Connexion</a>
+        <a href="{{ path('app_login') }}"></a>
     </div>
 </div>
 
@@ -141,7 +142,7 @@
     <div class="form-group">
         {{ form_label(registrationForm.email, 'Email') }}
         {{ form_widget(registrationForm.email, {'attr': {'class': 'form-control'}}) }}
-        {{ form_errors(registrationForm.email, {'attr': {'class': 'error'}}) }}
+        {{ form_errors(registrationForm.email, {'attr': {'class': 'error'}}) }} {# Display email errors, including duplication error #}
     </div>
 
     <div class="form-group">
@@ -191,4 +192,3 @@
     {{ form_end(registrationForm) }}
 </div>
 {% endblock %}
-
