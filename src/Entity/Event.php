@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\EventRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
@@ -38,6 +40,14 @@ class Event
     #[ORM\Column(length: 255)]
     private ?string $image = null;
 
+    #[ORM\OneToMany(mappedBy: "event", targetEntity: Participation::class, cascade: ["remove"], orphanRemoval: true)]
+    private Collection $participations;
+
+    public function __construct()
+    {
+        $this->participations = new ArrayCollection();
+    }
+
     public function getId(): ?int
     {
         return $this->id;
@@ -51,7 +61,6 @@ class Event
     public function setTitre(string $titre): static
     {
         $this->titre = $titre;
-
         return $this;
     }
 
@@ -63,7 +72,6 @@ class Event
     public function setDescription(string $description): static
     {
         $this->description = $description;
-
         return $this;
     }
 
@@ -75,7 +83,6 @@ class Event
     public function setDateDebut(\DateTimeInterface $dateDebut): static
     {
         $this->dateDebut = $dateDebut;
-
         return $this;
     }
 
@@ -87,7 +94,6 @@ class Event
     public function setDateFin(\DateTimeInterface $dateFin): static
     {
         $this->dateFin = $dateFin;
-
         return $this;
     }
 
@@ -99,7 +105,6 @@ class Event
     public function setType(string $type): static
     {
         $this->type = $type;
-
         return $this;
     }
 
@@ -111,7 +116,6 @@ class Event
     public function setLocalisation(?string $localisation): static
     {
         $this->localisation = $localisation;
-
         return $this;
     }
 
@@ -123,7 +127,6 @@ class Event
     public function setPrix(float $prix): static
     {
         $this->prix = $prix;
-
         return $this;
     }
 
@@ -135,7 +138,25 @@ class Event
     public function setImage(string $image): static
     {
         $this->image = $image;
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Participation>
+     */
+    public function getParticipations(): Collection
+    {
+        return $this->participations;
+    }
+
+    public function addParticipation(Participation $participation): static
+    {
+        if (!$this->participations->contains($participation)) {
+            $this->participations->add($participation);
+            $participation->setEvent($this);
+        }
 
         return $this;
     }
+
 }

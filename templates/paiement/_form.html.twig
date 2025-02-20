@@ -14,12 +14,11 @@
             {% include 'sidebarparenteleve.html.twig' %}
         </div>
 
-        <!-- Contenu principal -->
+       
         <div class="flex-grow p-8 flex justify-center items-center">
             <div class="bg-white w-full max-w-md mx-auto rounded-xl shadow-lg p-8">
                 <h2 class="text-2xl font-bold text-center mb-6">Effectuer un Paiement</h2>
 
-                <!-- Formulaire -->
                 {{ form_start(form, {'attr': {'class': 'space-y-4', 'novalidate': 'novalidate'}}) }}
 
                 <div>
@@ -70,7 +69,7 @@
 
                 {{ form_end(form) }}
 
-                <!-- Bouton Retour à la liste dans la carte -->
+                
                 <div class="text-center mt-6">
                     <a href="{{ path('app_paiement_index') }}" class="inline-block px-4 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300">
                         Retour à la liste
