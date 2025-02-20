@@ -60,13 +60,12 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private ?bool $isActive = false;
 
     #[ORM\ManyToOne(inversedBy: 'users')]
-    private ?Module $idmatiere = null; // Set default value to false
+    private ?Module $idmatiere = null; 
 
     public function __construct() {
-        $this->isActive = false; // Default value set to false
+        $this->isActive = false; 
     }
 
-    // Getters and Setters...
     public function getId(): ?int
     {
         return $this->id;
@@ -162,17 +161,17 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     public function getSalt(): ?string
     {
-        return null;  // Not needed for modern password hashing algorithms
+        return null;  
     }
 
     public function eraseCredentials(): void
     {
-        // If you have temporary sensitive data, clear it here
+      
     }
 
     public function getUserIdentifier(): string
     {
-        return (string) $this->email;  // The unique identifier (email)
+        return (string) $this->email;  
     }
 
     public function getWork(): ?string

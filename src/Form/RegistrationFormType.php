@@ -10,6 +10,7 @@ use Symfony\Component\Form\Extension\Core\Type\EmailType;
 use Symfony\Component\Form\Extension\Core\Type\PasswordType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Constraints\IsTrue;
@@ -34,7 +35,16 @@ class RegistrationFormType extends AbstractType
             ->add('phonenumber', TextType::class, [
                 'required' => false,
             ])
-            ->add('matiere', TextType::class, [
+            ->add('matiere', ChoiceType::class, [
+                'choices' => [
+                    'Maths' => 1,
+                    'Physique' => 2,
+                    'Science' => 3,
+                    'Informatique' => 4,
+                    'Art' => 5,
+                ],
+                'label' => 'Matière enseignée',
+                'placeholder' => 'Choisissez une matière', 
                 'required' => false,
             ])
             ->add('experience', IntegerType::class, [
@@ -50,7 +60,7 @@ class RegistrationFormType extends AbstractType
                 ],
             ])
             ->add('plainPassword', PasswordType::class, [
-                'mapped' => false,  // Important: 'mapped' should be false to avoid being stored
+                'mapped' => false,
                 'attr' => ['autocomplete' => 'new-password'],
                 'constraints' => [
                     new NotBlank(['message' => 'Please enter a password']),
@@ -70,4 +80,3 @@ class RegistrationFormType extends AbstractType
         ]);
     }
 }
-
