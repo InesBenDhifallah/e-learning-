@@ -24,18 +24,18 @@ class Enseignant
     private ?string $email = null;
 
     #[ORM\Column(length: 255)]
-    private ?string $matiere = null; // Changé de "matière" à "matiere"
+    private ?string $matiere = null;
 
     #[ORM\Column]
     private ?int $experience = null;
 
-    #[ORM\Column(type: Types::BLOB, nullable: true)] // Rendue nullable
+    #[ORM\Column(type: Types::BLOB, nullable: true)]
     private $cv;
 
     #[ORM\Column(length: 255)]
     private ?string $reason = null;
 
-    #[ORM\Column(length: 255, nullable: true)] // Rendue nullable
+    #[ORM\Column(length: 255, nullable: true)]
     private ?string $cvpath = null;
 
     public function getId(): ?int
@@ -79,12 +79,12 @@ class Enseignant
         return $this;
     }
 
-    public function getMatiere(): ?string // Changé de "getMatière" à "getMatiere"
+    public function getMatiere(): ?string 
     {
         return $this->matiere;
     }
 
-    public function setMatiere(string $matiere): static // Changé de "setMatière" à "setMatiere"
+    public function setMatiere(string $matiere): static
     {
         $this->matiere = $matiere;
 
