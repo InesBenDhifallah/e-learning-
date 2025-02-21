@@ -9,6 +9,7 @@ use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Vich\UploaderBundle\Form\Type\VichFileType;  
+use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 
 class CoursType extends AbstractType
 {
@@ -24,6 +25,11 @@ class CoursType extends AbstractType
             ->add('chapitre', EntityType::class, [
                 'class' => Chapitre::class,
                 'choice_label' => 'nom',
+            ])
+
+            ->add('description', TextareaType::class, [
+                'attr' => ['class' => 'form-control'],
+                'required' => true,
             ])
         ;
     }

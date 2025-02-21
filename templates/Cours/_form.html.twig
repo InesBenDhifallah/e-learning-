@@ -1,4 +1,19 @@
-{{ form_start(form) }}
-    {{ form_widget(form) }}
+{{ form_start(form, {'attr': {'class': 'space-y-4', 'novalidate': 'novalidate'}}) }}
+
+                <div>
+                    <label for="{{ form.nom.vars.id }}" class="block text-sm font-medium text-gray-600">Nom du Chapitre</label>
+                    {{ form_widget(form.nom, {'attr': {'class': 'mt-2 w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-lime-500'}}) }}
+                    <div class="text-red-500">{{ form_errors(form.nom) }}</div>
+                </div>
+                 <div>
+                    <label for="{{ form.chapitre.vars.id }}" class="block text-sm font-medium text-gray-600">chapitre</label>
+                    {{ form_widget(form.chapitre, {'attr': {'class': 'mt-2 w-full p-3 border border-gray-300 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-lime-500'}}) }}
+                    <div class="text-red-500">{{ form_errors(form.chapitre) }}</div>
+                </div>
+                <label for="{{ form.description.vars.id }}" class="block text-sm font-medium text-gray-600">chapitre</label>
+                    {{ form_widget(form.desccription, {'attr': {'class': 'mt-2 w-full p-3 border border-gray-300 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-lime-500'}}) }}
+                    <div class="text-red-500">{{ form_errors(form.description) }}</div>
+                </div>
+
     <button class="btn">{{ button_label|default('Save') }}</button>
 {{ form_end(form) }}

@@ -11,13 +11,12 @@ use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Core\User\UserInterface;
 
 #[Route('/paiement')]
 final class PaiementController extends AbstractController
 {
-    
     #[Route('/abonnement', name: 'app_abonnement_index', methods: ['GET'])]
     public function abonnementIndex(AbonnementRepository $abonnementRepository): Response
     {
@@ -26,48 +25,46 @@ final class PaiementController extends AbstractController
         ]);
     }
 
-    
     #[Route('/new/{abonnementId}', name: 'app_paiement_new', methods: ['GET', 'POST'])]
     public function new(Request $request, EntityManagerInterface $entityManager, AbonnementRepository $abonnementRepository, int $abonnementId): Response
     {
-    $abonnement = $abonnementRepository->find($abonnementId);
-    if (!$abonnement) {
-        throw $this->createNotFoundException("L'abonnement n'existe pas");
-    }
-    $user = $this->getUser();
-    $montant = $abonnement->getPrix();
-    $paiement = new Paiement();
-    $paiement->setIdAbonnement($abonnement);
-    $paiement->setMontant($montant);
-    $paiement->setDatePaiement(new \DateTime());
-    $paiement->setUserid($user);  
+        $abonnement = $abonnementRepository->find($abonnementId);
+        if (!$abonnement) {
+            throw $this->createNotFoundException("L'abonnement n'existe pas");
+        }
+        $user = $this->getUser();
+        $montant = $abonnement->getPrix();
+        $paiement = new Paiement();
+        $paiement->setIdAbonnement($abonnement);
+        $paiement->setMontant($montant);
+        $paiement->setDatePaiement(new \DateTime());
+        $paiement->setUserid($user);
 
-    $form = $this->createForm(PaiementType::class, $paiement);
-    $form->handleRequest($request);
+        $form = $this->createForm(PaiementType::class, $paiement);
+        $form->handleRequest($request);
 
-    if ($form->isSubmitted() && $form->isValid()) {
-        $entityManager->persist($paiement);
-        $entityManager->flush();
+        if ($form->isSubmitted() && $form->isValid()) {
+            $entityManager->persist($paiement);
+            $entityManager->flush();
 
-        return $this->redirectToRoute('app_paiement_index', [], Response::HTTP_SEE_OTHER);
-    }
+            return $this->redirectToRoute('app_paiement_index', [], Response::HTTP_SEE_OTHER);
+        }
 
-    return $this->render('paiement/new.html.twig', [
-        'paiement' => $paiement,
-        'form' => $form,
-        'montant' => $montant,
-    ]);
+        return $this->render('paiement/new.html.twig', [
+            'paiement' => $paiement,
+            'form' => $form,
+            'montant' => $montant,
+        ]);
     }
 
     #[Route('/index', name: 'app_paiement_index', methods: ['GET'])]
-    public function index(PaiementRepository $paiementRepository,UserInterface $user): Response
+    public function index(PaiementRepository $paiementRepository, UserInterface $user): Response
     {
-            $paiements = $paiementRepository->findBy(['userid' => $user]);
-        
-            return $this->render('paiement/index.html.twig', [
-                'paiements' => $paiements,
-            ]);
-        
+        $paiements = $paiementRepository->findBy(['userid' => $user]);
+
+        return $this->render('paiement/index.html.twig', [
+            'paiements' => $paiements,
+        ]);
     }
 
     #[Route('/{id}', name: 'app_paiement_show', methods: ['GET'])]
@@ -99,7 +96,7 @@ final class PaiementController extends AbstractController
     #[Route('/{id}', name: 'app_paiement_delete', methods: ['POST'])]
     public function delete(Request $request, Paiement $paiement, EntityManagerInterface $entityManager): Response
     {
-        if ($this->isCsrfTokenValid('delete'.$paiement->getId(), $request->getPayload()->getString('_token'))) {
+        if ($this->isCsrfTokenValid('delete' . $paiement->getId(), $request->request->get('_token'))) {
             $entityManager->remove($paiement);
             $entityManager->flush();
         }
