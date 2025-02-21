@@ -19,6 +19,10 @@ class Cours
 
     #[ORM\Column(length: 255)]
     #[Assert\NotBlank(message: "Le titre du cours est obligatoire.")]
+    #[Assert\Regex(
+        pattern: "/^[A-Za-zÀ-ÿ\s]+$/u", 
+        message: "Le titre ne doit contenir que des lettres et des espaces."
+    )]
     private ?string $titre = null;
 
     #[Vich\UploadableField(mapping: "cours_files", fileNameProperty: "contenuFichier")]
@@ -46,6 +50,13 @@ class Cours
 
     #[ORM\Column(type: 'datetime', nullable: true)]
     private ?\DateTimeInterface $updatedAt = null;
+
+    #[ORM\Column(length: 255)]
+    #[Assert\NotBlank(message: "La description du cours est obligatoire.")]
+    #[Assert\Regex(
+        pattern: "/^[A-Za-zÀ-ÿ\s]+$/u", 
+        message: "La description ne doit contenir que des lettres et des espaces.")]
+    private ?string $description = null;
 
     public function __construct()
     {
@@ -118,5 +129,17 @@ class Cours
     public function updateTimestamp(): void
     {
         $this->updatedAt = new \DateTimeImmutable();
+    }
+
+    public function getDescription(): ?string
+    {
+        return $this->description;
+    }
+
+    public function setDescription(string $description): static
+    {
+        $this->description = $description;
+
+        return $this;
     }
 }

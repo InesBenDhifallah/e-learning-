@@ -13,7 +13,7 @@ use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Core\User\UserInterface;
 
 #[Route('/paiement')]
@@ -42,7 +42,6 @@ final class PaiementController extends AbstractController
         ]);
     }
 
-    
     #[Route('/new/{abonnementId}', name: 'app_paiement_new', methods: ['GET', 'POST'])]
     public function new(Request $request, EntityManagerInterface $entityManager, AbonnementRepository $abonnementRepository, int $abonnementId): Response
     {
@@ -129,14 +128,13 @@ final class PaiementController extends AbstractController
     
     
     #[Route('/index', name: 'app_paiement_index', methods: ['GET'])]
-    public function index(PaiementRepository $paiementRepository,UserInterface $user): Response
+    public function index(PaiementRepository $paiementRepository, UserInterface $user): Response
     {
-            $paiements = $paiementRepository->findBy(['userid' => $user]);
-        
-            return $this->render('paiement/index.html.twig', [
-                'paiements' => $paiements,
-            ]);
-        
+        $paiements = $paiementRepository->findBy(['userid' => $user]);
+
+        return $this->render('paiement/index.html.twig', [
+            'paiements' => $paiements,
+        ]);
     }
 
    // #[Route('/{id}', name: 'app_paiement_show', methods: ['GET'])]
@@ -183,7 +181,7 @@ final class PaiementController extends AbstractController
     #[Route('/{id}', name: 'app_paiement_delete', methods: ['POST'])]
     public function delete(Request $request, Paiement $paiement, EntityManagerInterface $entityManager): Response
     {
-        if ($this->isCsrfTokenValid('delete'.$paiement->getId(), $request->getPayload()->getString('_token'))) {
+        if ($this->isCsrfTokenValid('delete' . $paiement->getId(), $request->request->get('_token'))) {
             $entityManager->remove($paiement);
             $entityManager->flush();
         }
