@@ -12,34 +12,55 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 
+#[Route('/Auser')]
+#[IsGranted('IS_AUTHENTICATED_FULLY')]
 class AUserController extends AbstractController
 {
-   
-    #[Route('/Auser/articles', name: 'user_articles')]
+    #[Route('/articles', name: 'user_articles')]
     public function articles(ArticleRepository $articleRepository): Response
     {
+        // Vérifier si l'utilisateur a l'un des rôles requis
+        if (!$this->isGranted('ROLE_Parent') && !$this->isGranted('ROLE_TEACHER')) {
+            throw $this->createAccessDeniedException('Accès non autorisé');
+        }
+
         $articles = $articleRepository->findBy([], ['createdAt' => 'DESC']);
         return $this->render('Auser/articles.html.twig', [
-            'articles' => $articleRepository->findAll(),
+            'articles' => $articles,
         ]);
     }
 
-    #[Route('/Auser/article/{id}', name: 'user_article_show')]
-    public function showArticle(Article $article, CommentRepository $commentRepository, Request $request, EntityManagerInterface $em): Response
-    {
+    #[Route('/article/{id}', name: 'user_article_show', methods: ['GET', 'POST'])]
+    public function showArticle(
+        Article $article, 
+        CommentRepository $commentRepository, 
+        Request $request, 
+        EntityManagerInterface $em
+    ): Response {
+        // Vérifier si l'utilisateur a l'un des rôles requis
+        if (!$this->isGranted('ROLE_Parent') && !$this->isGranted('ROLE_TEACHER')) {
+            throw $this->createAccessDeniedException('Accès non autorisé');
+        }
+
         $comment = new Comment();
+        $comment->setArticle($article);
+        $comment->setCreatedAt(new \DateTimeImmutable());
+        $comment->setUser($this->getUser());
+        
         $form = $this->createForm(CommentType::class, $comment);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $comment->setArticle($article);
-            $comment->setCreatedAt(new \DateTimeImmutable());
-            $em->persist($comment);
-            $em->flush();
-
-            $this->addFlash('success', 'Commentaire ajouté avec succès.');
-            return $this->redirectToRoute('user_article_show', ['id' => $article->getId()]);
+            try {
+                $em->persist($comment);
+                $em->flush();
+                $this->addFlash('success', 'Commentaire ajouté avec succès.');
+                return $this->redirectToRoute('user_article_show', ['id' => $article->getId()]);
+            } catch (\Exception $e) {
+                $this->addFlash('error', 'Une erreur est survenue lors de l\'enregistrement du commentaire.');
+            }
         }
 
         return $this->render('Auser/article_show.html.twig', [
@@ -49,9 +70,18 @@ class AUserController extends AbstractController
         ]);
     }
 
-    #[Route('/Auser/comment/{id}/edit', name: 'user_comment_edit')]
+    #[Route('/comment/{id}/edit', name: 'user_comment_edit')]
     public function editComment(Comment $comment, Request $request, EntityManagerInterface $em): Response
     {
+        // Vérifier si l'utilisateur a l'un des rôles requis
+        if (!$this->isGranted('ROLE_Parent') && !$this->isGranted('ROLE_TEACHER')) {
+            throw $this->createAccessDeniedException('Accès non autorisé');
+        }
+
+        if ($comment->getUser() !== $this->getUser()) {
+            throw $this->createAccessDeniedException('Vous ne pouvez pas modifier ce commentaire.');
+        }
+
         $form = $this->createForm(CommentType::class, $comment);
         $form->handleRequest($request);
 
@@ -67,9 +97,18 @@ class AUserController extends AbstractController
         ]);
     }
 
-    #[Route('/Auser/comment/{id}/delete', name: 'user_comment_delete', methods: ['POST'])]
-    public function deleteComment(Comment $comment, EntityManagerInterface $em, Request $request): Response
+    #[Route('/comment/{id}/delete', name: 'user_comment_delete', methods: ['POST'])]
+    public function deleteComment(Comment $comment, Request $request, EntityManagerInterface $em): Response
     {
+        // Vérifier si l'utilisateur a l'un des rôles requis
+        if (!$this->isGranted('ROLE_Parent') && !$this->isGranted('ROLE_TEACHER')) {
+            throw $this->createAccessDeniedException('Accès non autorisé');
+        }
+
+        if ($comment->getUser() !== $this->getUser()) {
+            throw $this->createAccessDeniedException('Vous ne pouvez pas supprimer ce commentaire.');
+        }
+
         if ($this->isCsrfTokenValid('delete' . $comment->getId(), $request->request->get('_token'))) {
             $em->remove($comment);
             $em->flush();
@@ -79,3 +118,4 @@ class AUserController extends AbstractController
         return $this->redirectToRoute('user_article_show', ['id' => $comment->getArticle()->getId()]);
     }
 }
+

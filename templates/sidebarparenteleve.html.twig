@@ -18,7 +18,10 @@
         </a>
         <a href="{{ path('app_event_index') }}" class="block py-2 px-4 rounded-lg hover:bg-lime-700">
             <i class="fas fa-calendar-alt mr-2"></i> Évènements
-        </a>    
+        </a>  
+          <a href="{{ path('user_articles') }}" class="flex items-center py-2 px-4 rounded-lg transition-all hover:bg-[#6D9B25] hover:translate-x-1">
+            <i class="fas fa-newspaper mr-3"></i> Articles
+        </a>
         <a href="{{ path('app_logout') }}" class="flex items-center py-2 px-4 rounded-lg bg-red-600 text-white transition-all hover:bg-red-700">
             <i class="fas fa-sign-out-alt mr-3"></i> Déconnexion
         </a>
