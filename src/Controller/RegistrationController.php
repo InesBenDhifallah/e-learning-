@@ -24,16 +24,22 @@ class RegistrationController extends AbstractController
     }
 
     #[Route('/register', name: 'app_register')]
+<<<<<<< HEAD
     public function register(
         Request $request,
         UserPasswordHasherInterface $userPasswordHasher,
         EntityManagerInterface $entityManager,
         UserRepository $userRepository
     ): Response {
+=======
+    public function register(Request $request, UserPasswordHasherInterface $userPasswordHasher, EntityManagerInterface $entityManager): Response
+    {
+>>>>>>> ba8df4d (integration b-f)
         $user = new User();
         $form = $this->createForm(RegistrationFormType::class, $user);
         $form->handleRequest($request);
 
+<<<<<<< HEAD
         if ($form->isSubmitted()) {
             $existingUser = $userRepository->findOneBy(['email' => $user->getEmail()]);
             if ($existingUser) {
@@ -68,6 +74,29 @@ class RegistrationController extends AbstractController
 
                 return $this->redirectToRoute('app_login');
             }
+=======
+        if ($form->isSubmitted() && $form->isValid()) {
+            // Encode le mot de passe
+            $user->setPassword(
+                $userPasswordHasher->hashPassword(
+                    $user,
+                    $form->get('plainPassword')->getData()
+                )
+            );
+
+            // Définit le rôle par défaut
+            $user->setRoles(['ROLE_USER']);
+            
+            // Persiste l'utilisateur
+            $entityManager->persist($user);
+            $entityManager->flush();
+
+            // Ajoute un message flash
+            $this->addFlash('success', 'Votre compte a été créé avec succès !');
+
+            // Redirige vers la page de connexion
+            return $this->redirectToRoute('app_login');
+>>>>>>> ba8df4d (integration b-f)
         }
 
         return $this->render('registration/register.html.twig', [
