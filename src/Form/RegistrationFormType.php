@@ -23,14 +23,8 @@ class RegistrationFormType extends AbstractType
     {
         $builder
             ->add('email', EmailType::class, [
-                'constraints' => [
-                    new NotBlank(['message' => 'Please enter an email']),
-                ],
             ])
             ->add('nom', TextType::class, [
-                'constraints' => [
-                    new NotBlank(['message' => 'Please enter your name']),
-                ],
             ])
             ->add('phonenumber', TextType::class, [
                 'required' => false,
@@ -56,17 +50,17 @@ class RegistrationFormType extends AbstractType
             ->add('agreeTerms', CheckboxType::class, [
                 'mapped' => false,
                 'constraints' => [
-                    new IsTrue(['message' => 'You should agree to our terms']),
+                    new IsTrue(['message' => 'Veuillez accepter notre termes']),
                 ],
             ])
             ->add('plainPassword', PasswordType::class, [
                 'mapped' => false,
                 'attr' => ['autocomplete' => 'new-password'],
                 'constraints' => [
-                    new NotBlank(['message' => 'Please enter a password']),
+                    new NotBlank(['message' => 'Mot de passe obligatoire']),
                     new Length([
                         'min' => 8,
-                        'minMessage' => 'Your password should be at least {{ limit }} characters',
+                        'minMessage' => 'Votre mot de passe doit avoir au moins {{ limit }} charactéres',
                         'max' => 4096,
                     ]),
                 ],
@@ -79,4 +73,4 @@ class RegistrationFormType extends AbstractType
             'data_class' => User::class,
         ]);
     }
-}
+}           

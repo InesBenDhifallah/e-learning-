@@ -17,8 +17,6 @@ security:
             logout:
                 path: app_logout
                 target: /
-            # Remove the form_login since we are using a custom authenticator
     access_control:
-        # Control access for specific pages if necessary
         - { path: ^/admin, roles: ROLE_ADMIN }
         - { path: ^/profile, roles: ROLE_USER }
