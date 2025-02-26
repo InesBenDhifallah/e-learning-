@@ -35,24 +35,30 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private $phonenumber;
 
     #[ORM\Column(type: "string", nullable: true)]
+    #[Assert\NotBlank(message: "Le choix de matiére est obligatoire.")]
     private $matiere;
 
     #[ORM\Column(type: "integer", nullable: true)]
+    #[Assert\NotBlank(message: "L'ecperience est obligatoire même si 0.")]
     private $experience;
 
     #[ORM\Column(type: "string", nullable: true)]
+    #[Assert\NotBlank(message: "Veuillez donnez une raison")]
     private $reason;
 
     #[ORM\Column(type: "string")]
+    #[Assert\NotBlank(message: "Veuillez entrez un mot de passe")]
     private $password;
 
     #[ORM\Column(type: "json")]
     private $roles = [];
 
     #[ORM\Column(length: 255, nullable: true)]
+    #[Assert\NotBlank(message: "Veuillez entrez la profession")]
     private ?string $work = null;
 
     #[ORM\Column(length: 255, nullable: true)]
+    #[Assert\NotBlank(message: "Veuillez entrez votre adresse")]
     private ?string $adress = null;
 
     #[ORM\Column(length: 255, nullable: true)]

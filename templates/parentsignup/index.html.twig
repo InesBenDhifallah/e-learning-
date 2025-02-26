@@ -10,18 +10,18 @@
         justify-content: center;
         align-items: center;
         min-height: 100vh;
-        background-image: url("{{ asset('img/elearning.png') }}"); /* Use Twig's asset function for the image */
+        background-image: url("{{ asset('img/elearning.png') }}");
         background-size: cover;
         background-position: center;
     }
     .container {
-        background: rgba(255, 255, 255, 0.8); /* Fond légèrement transparent */
+        background: rgba(255, 255, 255, 0.8);
         width: 100%;
         max-width: 900px;
         border-radius: 10px;
         padding: 30px;
         box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-        margin-top: 80px; /* Ajout d'un espace pour que le formulaire ne soit pas derrière le menu */
+        margin-top: 80px;
     }
     .logo {
         display: flex;
@@ -37,7 +37,7 @@
         margin-right: 10px;
     }
     .form-container {
-        background: transparent; /* Rendre le fond du formulaire transparent */
+        background: transparent;
         padding: 30px;
         border-radius: 10px;
         box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
@@ -79,7 +79,7 @@
         justify-content: space-between;
         align-items: center;
         padding: 15px 30px;
-        background: white; /* Fond blanc pour le menu */
+        background: white;
         color: black;
         border-radius: 0; 
         position: fixed;
@@ -148,8 +148,8 @@
 <div class="container">
     <div class="form-container">
         <h2>Créez votre compte</h2>
-        {{ form_start(form) }}
-            <!-- Nom et Email -->
+        {{ form_start(form, {'attr': {'novalidate': 'novalidate'}}) }}
+            <!-- Nom complet -->
             {{ form_row(form.nom, {
                 'label': 'Nom complet',
                 'attr': {
@@ -157,6 +157,9 @@
                     'class': 'form-control'
                 }
             }) }}
+            {{ form_errors(form.nom) }} <!-- Affichage des erreurs pour ce champ -->
+
+            <!-- Email -->
             {{ form_row(form.email, {
                 'label': 'Email',
                 'attr': {
@@ -164,6 +167,9 @@
                     'class': 'form-control'
                 }
             }) }}
+            {{ form_errors(form.email) }} <!-- Affichage des erreurs pour ce champ -->
+
+            <!-- Mot de passe -->
             {{ form_row(form.password, {
                 'label': 'Mot de passe',
                 'attr': {
@@ -171,7 +177,9 @@
                     'class': 'form-control'
                 }
             }) }}
-            <!-- Informations supplémentaires sur le parent -->
+            {{ form_errors(form.password) }} <!-- Affichage des erreurs pour ce champ -->
+
+            <!-- Numéro de téléphone -->
             {{ form_row(form.phonenumber, {
                 'label': 'Numéro de téléphone',
                 'attr': {
@@ -179,6 +187,9 @@
                     'class': 'form-control'
                 }
             }) }}
+            {{ form_errors(form.phonenumber) }} <!-- Affichage des erreurs pour ce champ -->
+
+            <!-- Adresse -->
             {{ form_row(form.adress, {
                 'label': 'Adresse',
                 'attr': {
@@ -186,6 +197,9 @@
                     'class': 'form-control'
                 }
             }) }}
+            {{ form_errors(form.adress) }} <!-- Affichage des erreurs pour ce champ -->
+
+            <!-- Profession -->
             {{ form_row(form.work, {
                 'label': 'Profession',
                 'attr': {
@@ -193,15 +207,21 @@
                     'class': 'form-control'
                 }
             }) }}
+            {{ form_errors(form.work) }} <!-- Affichage des erreurs pour ce champ -->
+
+            <!-- Préférence de communication -->
             {{ form_row(form.pref, {
                 'label': 'Préférence de communication',
                 'attr': {
                     'class': 'form-control'
                 }
             }) }}
-            <!-- Confirmation de l'inscription -->
+            {{ form_errors(form.pref) }} <!-- Affichage des erreurs pour ce champ -->
+
+            <!-- Bouton de soumission -->
             <button type="submit" class="btn">Créer un compte</button>
         {{ form_end(form) }}
+        
         <p class="note">Vous avez déjà un compte ? <a href="#">Se connecter</a></p>
     </div>
 </div>
