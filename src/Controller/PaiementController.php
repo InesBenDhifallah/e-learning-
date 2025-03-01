@@ -150,10 +150,15 @@ final class PaiementController extends AbstractController
    public function statsPaiementsParAbonnement(PaiementRepository $paiementRepository)
    {
        $stats = $paiementRepository->paiementParAbonnement();
+       $total=$paiementRepository->totalPaiements();
+       $nombre=$paiementRepository->nombrePaiementsParAbonnement();
+    
 
        // Passage des résultats à Twig
        return $this->render('paiement/statpaiement.html.twig', [
            'stats' => $stats,
+           'total'=>$total,
+           'nombre'=>$nombre,
        ]);
    }
 

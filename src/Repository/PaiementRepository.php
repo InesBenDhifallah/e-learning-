@@ -29,6 +29,32 @@ class PaiementRepository extends ServiceEntityRepository
     return $query->getResult();
         
     }
+    public function totalPaiements(): float
+{
+    $entityManager = $this->getEntityManager();
+
+    $query = $entityManager->createQuery(
+        'SELECT SUM(p.montant) AS total FROM App\Entity\Paiement p'
+    );
+
+    return (float) $query->getSingleScalarResult();
+}
+public function nombrePaiementsParAbonnement()
+{
+    $entityManager = $this->getEntityManager();
+
+    $query = $entityManager->createQuery(
+        'SELECT a.type AS abonnement, COUNT(p.id) AS nombre_paiements
+         FROM App\Entity\Paiement p
+         JOIN p.id_abonnement a
+         GROUP BY a.type
+         ORDER BY nombre_paiements DESC'
+    );
+
+    return $query->getResult();
+}
+
+
 
     //    /**
     //     * @return Abonnement[] Returns an array of Abonnement objects
