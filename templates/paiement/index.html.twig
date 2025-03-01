@@ -30,8 +30,7 @@
                     <thead class="bg-lime-600 text-white">
     <tr>
         <th class="py-4 px-6">Id</th>
-        <th class="py-4 px-6">Nom</th>
-        <th class="py-4 px-6">Email</th>
+       
         <th class="py-4 px-6">Type d'Abonnement</th> 
         <th class="py-4 px-6">Montant</th>
         <th class="py-4 px-6">Date Paiement</th>
@@ -43,8 +42,7 @@
     {% for paiement in paiements %}
         <tr class="hover:bg-gray-50">
             <td class="py-4 px-6">{{ paiement.id }}</td>
-            <td class="py-4 px-6">{{ paiement.nom }}</td>
-            <td class="py-4 px-6">{{ paiement.email }}</td>
+           
             <td class="py-4 px-6 font-semibold text-gray-700">
                 {{ paiement.idAbonnement ? paiement.idAbonnement.type : 'Non défini' }} 
             </td> 
@@ -68,8 +66,8 @@
         </td>
 
             <td class="py-4 px-6">
-                <a href="{{ path('app_paiement_show', {'id': paiement.id}) }}" 
-                   class="text-blue-500 hover:text-blue-700">
+               
+                 
                     Afficher
                 </a>
             </td>
