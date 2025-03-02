@@ -30,7 +30,9 @@ class StripeService
             'line_items' => [[
                 'price_data' => [
 
+
                     'currency' => 'tnd',
+
 
                     'product_data' => ['name' => 'Abonnement e-learning'],
                     'unit_amount' => $abonnement->getPrix() * 100, // Stripe utilise les centimes

@@ -4,7 +4,9 @@ namespace App\Repository;
 
 
 
+
 use App\Entity\Abonnement;
+
 
 use App\Entity\Paiement;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
@@ -19,6 +21,7 @@ class PaiementRepository extends ServiceEntityRepository
     {
         parent::__construct($registry, Paiement::class);
     }
+
 
     public function paiementParAbonnement(){
         $entityManager = $this->getEntityManager();
@@ -58,6 +61,7 @@ public function nombrePaiementsParAbonnement()
 
     return $query->getResult();
 }
+
 
 
 

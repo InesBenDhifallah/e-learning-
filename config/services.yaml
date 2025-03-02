@@ -23,3 +23,10 @@ services:
             $webhookSecret: '%env(STRIPE_WEBHOOK_SECRET)%'
   
 
+    # Ajouter le service StripeService
+    App\Service\StripeService:
+        arguments:
+            $secretKey: '%env(STRIPE_SECRET_KEY)%'
+            $webhookSecret: '%env(STRIPE_WEBHOOK_SECRET)%'
+  
+
