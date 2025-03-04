@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quiz - {{ quizz.matiere }}</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+</head>
+<body class="bg-gray-100 min-h-screen">
+    <div class="flex min-h-screen">
+        <!-- Sidebar -->
+        <div class="w-64">
+            {% include 'sidebarparenteleve.html.twig' %}
+        </div>
+
+        <!-- Main Content -->
+        <div class="flex-1 p-8">
+            <header class="flex justify-between items-center mb-6">
+                <div>
+                    <h1 class="text-3xl font-bold text-gray-800 mb-2">{{ quizz.matiere }}</h1>
+                    <p class="text-gray-600">Chapitre {{ quizz.chapitre }} - Difficulté {{ quizz.difficulte }}/5</p>
+                </div>
+                <div id="timer" class="text-2xl font-bold text-gray-600 bg-white px-6 py-3 rounded-lg shadow-sm">
+                    30:00
+                </div>
+            </header>
+
+            <form id="quizForm" method="POST" class="max-w-4xl mx-auto">
+                <!-- Progress Bar -->
+                <div class="bg-white rounded-lg shadow-sm p-4 mb-6">
+                    <div class="flex justify-between items-center mb-2">
+                        <span class="text-sm text-gray-600">Progression</span>
+                        <span class="text-sm font-medium text-gray-800">
+                            Question <span id="currentQuestion">1</span>/{{ questions|length }}
+                        </span>
+                    </div>
+                    <div class="w-full bg-gray-200 rounded-full h-2.5">
+                        <div id="progressBar" class="bg-[#AFC92C] h-2.5 rounded-full transition-all duration-300" style="width: 0%"></div>
+                    </div>
+                </div>
+
+                <!-- Questions -->
+                {% for question in questions %}
+                    <div class="question-block {% if not loop.first %}hidden{% endif %} mb-6">
+                        <div class="bg-white rounded-lg shadow-sm overflow-hidden">
+                            <div class="bg-gradient-to-r from-[#AFC92C] to-[#6D9B25] p-6">
+                                <h3 class="text-xl font-bold text-white">
+                                    Question {{ loop.index }}
+                                </h3>
+                                <p class="text-white text-lg mt-2">{{ question.question }}</p>
+                            </div>
+
+                            <div class="p-6">
+                                <div class="space-y-4">
+                                    {% for suggestion in question.suggestions %}
+                                        <div class="suggestion-option">
+                                            <input type="radio" 
+                                                   required
+                                                   id="suggestion_{{ suggestion.id }}" 
+                                                   name="question_{{ question.id }}" 
+                                                   value="{{ suggestion.id }}"
+                                                   class="hidden peer">
+                                            <label for="suggestion_{{ suggestion.id }}" 
+                                                   class="block p-4 bg-white border-2 border-gray-200 rounded-lg cursor-pointer 
+                                                          peer-checked:border-[#AFC92C] peer-checked:bg-green-50 
+                                                          hover:bg-gray-50 transition-all">
+                                                <div class="flex items-center">
+                                                    <div class="w-6 h-6 border-2 border-gray-300 rounded-full mr-3 flex items-center justify-center
+                                                                peer-checked:border-[#AFC92C] peer-checked:bg-[#AFC92C]">
+                                                        <i class="fas fa-check text-white opacity-0 peer-checked:opacity-100"></i>
+                                                    </div>
+                                                    <span class="text-lg text-gray-700">{{ suggestion.contenu }}</span>
+                                                </div>
+                                            </label>
+                                        </div>
+                                    {% endfor %}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+
+                <!-- Navigation Buttons -->
+                <div class="flex justify-between items-center mt-6">
+                    <button type="button" id="previousBtn" class="px-6 py-3 bg-gray-500 text-white rounded-lg hover:bg-gray-600 transition-colors hidden">
+                        <i class="fas fa-arrow-left mr-2"></i> Question précédente
+                    </button>
+                    
+                    <button type="button" id="nextBtn" class="px-6 py-3 bg-[#AFC92C] text-white rounded-lg hover:bg-[#6D9B25] transition-colors">
+                        Question suivante <i class="fas fa-arrow-right ml-2"></i>
+                    </button>
+
+                    <button id="sendEmailBtn" data-email="user@example.com" data-score="{{ score }}" data-quiz-id="{{ quizz.id }}">
+    📧 Voir Votre Resultat Du Quiz
+</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modale d'email -->
+    <div id="emailModal" class="fixed inset-0 bg-gray-900 bg-opacity-50 flex justify-center items-center hidden">
+        <div class="bg-white p-6 rounded-lg shadow-lg w-1/3">
+            <h2 class="text-lg font-semibold mb-4">Envoyer votre score par email</h2>
+            <form id="emailForm">
+                <label class="block mb-2 text-sm font-medium">Adresse e-mail :</label>
+                <input type="email" id="emailInput" class="w-full px-3 py-2 border rounded-lg focus:outline-none" required>
+                
+                <div class="flex justify-end mt-4">
+                    <button type="button" id="closeModal" class="mr-2 px-4 py-2 bg-gray-500 text-white rounded-lg hover:bg-gray-600">Annuler</button>
+                    <button type="submit" class="px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600">Envoyer</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- JavaScript -->
+    <script>
+document.addEventListener("DOMContentLoaded", function () {
+    let timerElement = document.getElementById("timer");
+    let totalTime = 30 * 60; // 30 minutes en secondes
+
+    function updateTimerDisplay() {
+        let minutes = Math.floor(totalTime / 60);
+        let seconds = totalTime % 60;
+        timerElement.textContent = `${minutes}:${seconds < 10 ? "0" : ""}${seconds}`;
+    }
+
+    let countdown = setInterval(function () {
+        if (totalTime > 0) {
+            totalTime--;
+            updateTimerDisplay();
+        } else {
+            clearInterval(countdown);
+            alert("Temps écoulé ! Le quiz est terminé.");
+            document.getElementById("quizForm").submit(); // Soumet le formulaire automatiquement à la fin du temps
+        }
+    }, 1000);
+
+    updateTimerDisplay();
+});
+
+
+    document.addEventListener("DOMContentLoaded", function () {
+        const nextBtn = document.getElementById("nextBtn");
+        const prevBtn = document.getElementById("previousBtn");
+        const emailBtn = document.getElementById("openEmailModal");
+        const questions = document.querySelectorAll(".question-block");
+        let currentQuestionIndex = 0;
+
+        function updateQuestionDisplay() {
+            questions.forEach((q, index) => {
+                q.style.display = index === currentQuestionIndex ? "block" : "none";
+            });
+
+            prevBtn.style.display = currentQuestionIndex === 0 ? "none" : "inline-block";
+            nextBtn.style.display = currentQuestionIndex === questions.length - 1 ? "none" : "inline-block";
+            emailBtn.style.display = currentQuestionIndex === questions.length - 1 ? "inline-block" : "none";
+        }
+
+        nextBtn.addEventListener("click", function () {
+            if (currentQuestionIndex < questions.length - 1) {
+                currentQuestionIndex++;
+                updateQuestionDisplay();
+            }
+        });
+
+        prevBtn.addEventListener("click", function () {
+            if (currentQuestionIndex > 0) {
+                currentQuestionIndex--;
+                updateQuestionDisplay();
+            }
+        });
+
+        updateQuestionDisplay();
+
+        document.getElementById("openEmailModal").addEventListener("click", function () {
+            document.getElementById("emailModal").classList.remove("hidden");
+        });
+
+        document.getElementById("closeModal").addEventListener("click", function () {
+            document.getElementById("emailModal").classList.add("hidden");
+        });
+    });
+    </script>
+</body>
+</html>
