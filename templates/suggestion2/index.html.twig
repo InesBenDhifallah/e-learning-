@@ -1,0 +1,42 @@
+{% extends 'question2/layout.html.twig' %}
+
+{% block content %}
+    <h1 class="text-2xl font-bold mb-4">Liste des Suggestions</h1>
+
+    <table class="w-full bg-white shadow-md rounded-lg overflow-hidden">
+        <thead class="bg-gray-200">
+            <tr>
+                <th class="p-3">ID</th>
+                <th class="p-3">Contenu</th>
+                <th class="p-3">Correcte</th>
+                <th class="p-3">Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for suggestion in suggestions %}
+                <tr class="border-b">
+                    <td class="p-3">{{ suggestion.id }}</td>
+                    <td class="p-3">{{ suggestion.contenu }}</td>
+                    <td class="p-3">{{ suggestion.estCorrecte ? '✔ Oui' : '❌ Non' }}</td>
+                    <td class="p-3">
+                        <a href="{{ path('app_suggestion2_show', {'id': suggestion.id}) }}" class="text-blue-500">Voir</a>
+                        <a href="{{ path('app_suggestion2_edit', {'id': suggestion.id}) }}" class="text-yellow-500 ml-2">Modifier</a>
+                    </td>
+                </tr>
+            {% else %}
+                <tr>
+                    <td colspan="4" class="text-center p-3">Aucune suggestion trouvée.</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    {% if question is defined and quizz_id is defined %}
+        <a href="{{ path('app_suggestion2_new', {
+            'question_id': question.id,
+            'quizz_id': quizz_id
+        }) }}" class="bg-green-500 text-white px-4 py-2 rounded-lg mt-4 inline-block">
+            Nouvelle suggestion
+        </a>
+    {% endif %}
+{% endblock %}

@@ -1,0 +1,116 @@
+{% extends 'base2.html.twig' %}
+
+{% block body %}
+<div class="flex-1 p-8">
+    <div class="max-w-4xl mx-auto bg-white rounded-lg shadow-lg p-6">
+        <div class="text-center mb-8">
+            <h1 class="text-3xl font-bold text-gray-800 mb-4">Résultats du Quiz</h1>
+            <div class="text-2xl text-gray-600">
+                Score: <span class="font-bold">{{ score }}/{{ total }}</span>
+                ({{ percentage|number_format(1) }}%)
+            </div>
+            
+            {% if percentage >= 80 %}
+                <div class="mt-4 text-green-600 text-xl">Excellent travail! 🎉</div>
+            {% elseif percentage >= 60 %}
+                <div class="mt-4 text-blue-600 text-xl">Bon travail! 👍</div>
+            {% else %}
+                <div class="mt-4 text-orange-600 text-xl">Continue tes efforts! 💪</div>
+            {% endif %}
+        </div>
+
+        <div class="space-y-6">
+            {% for questionId, result in results %}
+                <div class="bg-gray-50 p-6 rounded-lg">
+                    <h3 class="text-xl font-semibold mb-3">{{ result.question }}</h3>
+                    <div class="flex items-center space-x-2">
+                        <span class="font-medium">Votre réponse:</span>
+                        <span class="{% if result.correct %}text-green-600{% else %}text-red-600{% endif %}">
+                            {{ result.selected }}
+                            {% if result.correct %}
+                                ✓
+                            {% else %}
+                                ✗
+                            {% endif %}
+                        </span>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+
+        <div class="mt-8 text-center space-x-4">
+            <a href="{{ path('app_quizz2_play', {'id': quizz.id}) }}" 
+               class="inline-block px-6 py-3 bg-[#AFC92C] text-white rounded-lg hover:bg-[#6D9B25] transition-colors">
+                Réessayer
+            </a>
+            <a href="{{ path('app_quizz2_list_front') }}" 
+               class="inline-block px-6 py-3 bg-gray-500 text-white rounded-lg hover:bg-gray-600 transition-colors">
+                Retour aux quiz
+            </a>
+            <button id="sendEmailBtn" 
+    class="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors">
+    📩 Envoyer mon score par email
+</button>
+
+<!-- Ajoute un champ pour que l'utilisateur entre son email -->
+<div id="emailForm" class="mt-4 hidden">
+    <input type="email" id="userEmail" placeholder="Votre adresse email" 
+        class="px-4 py-2 border rounded-md w-64">
+    <button id="confirmEmailBtn" 
+        class="px-6 py-3 bg-green-500 text-white rounded-lg hover:bg-green-600">
+        Envoyer
+    </button>
+</div>
+
+        </div>
+    </div>
+</div>
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+    const sendEmailBtn = document.getElementById("sendEmailBtn");
+    const emailForm = document.getElementById("emailForm");
+    const confirmEmailBtn = document.getElementById("confirmEmailBtn");
+
+    sendEmailBtn.addEventListener("click", function () {
+        emailForm.classList.toggle("hidden");
+    });
+
+    confirmEmailBtn.addEventListener("click", function () {
+        const email = document.getElementById("userEmail").value;
+        const score = "{{ score }}";
+        const quizId = "{{ quizz.id }}";
+
+        if (!email) {
+            alert("Veuillez entrer une adresse email valide.");
+            return;
+        }
+
+        fetch("/quiz/send-email", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+                email: email,
+                score: score,
+                quiz_id: quizId,
+            }),
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                alert("📩 Email envoyé avec succès !");
+                emailForm.classList.add("hidden");
+            } else {
+                alert("❌ Erreur lors de l'envoi de l'email : " + data.message);
+            }
+        })
+        .catch(error => {
+            console.error("Erreur:", error);
+            alert("❌ Une erreur s'est produite.");
+        });
+    });
+});
+</script>
+
+{% endblock %} 

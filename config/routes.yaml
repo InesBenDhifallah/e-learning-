@@ -6,7 +6,3 @@ controllers:
 app_participation:
     path: /participation/{id}
     controller: App\Controller\ParticipationController::register
-app_access_denied:
-    path: /access-denied
-    controller: App\Controller\ErrorController::accessDenied
-    

@@ -74,7 +74,10 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private Collection $comments;
 
     public function __construct() {
-        $this->isActive = false; 
+
+        $this->isActive = false; // Default value set to false
+        $this->comments = new ArrayCollection();
+
     }
 
     public function getId(): ?int

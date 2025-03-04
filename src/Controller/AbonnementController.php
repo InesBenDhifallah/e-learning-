@@ -14,7 +14,7 @@ use Symfony\Component\Routing\Attribute\Route;
 #[Route('/abonnement')]
 final class AbonnementController extends AbstractController
 {
-    #[Route('/index',name: 'abonnement_index', methods: ['GET'])]
+    #[Route('/index',name: 'index', methods: ['GET'])]
     public function index(AbonnementRepository $abonnementRepository): Response
     {
         return $this->render('abonnement/index.html.twig', [
@@ -33,7 +33,7 @@ final class AbonnementController extends AbstractController
             $entityManager->persist($abonnement);
             $entityManager->flush();
 
-            return $this->redirectToRoute('app_abonnement_index', [], Response::HTTP_SEE_OTHER);
+            return $this->redirectToRoute('index', [], Response::HTTP_SEE_OTHER);
         }
 
         return $this->render('abonnement/new.html.twig', [
@@ -59,7 +59,7 @@ final class AbonnementController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $entityManager->flush();
 
-            return $this->redirectToRoute('app_abonnement_index', [], Response::HTTP_SEE_OTHER);
+            return $this->redirectToRoute('index', [], Response::HTTP_SEE_OTHER);
         }
 
         return $this->render('abonnement/edit.html.twig', [
@@ -76,6 +76,6 @@ final class AbonnementController extends AbstractController
             $entityManager->flush();
         }
 
-        return $this->redirectToRoute('app_abonnement_index', [], Response::HTTP_SEE_OTHER);
+        return $this->redirectToRoute('index', [], Response::HTTP_SEE_OTHER);
     }
 }

@@ -1,0 +1,62 @@
+{% extends 'question2/layout.html.twig' %}
+
+{% block content %}
+    <h1 class="text-2xl font-bold mb-4">Détails de la Question</h1>
+
+    <div class="bg-white p-6 shadow-lg rounded-lg">
+        <table class="w-full">
+            <tbody>
+                <tr>
+                    <th class="text-left p-2">ID</th>
+                    <td class="p-2">{{ question.id }}</td>
+                </tr>
+                <tr>
+                    <th class="text-left p-2">Question</th>
+                    <td class="p-2">{{ question.question }}</td>
+                </tr>
+                <tr>
+                    <th class="text-left p-2">Suggestions</th>
+                    <td class="p-2">
+                        <ul class="list-disc pl-5 space-y-2">
+                            {% for suggestion in question.suggestions %}
+                                <li class="flex items-center justify-between group">
+                                    <span class="{% if suggestion.estCorrecte %}text-green-500 font-bold{% endif %}">
+                                        {{ suggestion.contenu }}
+                                    </span>
+                                    <div class="hidden group-hover:flex space-x-2">
+                                        <a href="{{ path('app_suggestion2_edit', {
+                                            'id': suggestion.id,
+                                            'quizz_id': quizz_id
+                                        }) }}" class="text-yellow-500 hover:text-yellow-600">
+                                            <i class="fas fa-edit"></i> Modifier
+                                        </a>
+                                        {% if suggestion.id is defined %}
+                                            {{ include('suggestion2/_delete_form.html.twig', {
+                                                'suggestion': suggestion,
+                                                'button_class': 'text-red-500 hover:text-red-600 bg-transparent'
+                                            }) }}
+                                        {% endif %}
+                                    </div>
+                                </li>
+                            {% else %}
+                                <li class="text-gray-500 italic">Aucune suggestion pour le moment</li>
+                            {% endfor %}
+                        </ul>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div class="mt-4 space-x-2">
+        <a href="{{ path('app_question2_index', {'quizz_id': quizz_id}) }}" class="bg-gray-500 text-white px-4 py-2 rounded-lg hover:bg-gray-600 transition">Retour à la liste</a>
+        <a href="{{ path('app_question2_edit', {'id': question.id, 'quizz_id': quizz_id}) }}" class="bg-yellow-500 text-white px-4 py-2 rounded-lg hover:bg-yellow-600 transition">Modifier</a>
+        <a href="{{ path('app_suggestion2_new', {
+            'question_id': question.id,
+            'quizz_id': quizz_id
+        }) }}" class="bg-green-500 text-white px-4 py-2 rounded-lg hover:bg-green-600 transition">
+            Ajouter une suggestion
+        </a>
+        {{ include('question2/_delete_form.html.twig', {'quizz_id': quizz_id}) }}
+    </div>
+{% endblock %}
