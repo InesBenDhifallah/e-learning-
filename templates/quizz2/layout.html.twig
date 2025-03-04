@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Alpha Education{% endblock %}</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="flex bg-gray-100">
+
+    <!-- ✅ Barre latérale -->
+    <aside class="w-64 bg-lime-500 text-white p-5 min-h-screen">
+        <div class="text-lg font-bold mb-5">Alpha Education</div>
+        <ul class="space-y-4">
+            <li><a href="#" class="block hover:text-gray-200">👤 Profil</a></li>
+            <li><a href="#" class="block hover:text-gray-200">📚 Cours</a></li>
+            <li><a href="#" class="block hover:text-gray-200">📊 Chapitres</a></li>
+            <li><a href="{{ path('app_quizz2_index') }}" class="block hover:text-gray-200">📝 Quiz</a></li>
+            <li><a href="#" class="block hover:text-gray-200">🔒 Déconnexion</a></li>
+        </ul>
+    </aside>
+
+    <!-- ✅ Contenu principal -->
+    <main class="flex-1 p-6">
+        {% block body %}{% endblock %}
+    </main>
+
+</body>
+</html>

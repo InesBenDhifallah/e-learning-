@@ -1,0 +1,59 @@
+{% extends 'suggestion2/layout.html.twig' %}
+
+{% block page_title %}Détails de la Suggestion{% endblock %}
+
+{% block content %}
+    <div class="max-w-2xl mx-auto">
+        <!-- Details Card -->
+        <div class="bg-white shadow-lg rounded-lg overflow-hidden">
+            <!-- Card Header -->
+            <div class="bg-gray-50 px-6 py-4 border-b border-gray-200">
+                <h2 class="text-xl font-semibold text-gray-700">
+                    <i class="fas fa-lightbulb mr-2 text-lime-500"></i>
+                    Détails de la Suggestion
+                </h2>
+            </div>
+
+            <!-- Card Content -->
+            <div class="p-6 space-y-4">
+                <div class="flex items-center justify-between pb-4 border-b border-gray-200">
+                    <span class="text-sm font-medium text-gray-500">Contenu</span>
+                    <span class="text-lg text-gray-900">{{ suggestion.contenu }}</span>
+                </div>
+
+                <div class="flex items-center justify-between">
+                    <span class="text-sm font-medium text-gray-500">Statut</span>
+                    <span class="inline-flex items-center px-3 py-1 rounded-full {% if suggestion.estCorrecte %}bg-green-100 text-green-800{% else %}bg-gray-100 text-gray-800{% endif %}">
+                        <i class="fas {% if suggestion.estCorrecte %}fa-check-circle{% else %}fa-times-circle{% endif %} mr-2"></i>
+                        {{ suggestion.estCorrecte ? 'Réponse correcte' : 'Réponse incorrecte' }}
+                    </span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Actions -->
+        <div class="mt-6 flex items-center justify-center gap-4">
+            <a href="{{ path('app_suggestion2_edit', {
+                'id': suggestion.id,
+                'question_id': suggestion.question.id,
+                'quizz_id': quizz_id
+            }) }}" 
+               class="flex items-center gap-2 bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 transition">
+                <i class="fas fa-edit"></i>
+                Modifier
+            </a>
+            {{ include('suggestion2/_delete_form.html.twig', {
+                'suggestion': suggestion,
+                'quizz_id': quizz_id
+            }) }}
+            <a href="{{ path('app_question2_show', {
+                'id': suggestion.question.id,
+                'quizz_id': quizz_id
+            }) }}" 
+               class="flex items-center gap-2 bg-gray-500 text-white px-4 py-2 rounded-lg hover:bg-gray-600 transition">
+                <i class="fas fa-arrow-left"></i>
+                Retour
+            </a>
+        </div>
+    </div>
+{% endblock %}
