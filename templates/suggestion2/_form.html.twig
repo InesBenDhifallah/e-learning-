@@ -1,0 +1,45 @@
+{{ form_start(form, {'attr': {'class': 'space-y-6'}}) }}
+    <!-- Contenu Field -->
+    <div class="space-y-2">
+        {{ form_label(form.contenu, 'Contenu', {'label_attr': {'class': 'block text-sm font-medium text-gray-700'}}) }}
+        <div class="relative rounded-md shadow-sm">
+            {{ form_widget(form.contenu, {
+                'attr': {
+                    'class': 'w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-lime-500 focus:border-lime-500 transition-shadow',
+                    'placeholder': 'Entrez le contenu de la suggestion...'
+                }
+            }) }}
+            <div class="absolute inset-y-0 right-0 flex items-center pr-3">
+                <i class="fas fa-lightbulb text-gray-400"></i>
+            </div>
+        </div>
+        {{ form_errors(form.contenu, {'attr': {'class': 'text-red-500 text-sm mt-1'}}) }}
+    </div>
+
+    <!-- Est Correcte Field -->
+    <div class="space-y-2">
+        {{ form_label(form.estCorrecte, 'Réponse correcte ?', {'label_attr': {'class': 'block text-sm font-medium text-gray-700'}}) }}
+        <div class="relative flex items-center">
+            {{ form_widget(form.estCorrecte, {
+                'attr': {
+                    'class': 'h-4 w-4 text-lime-500 focus:ring-lime-500 border-gray-300 rounded'
+                }
+            }) }}
+            <span class="ml-2 text-sm text-gray-600">Cochez si cette suggestion est la bonne réponse</span>
+        </div>
+        {{ form_errors(form.estCorrecte, {'attr': {'class': 'text-red-500 text-sm mt-1'}}) }}
+    </div>
+
+    <!-- Form Actions -->
+    <div class="flex items-center justify-end gap-4 mt-8 pt-6 border-t border-gray-200">
+        <button type="button" onclick="history.back()" 
+                class="px-4 py-2 text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200 transition">
+            <i class="fas fa-times mr-2"></i>Annuler
+        </button>
+        <button type="submit" 
+                class="flex items-center px-6 py-2 bg-lime-500 text-white rounded-lg hover:bg-lime-600 transition">
+            <i class="fas fa-save mr-2"></i>
+            {{ button_label|default('Enregistrer') }}
+        </button>
+    </div>
+{{ form_end(form) }}

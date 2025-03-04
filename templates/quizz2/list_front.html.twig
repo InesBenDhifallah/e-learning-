@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quiz Disponibles</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+</head>
+<body class="bg-gray-100 min-h-screen">
+    <div class="flex min-h-screen">
+        <!-- Sidebar -->
+        <div class="w-64">
+            {% include 'sidebarparenteleve.html.twig' %}
+        </div>
+
+        <!-- Main Content -->
+        <div class="flex-1 p-8">
+            <!-- Header Section -->
+            <header class="mb-8">
+                <div class="flex justify-between items-center">
+                    <h1 class="text-3xl font-bold text-gray-800">Quiz Disponibles</h1>
+                    <div class="text-gray-600">
+                        <span class="bg-white px-4 py-2 rounded-lg shadow-sm">
+                            <i class="fas fa-list-check mr-2"></i>
+                            Total: {{ quizzes|length }} quiz
+                        </span>
+                    </div>
+                </div>
+                <p class="mt-2 text-gray-600">Testez vos connaissances et améliorez vos scores</p>
+            </header>
+
+            <!-- Stats Overview -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+                <div class="bg-white rounded-lg shadow-sm p-6">
+                    <div class="flex items-center">
+                        <div class="bg-green-100 p-3 rounded-full">
+                            <i class="fas fa-trophy text-green-600 text-xl"></i>
+                        </div>
+                        <div class="ml-4">
+                            <h3 class="text-gray-500 text-sm">Meilleur Score</h3>
+                            <p class="text-2xl font-semibold text-gray-800">
+                                {% set maxScore = 0 %}
+                                {% for quiz in quizzes %}
+                                    {% if quiz.best and quiz.best|number_format > maxScore %}
+                                        {% set maxScore = quiz.best|number_format %}
+                                    {% endif %}
+                                {% endfor %}
+                                {{ maxScore }}%
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="bg-white rounded-lg shadow-sm p-6">
+                    <div class="flex items-center">
+                        <div class="bg-blue-100 p-3 rounded-full">
+                            <i class="fas fa-check-circle text-blue-600 text-xl"></i>
+                        </div>
+                        <div class="ml-4">
+                            <h3 class="text-gray-500 text-sm">Quiz Complétés</h3>
+                            <p class="text-2xl font-semibold text-gray-800">
+                                {{ quizzes|filter(q => q.best)|length }}/{{ quizzes|length }}
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-white rounded-lg shadow-sm p-6">
+                    <div class="flex items-center">
+                        <div class="bg-purple-100 p-3 rounded-full">
+                            <i class="fas fa-question text-purple-600 text-xl"></i>
+                        </div>
+                        <div class="ml-4">
+                            <h3 class="text-gray-500 text-sm">Questions Totales</h3>
+                            <p class="text-2xl font-semibold text-gray-800">
+                                {% set totalQuestions = 0 %}
+                                {% for quiz in quizzes %}
+                                    {% set totalQuestions = totalQuestions + quiz.questions|length %}
+                                {% endfor %}
+                                {{ totalQuestions }}
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Quiz Grid Layout -->
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {% for quiz in quizzes %}
+                    <div class="group relative bg-white rounded-xl shadow-sm hover:shadow-md transition-all duration-300 overflow-hidden">
+                        <!-- Quiz Header with Icon -->
+                        <div class="bg-gradient-to-r from-[#AFC92C] to-[#6D9B25] p-6 text-white">
+                            <div class="flex justify-between items-start">
+                                <div>
+                                    <h2 class="text-xl font-bold">{{ quiz.matiere }}</h2>
+                                    <p class="text-sm opacity-90">Chapitre {{ quiz.chapitre }}</p>
+                                </div>
+                                <span class="text-4xl opacity-50 group-hover:opacity-100 transition-opacity">
+                                    <i class="fas fa-graduation-cap"></i>
+                                </span>
+                            </div>
+                        </div>
+
+                        <!-- Quiz Details -->
+                        <div class="p-6">
+                            <div class="space-y-3">
+                                <div class="flex items-center text-gray-600">
+                                    <i class="fas fa-signal mr-3 w-5"></i>
+                                    <span>Difficulté: 
+                                        {% for i in 1..5 %}
+                                            {% if i <= quiz.difficulte %}
+                                                <i class="fas fa-star text-yellow-400"></i>
+                                            {% else %}
+                                                <i class="far fa-star text-gray-300"></i>
+                                            {% endif %}
+                                        {% endfor %}
+                                    </span>
+                                </div>
+                                <div class="flex items-center text-gray-600">
+                                    <i class="fas fa-list-ol mr-3 w-5"></i>
+                                    <span>{{ quiz.questions|length }} questions</span>
+                                </div>
+                                {% if quiz.best %}
+                                    <div class="flex items-center text-green-600">
+                                        <i class="fas fa-trophy mr-3 w-5"></i>
+                                        <span>Meilleur score: {{ quiz.best }}%</span>
+                                    </div>
+                                {% endif %}
+                            </div>
+
+                            <!-- Action Button -->
+                            <div class="mt-6">
+                                <a href="{{ path('app_quizz2_play', {'id': quiz.id}) }}" 
+                                   class="block w-full text-center px-6 py-3 bg-[#AFC92C] text-white rounded-lg hover:bg-[#6D9B25] transition-colors">
+                                    {% if quiz.best %}
+                                        <i class="fas fa-redo mr-2"></i>Réessayer
+                                    {% else %}
+                                        <i class="fas fa-play mr-2"></i>Commencer
+                                    {% endif %}
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                {% else %}
+                    <div class="col-span-full flex flex-col items-center justify-center py-12">
+                        <div class="bg-white p-8 rounded-lg shadow-sm text-center">
+                            <i class="fas fa-info-circle text-4xl text-gray-400 mb-4"></i>
+                            <h3 class="text-xl font-semibold text-gray-800 mb-2">Aucun quiz disponible</h3>
+                            <p class="text-gray-600">Les quiz seront bientôt disponibles. Revenez plus tard!</p>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</body>
+</html> 
