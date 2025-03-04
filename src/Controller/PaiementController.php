@@ -113,7 +113,7 @@ final class PaiementController extends AbstractController
                 // Envoie la notification par email
                 $emailService->sendPaymentNotification($userEmail, 'Paiement réussi', 'Votre paiement sur la plateforme Alpha Education a été effectué avec succès.');
     
-                return new Response('Paiement réussi et enregistré !');
+                return $this->render('paiement/success.html.twig');
             } else {
                 return new Response('Le paiement n\'a pas été validé.', 400);
             }
