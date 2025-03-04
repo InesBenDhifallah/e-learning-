@@ -18,31 +18,49 @@ class Article
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
-    #[Assert\NotBlank(message: "Title should not be blank.")]
+    #[Assert\NotBlank(message: "Le titre est obligatoire")]
     #[Assert\Length(
+        min: 5,
         max: 255,
-        maxMessage: "Title should not exceed {{ limit }} characters."
+        minMessage: "Le titre doit contenir au moins {{ limit }} caractères",
+        maxMessage: "Le titre ne peut pas dépasser {{ limit }} caractères"
+    )]
+    #[Assert\Regex(
+        pattern: "/^[a-zA-Z0-9\s\-_.,!?'\"]+$/",
+        message: "Le titre ne peut contenir que des lettres, chiffres et ponctuations basiques"
     )]
     private ?string $title = null;
 
     #[ORM\Column(type: Types::TEXT)]
-    #[Assert\NotBlank(message: "Content should not be blank.")]
+    #[Assert\NotBlank(message: "Le contenu est obligatoire")]
     #[Assert\Length(
-        min: 10,
-        minMessage: "Content should be at least {{ limit }} characters long."
+        min: 20,
+        max: 50000,
+        minMessage: "Le contenu doit contenir au moins {{ limit }} caractères",
+        maxMessage: "Le contenu ne peut pas dépasser {{ limit }} caractères"
     )]
     private ?string $content = null;
 
     #[ORM\Column(length: 255)]
-    #[Assert\NotBlank(message: "Author should not be blank.")]
+    #[Assert\NotBlank(message: "L'auteur est obligatoire")]
     #[Assert\Length(
+        min: 2,
         max: 255,
-        maxMessage: "Author name should not exceed {{ limit }} characters."
+        minMessage: "Le nom de l'auteur doit contenir au moins {{ limit }} caractères",
+        maxMessage: "Le nom de l'auteur ne peut pas dépasser {{ limit }} caractères"
+    )]
+    #[Assert\Regex(
+        pattern: "/^[a-zA-ZÀ-ÿ\s\-']+$/",
+        message: "Le nom de l'auteur ne peut contenir que des lettres, espaces et tirets"
     )]
     private ?string $author = null;
 
     #[ORM\Column(length: 255)]
-    #[Assert\NotBlank(message: "Category should not be blank.")]
+    #[Assert\NotBlank(message: "La catégorie est obligatoire")]
+    #[Assert\Choice(
+        choices: ['Technologie', 'Science', 'Education', 'Culture', 'Sport', 'Autre'],
+        message: "La catégorie '{{ value }}' n'est pas valide. Les catégories valides sont: {{ choices }}"
+    )]
     private ?string $category = null;
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: false)]
@@ -52,7 +70,7 @@ class Article
     /**
      * @var Collection<int, Comment>
      */
-    #[ORM\OneToMany(targetEntity: Comment::class, mappedBy: 'article', cascade: ['remove'], orphanRemoval: true)]
+    #[ORM\OneToMany(mappedBy: 'article', targetEntity: Comment::class, orphanRemoval: true)]
     private Collection $comments;
 
     public function __construct()

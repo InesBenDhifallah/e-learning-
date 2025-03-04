@@ -9,6 +9,7 @@
     <title>Gestion des Utilisateurs</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 </head>
 <body class="bg-gray-100 min-h-screen">
     <div class="flex min-h-screen">
@@ -23,72 +24,197 @@
                 <h1 class="text-3xl font-bold text-gray-800">Gestion des Utilisateurs</h1>
             </header>
 
-            <!-- Tableau des utilisateurs -->
-            <div class="bg-white rounded-xl shadow-lg overflow-hidden">
-                <table class="w-full text-left">
-                    <thead class="bg-indigo-600 text-white">
-                        <tr>
-                            <th class="py-4 px-6">ID</th>
-                            <th class="py-4 px-6">Nom</th>
-                            <th class="py-4 px-6">Email</th>
-                            <th class="py-4 px-6">Rôle</th>
-                            <th class="py-4 px-6">Téléphone</th>
-                            <th class="py-4 px-6">Adresse</th>
-                            <th class="py-4 px-6">Statut</th>
-                            <th class="py-4 px-6">Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for user in users %}
-                            <tr class="hover:bg-gray-50">
-                                <td class="py-4 px-6">{{ user.id }}</td>
-                                <td class="py-4 px-6">{{ user.nom }}</td>
-                                <td class="py-4 px-6">{{ user.email }}</td>
-                                <td class="py-4 px-6">{{ user.roles|join(', ') }}</td>
-                                <td class="py-4 px-6">{{ user.phonenumber }}</td>
-                                <td class="py-4 px-6">{{ user.adress }}</td>
-                                <td class="py-4 px-6">
-                                    {% if user.isActive %}
-                                        <span class="bg-green-100 text-green-800 px-2 py-1 rounded-full text-sm">Actif</span>
-                                    {% else %}
-                                        <span class="bg-red-100 text-red-800 px-2 py-1 rounded-full text-sm">Inactif</span>
-                                    {% endif %}
-                                </td>
-                            </tr>
-                        {% else %}
-                            <tr>
-                                <td colspan="8" class="py-4 px-6 text-center">Aucun utilisateur trouvé</td>
-                            </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
+            <!-- Filter Form -->
+            <div class="mb-6">
+                <div class="flex space-x-4">
+                    <input type="text" id="nameFilter" placeholder="Filtrer par nom" class="px-4 py-2 border rounded-lg">
+                    <select id="roleFilter" class="px-4 py-2 border rounded-lg">
+                        <option value="">Tous les rôles</option>
+                        <option value="ROLE_TEACHER">Enseignant</option>
+                        <option value="ROLE_PARENT">Parent</option>
+                    </select>
+                </div>
             </div>
 
-            <!-- Default Pagination -->
-            <div class="mt-6 flex justify-center space-x-2">
-                {# Display 'Previous' link if we're not on the first page #}
-                {% if page > 1 %}
-                    <a href="{{ path('app_listusers', {'page': page - 1}) }}"
-                       class="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700">
-                        &laquo; Précédent
-                    </a>
-                {% endif %}
+            <!-- Tableau des utilisateurs -->
+            <div id="userTable" class="bg-white rounded-xl shadow-lg overflow-hidden">
+                <!-- Table content will be dynamically loaded here -->
+            </div>
 
-                {# Display page numbers #}
-                <span class="px-4 py-2 bg-white text-indigo-600 rounded-lg">
-                    Page {{ page }} sur {{ totalPages }}
-                </span>
-
-                {# Display 'Next' link if we're not on the last page #}
-                {% if page < totalPages %}
-                    <a href="{{ path('app_listusers', {'page': page + 1}) }}"
-                       class="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700">
-                        Suivant &raquo;
-                    </a>
-                {% endif %}
+            <!-- Pagination -->
+            <div id="pagination" class="mt-6 flex justify-center space-x-2">
+                <!-- Pagination links will be dynamically loaded here -->
             </div>
         </div>
     </div>
+
+    <script>
+        $(document).ready(function () {
+            // Function to load users via AJAX
+            function loadUsers(page = 1) {
+                const nameFilter = $('#nameFilter').val();
+                const roleFilter = $('#roleFilter').val();
+
+                $.ajax({
+                    url: '{{ path("app_listusers_filter") }}',
+                    type: 'GET',
+                    data: {
+                        name: nameFilter,
+                        role: roleFilter,
+                        page: page
+                    },
+                    success: function (response) {
+                        // Update the table
+                        let tableHtml = `
+                            <table class="w-full text-left">
+                                <thead class="bg-indigo-600 text-white">
+                                    <tr>
+                                        <th class="py-4 px-6">ID</th>
+                                        <th class="py-4 px-6">Nom</th>
+                                        <th class="py-4 px-6">Email</th>
+                                        <th class="py-4 px-6">Rôle</th>
+                                        <th class="py-4 px-6">Téléphone</th>
+                                        <th class="py-4 px-6">Adresse</th>
+                                        <th class="py-4 px-6">Statut</th>
+                                        <th class="py-4 px-6">Activer/Désactiver</th>
+                                    </tr>
+                                </thead>
+                                <tbody>`;
+
+                        response.users.forEach(user => {
+                            tableHtml += `
+                                <tr class="hover:bg-gray-50">
+                                    <td class="py-4 px-6">${user.id}</td>
+                                    <td class="py-4 px-6">${user.nom}</td>
+                                    <td class="py-4 px-6">${user.email}</td>
+                                    <td class="py-4 px-6">${user.roles.join(', ')}</td>
+                                    <td class="py-4 px-6">${user.phonenumber}</td>
+                                    <td class="py-4 px-6">${user.adress}</td>
+                                    <td class="py-4 px-6">
+                                        ${user.isActive ? '<span class="bg-green-100 text-green-800 px-2 py-1 rounded-full text-sm">Actif</span>' : '<span class="bg-red-100 text-red-800 px-2 py-1 rounded-full text-sm">Inactif</span>'}
+                                    </td>
+                                    <td class="py-4 px-6">
+                                        <label class="switch">
+                                            <input type="checkbox" class="toggle-switch" data-user-id="${user.id}" ${user.isActive ? 'checked' : ''}>
+                                            <span class="slider round"></span>
+                                        </label>
+                                    </td>
+                                </tr>`;
+                        });
+
+                        tableHtml += `</tbody></table>`;
+                        $('#userTable').html(tableHtml);
+
+                        // Update pagination
+                        let paginationHtml = '';
+                        if (response.page > 1) {
+                            paginationHtml += `
+                                <a href="#" data-page="${response.page - 1}" class="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700">
+                                    &laquo; Précédent
+                                </a>`;
+                        }
+
+                        paginationHtml += `
+                            <span class="px-4 py-2 bg-white text-indigo-600 rounded-lg">
+                                Page ${response.page} sur ${response.totalPages}
+                            </span>`;
+
+                        if (response.page < response.totalPages) {
+                            paginationHtml += `
+                                <a href="#" data-page="${response.page + 1}" class="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700">
+                                    Suivant &raquo;
+                                </a>`;
+                        }
+
+                        $('#pagination').html(paginationHtml);
+                    }
+                });
+            }
+
+            // Load users on page load
+            loadUsers();
+
+            // Handle input events for instant filtering
+            $('#nameFilter, #roleFilter').on('input change', function () {
+                loadUsers();
+            });
+
+            // Handle pagination clicks
+            $(document).on('click', '#pagination a', function (e) {
+                e.preventDefault();
+                const page = $(this).data('page');
+                loadUsers(page);
+            });
+
+            // Handle toggle switch clicks
+            $(document).on('change', '.toggle-switch', function () {
+                const userId = $(this).data('user-id');
+                const isActive = $(this).is(':checked');
+
+                $.ajax({
+                    url: `/listusers/toggle-status/${userId}`,
+                    type: 'POST',
+                    data: {
+                        isActive: isActive
+                    },
+                    success: function (response) {
+                        if (response.success) {
+                            // Reload the table to reflect the updated status
+                            loadUsers();
+                        }
+                    }
+                });
+            });
+        });
+    </script>
+
+    <style>
+        /* Custom switch styling */
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 60px;
+            height: 34px;
+        }
+
+        .switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #ccc;
+            transition: 0.4s;
+            border-radius: 34px;
+        }
+
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 26px;
+            width: 26px;
+            left: 4px;
+            bottom: 4px;
+            background-color: white;
+            transition: 0.4s;
+            border-radius: 50%;
+        }
+
+        input:checked + .slider {
+            background-color: #4CAF50;
+        }
+
+        input:checked + .slider:before {
+            transform: translateX(26px);
+        }
+    </style>
 </body>
 </html>
 {% endblock %}

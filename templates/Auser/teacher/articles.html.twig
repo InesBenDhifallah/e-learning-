@@ -1,11 +1,15 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Articles{% endblock %}
+{% block title %}Articles - Espace Enseignant{% endblock %}
 
 {% block body %}
     <div class="container mx-auto px-4">
         <div class="flex justify-between items-center mb-8">
             <h1 class="text-3xl font-extrabold text-gray-800">📰 Articles</h1>
+            <a href="{{ path('user_article_new') }}" 
+               class="bg-blue-500 text-white px-4 py-2 rounded-full font-bold shadow-md hover:bg-blue-600 transition duration-300">
+                ✍️ Créer un article
+            </a>
         </div>
         
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -21,10 +25,21 @@
                     </div>
                     
                     <div class="flex items-center justify-between mt-4">
-                        <a href="{{ path('user_article_show', {'id': article.id}) }}" 
-                           class="bg-blue-500 text-white px-4 py-2 rounded-full font-bold shadow-md hover:bg-blue-600 transition duration-300">
-                           📖 Lire l'article
-                        </a>
+                        <span class="bg-blue-100 text-blue-600 px-3 py-1 rounded-full text-xs font-semibold">
+                            {{ article.category }}
+                        </span>
+                        <div class="flex space-x-2">
+                            <a href="{{ path('user_article_show', {'id': article.id}) }}" 
+                               class="bg-blue-500 text-white px-4 py-2 rounded-full font-bold shadow-md hover:bg-blue-600 transition duration-300">
+                               📖 Lire
+                            </a>
+                            {% if article.author == app.user.fullName %}
+                                <a href="{{ path('user_article_edit', {'id': article.id}) }}" 
+                                   class="bg-yellow-500 text-white px-4 py-2 rounded-full font-bold shadow-md hover:bg-yellow-600 transition duration-300">
+                                   ✏️ Modifier
+                                </a>
+                            {% endif %}
+                        </div>
                     </div>
                 </div>
             {% else %}
@@ -32,4 +47,4 @@
             {% endfor %}
         </div>
     </div>
-{% endblock %}
+{% endblock %} 

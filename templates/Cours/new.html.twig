@@ -10,7 +10,7 @@
 <body class="bg-gray-100 flex min-h-screen">
     <!-- Sidebar -->
     <aside class="w-72 bg-[#AFC92C] text-black p-6 min-h-screen fixed">
-        {% include 'sidebarparenteleve.html.twig' %}
+        {% include 'sidebarprof.html.twig' %}
     </aside>
 
     <!-- Main Content -->
@@ -18,7 +18,7 @@
         <div class="bg-white w-full max-w-lg mx-auto rounded-xl shadow-lg p-8">
             <h2 class="text-3xl font-bold text-center mb-6">Ajouter un Cours</h2>
 
-            {{ form_start(form, {'attr': {'class': 'space-y-4', 'enctype': 'multipart/form-data'}}) }}
+            {{ form_start(form, {'attr': {'class': 'space-y-4', 'novalidate': 'novalidate'}}) }}
 
             <!-- Titre -->
             <div>
@@ -37,7 +37,7 @@
                     <p class="text-red-500 text-sm">{{ form_errors(form.chapitre) }}</p>
                 {% endif %}
             </div>
-
+               
             <!-- Fichier -->
             <div>
                 <label for="{{ form.contenuFile.vars.id }}" class="block text-sm font-medium text-gray-600">Fichier du Cours <span class="text-red-500">*</span></label>

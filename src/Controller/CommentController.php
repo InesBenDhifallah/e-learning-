@@ -11,6 +11,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use DateTimeImmutable;
 
 class CommentController extends AbstractController
 {
@@ -34,9 +35,16 @@ class CommentController extends AbstractController
             throw $this->createNotFoundException('Article not found');
         }
 
+        $user = $this->getUser();
+        if (!$user) {
+            $this->addFlash('error', 'Vous devez être connecté pour commenter');
+            return $this->redirectToRoute('app_login');
+        }
+
         $comment = new Comment();
-        $comment->setArticle($article);  // Associer le commentaire à l'article
-        $comment->setCreatedAt(new \DateTime()); // Définir la date de création du commentaire
+        $comment->setArticle($article);
+        $comment->setUser($user);
+        $comment->setCreatedAt(new DateTimeImmutable());
 
         $form = $this->createForm(CommentType::class, $comment);
 
