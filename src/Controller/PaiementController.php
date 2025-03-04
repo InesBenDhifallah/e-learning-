@@ -207,7 +207,7 @@ final class PaiementController extends AbstractController
     }
 
     #[Route('/{id}', name: 'app_paiement_delete', methods: ['POST'])]
-    public function delete(Request $request, Paiement $paiement, EntityManagerInterface $entityManager): Response
+    public function delete(Request $request, Paiement $paiement, EntityManagerInterface $entityManager) 
     {
         if ($this->isCsrfTokenValid('delete' . $paiement->getId(), $request->request->get('_token'))) {
         if ($this->isCsrfTokenValid('delete' . $paiement->getId(), $request->request->get('_token'))) {
