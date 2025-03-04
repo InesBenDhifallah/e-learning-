@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 <!DOCTYPE html>
 <html lang="fr">
 <head>
@@ -88,3 +89,61 @@
 
 </body>
 </html>
+=======
+{% extends 'base.html.twig' %}
+
+{% block title %}Cours{% endblock %}
+
+{% block body %}
+    <h1>Cours</h1>
+
+    <table class="table">
+        <tbody>
+            <tr>
+                <th>Id</th>
+                <td>{{ cour.id }}</td>
+            </tr>
+            <tr>
+                <th>Titre</th>
+                <td>{{ cour.titre }}</td>
+            </tr>
+            <tr>
+                <th>Contenu</th>
+                <td>
+                    {# Vérifier si un fichier est associé au cours #}
+                    {% if cour.contenuFichier is not null %}
+                        {# Obtenir l'extension du fichier #}
+                        {% set file_extension = cour.contenuFichier|split('.')|last %}
+
+                        {# Afficher le fichier en fonction de son type #}
+                        {% if file_extension in ['jpg', 'jpeg', 'png', 'gif'] %}
+                            {# Afficher une image #}
+                            <img src="{{ asset('uploads/cours/' ~ cour.contenuFichier) }}" alt="Cours Image" width="200">
+                        {% elseif file_extension == 'pdf' %}
+                            {# Afficher un PDF #}
+                            <embed src="{{ asset('uploads/cours/' ~ cour.contenuFichier) }}" type="application/pdf" width="600px" height="400px" />
+                        {% elseif file_extension in ['mp4', 'webm', 'ogg'] %}
+                            {# Afficher une vidéo #}
+                            <video width="600" controls>
+                                <source src="{{ asset('uploads/cours/' ~ cour.contenuFichier) }}" type="video/{{ file_extension }}">
+                                Votre navigateur ne supporte pas la lecture de cette vidéo.
+                            </video>
+                        {% else %}
+                            {# Pour les autres types de fichiers, afficher un lien de téléchargement #}
+                            Fichier non pris en charge. <a href="{{ asset('uploads/cours/' ~ cour.contenuFichier) }}" download>Télécharger</a>
+                        {% endif %}
+                    {% else %}
+                        {# Si aucun fichier n'est associé #}
+                        Aucun fichier disponible.
+                    {% endif %}
+                </td>
+            </tr>
+        </tbody>
+    </table>
+
+    <a href="{{ path('app_cours_index') }}">Retour à la liste</a>
+    <a href="{{ path('app_cours_edit', {'id': cour.id}) }}">Modifier</a>
+
+    {{ include('cours/_delete_form.html.twig') }}
+{% endblock %}
+>>>>>>> 569ed047865299fc8826d7c0b415cb15f7d296ef

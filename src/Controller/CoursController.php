@@ -54,6 +54,7 @@ public function new(Request $request, EntityManagerInterface $entityManager): Re
 }
 
 
+
     #[Route('/{id}', name: 'app_cours_show', methods: ['GET'])]
     public function show(Cours $cour): Response
     {
@@ -65,6 +66,7 @@ public function new(Request $request, EntityManagerInterface $entityManager): Re
     #[Route('/{id}/edit', name: 'app_cours_edit', methods: ['GET', 'POST'])]
     public function edit(Request $request, Cours $cour, EntityManagerInterface $entityManager): Response
     {
+
         // Vérification si l'utilisateur a le rôle 'ROLE_PROFESSOR'
         if (!$this->isGranted('ROLE_PROFESSOR')) {
             throw $this->createAccessDeniedException('Accès refusé');
@@ -74,16 +76,19 @@ public function new(Request $request, EntityManagerInterface $entityManager): Re
         $form->handleRequest($request);
     
         if ($form->isSubmitted() && $form->isValid()) {
+
             $file = $form->get('contenuFile')->getData();
             if ($file) {
                 $cour->setUpdatedAt(new \DateTimeImmutable());
             }
+
     
             $entityManager->flush();
     
             return $this->redirectToRoute('app_cours_index', [], Response::HTTP_SEE_OTHER);
         }
     
+
         return $this->render('cours/edit.html.twig', [
             'cour' => $cour,
             'form' => $form,
@@ -91,6 +96,7 @@ public function new(Request $request, EntityManagerInterface $entityManager): Re
     }
 
     #[Route('/{id}', name: 'app_cours_delete', methods: ['POST'])]
+
 public function delete(Request $request, Cours $cour, EntityManagerInterface $entityManager): Response
 {
     // Vérification si l'utilisateur a le rôle 'ROLE_PROFESSOR'
@@ -105,3 +111,4 @@ public function delete(Request $request, Cours $cour, EntityManagerInterface $en
 
     return $this->redirectToRoute('app_cours_index', [], Response::HTTP_SEE_OTHER);
 }}
+

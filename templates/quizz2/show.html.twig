@@ -1,0 +1,151 @@
+{% extends 'base2.html.twig' %}
+
+{% block title %}Détails du Quiz{% endblock %}
+
+{% block body %}
+    <div class="container mx-auto">
+        <!-- Header Section -->
+        <div class="flex justify-between items-center mb-6">
+            <div>
+                <h1 class="text-3xl font-bold text-gray-800">Détails du Quiz</h1>
+                <p class="text-gray-600 mt-2">{{ quizz.matiere }} - Chapitre {{ quizz.chapitre }}</p>
+            </div>
+            <div class="flex items-center gap-3">
+                <a href="{{ path('app_quizz2_edit', {'id': quizz.id}) }}" 
+                   class="flex items-center gap-2 bg-lime-500 text-white px-4 py-2 rounded-lg hover:bg-lime-600 transition">
+                    <i class="fas fa-edit"></i>
+                    Modifier
+                </a>
+                <a href="{{ path('app_quizz2_index') }}" 
+                   class="flex items-center gap-2 bg-gray-500 text-white px-4 py-2 rounded-lg hover:bg-gray-600 transition">
+                    <i class="fas fa-arrow-left"></i>
+                    Retour à la liste
+                </a>
+            </div>
+        </div>
+
+        <!-- Quiz Details Card -->
+        <div class="bg-white shadow-lg rounded-lg overflow-hidden">
+            <!-- Card Header -->
+            <div class="bg-gray-50 px-6 py-4 border-b border-gray-200">
+                <h2 class="text-xl font-semibold text-gray-700">
+                    <i class="fas fa-clipboard-list mr-2 text-lime-500"></i>
+                    Informations du Quiz
+                </h2>
+            </div>
+
+            <!-- Card Content -->
+            <div class="p-6">
+                <div class="grid grid-cols-2 gap-6">
+                    <!-- Left Column -->
+                    <div class="space-y-6">
+                        <!-- Matière -->
+                        <div>
+                            <h3 class="text-sm font-medium text-gray-500">Matière</h3>
+                            <p class="mt-1 text-lg text-gray-900">{{ quizz.matiere }}</p>
+                        </div>
+
+                        <!-- Chapitre -->
+                        <div>
+                            <h3 class="text-sm font-medium text-gray-500">Chapitre</h3>
+                            <p class="mt-1 text-lg text-gray-900">{{ quizz.chapitre }}</p>
+                        </div>
+
+                        <!-- Best Score -->
+                        <div>
+                            <h3 class="text-sm font-medium text-gray-500">Meilleur Score</h3>
+                            <p class="mt-1 text-lg text-gray-900 flex items-center">
+                                <i class="fas fa-trophy text-yellow-400 mr-2"></i>
+                                {{ quizz.bestg|default('Non défini') }}
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- Right Column -->
+                    <div class="space-y-6">
+                        <!-- Difficulté -->
+                        <div>
+                            <h3 class="text-sm font-medium text-gray-500">Difficulté</h3>
+                            <div class="mt-1 flex items-center">
+                                {% for i in 1..5 %}
+                                    <i class="fas fa-star {% if i <= quizz.difficulte %}text-yellow-400{% else %}text-gray-300{% endif %} text-lg"></i>
+                                {% endfor %}
+                            </div>
+                        </div>
+
+                        <!-- État -->
+                        <div>
+                            <h3 class="text-sm font-medium text-gray-500">État</h3>
+                            <p class="mt-1 text-lg">
+                                <span class="inline-flex items-center px-3 py-1 rounded-full {% if quizz.etat == 'Actif' %}bg-green-100 text-green-800{% else %}bg-gray-100 text-gray-800{% endif %}">
+                                    <i class="fas {% if quizz.etat == 'Actif' %}fa-check-circle{% else %}fa-times-circle{% endif %} mr-2"></i>
+                                    {{ quizz.etat|default('Non défini') }}
+                                </span>
+                            </p>
+                        </div>
+
+                        <!-- Gain -->
+                        <div>
+                            <h3 class="text-sm font-medium text-gray-500">Gain</h3>
+                            <p class="mt-1 text-lg text-gray-900 flex items-center">
+                                <i class="fas fa-coins text-yellow-500 mr-2"></i>
+                                {{ quizz.gain|default('Non défini') }}
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Questions Section -->
+        <div class="mt-8">
+            <div class="flex justify-between items-center mb-4">
+                <h2 class="text-2xl font-bold text-gray-800">Questions</h2>
+                <a href="{{ path('app_question2_new', {'quizz_id': quizz.id}) }}" 
+                   class="flex items-center gap-2 bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 transition">
+                    <i class="fas fa-plus"></i>
+                    Ajouter une question
+                </a>
+            </div>
+
+            {% if quizz.questions|length > 0 %}
+                <div class="bg-white shadow-lg rounded-lg overflow-hidden">
+                    <div class="divide-y divide-gray-200">
+                        {% for question in quizz.questions %}
+                            <div class="p-6 hover:bg-gray-50 transition">
+                                <div class="flex justify-between items-center">
+                                    <div class="flex-1">
+                                        <h3 class="text-lg font-medium text-gray-900">{{ question.question }}</h3>
+                                        <p class="mt-1 text-sm text-gray-500">
+                                            {{ question.suggestions|length }} suggestion(s)
+                                        </p>
+                                    </div>
+                                    <div class="flex items-center gap-2">
+                                        <a href="{{ path('app_question2_edit', {'id': question.id, 'quizz_id': quizz.id}) }}" 
+                                           class="text-blue-500 hover:text-blue-700">
+                                            <i class="fas fa-edit"></i>
+                                        </a>
+                                        <a href="{{ path('app_question2_show', {'id': question.id, 'quizz_id': quizz.id}) }}" 
+                                           class="text-gray-500 hover:text-gray-700">
+                                            <i class="fas fa-eye"></i>
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            {% else %}
+                <div class="bg-gray-50 rounded-lg p-8 text-center">
+                    <i class="fas fa-question-circle text-4xl text-gray-400 mb-4"></i>
+                    <p class="text-gray-600">Aucune question n'a encore été ajoutée à ce quiz.</p>
+                    <a href="{{ path('app_question2_new', {'quizz_id': quizz.id}) }}" 
+                       class="inline-flex items-center gap-2 mt-4 text-blue-500 hover:text-blue-600">
+                        <i class="fas fa-plus"></i>
+                        Commencer à ajouter des questions
+                    </a>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+{% endblock %}

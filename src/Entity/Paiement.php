@@ -10,11 +10,15 @@ use Symfony\Component\Validator\Constraints as Assert;
 #[ORM\Entity(repositoryClass: PaiementRepository::class)]
 class Paiement
 {
+<<<<<<< HEAD
     
+=======
+>>>>>>> 569ed047865299fc8826d7c0b415cb15f7d296ef
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
     private ?int $id = null;
+<<<<<<< HEAD
    
     #[ORM\Column(length: 255)]
     #[Assert\NotBlank(message:"Le nom est obligatoire.")]
@@ -50,6 +54,8 @@ class Paiement
     message: "Le CVV doit contenir exactement 3 chiffres."
 )]
     private ?int $cvv = null;
+=======
+>>>>>>> 569ed047865299fc8826d7c0b415cb15f7d296ef
 
     #[ORM\Column]
     private ?float $montant = null;
@@ -63,10 +69,17 @@ class Paiement
     #[ORM\ManyToOne]
     private ?User $userid = null;
 
+<<<<<<< HEAD
+=======
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $StripeSessionId = null;
+
+>>>>>>> 569ed047865299fc8826d7c0b415cb15f7d296ef
     public function getId(): ?int
     {
         return $this->id;
     }
+<<<<<<< HEAD
 
     public function getNom(): ?string
     {
@@ -142,6 +155,8 @@ class Paiement
         return $this;
     }
 
+=======
+>>>>>>> 569ed047865299fc8826d7c0b415cb15f7d296ef
     public function getMontant(): ?float
     {
         return $this->montant;
@@ -150,19 +165,32 @@ class Paiement
     public function setMontant(float $montant): static
     {
         $this->montant = $montant;
+<<<<<<< HEAD
 
         return $this;
     }
 
     public function getIdAbonnement(): ?abonnement
+=======
+        return $this;
+    }
+
+    public function getIdAbonnement(): ?Abonnement
+>>>>>>> 569ed047865299fc8826d7c0b415cb15f7d296ef
     {
         return $this->id_abonnement;
     }
 
+<<<<<<< HEAD
     public function setIdAbonnement(?abonnement $id_abonnement): static
     {
         $this->id_abonnement = $id_abonnement;
 
+=======
+    public function setIdAbonnement(?Abonnement $id_abonnement): static
+    {
+        $this->id_abonnement = $id_abonnement;
+>>>>>>> 569ed047865299fc8826d7c0b415cb15f7d296ef
         return $this;
     }
 
@@ -174,7 +202,10 @@ class Paiement
     public function setDatePaiement(\DateTimeInterface $date_paiement): static
     {
         $this->date_paiement = $date_paiement;
+<<<<<<< HEAD
 
+=======
+>>>>>>> 569ed047865299fc8826d7c0b415cb15f7d296ef
         return $this;
     }
 
@@ -186,7 +217,21 @@ class Paiement
     public function setUserid(?User $userid): static
     {
         $this->userid = $userid;
+<<<<<<< HEAD
 
+=======
+        return $this;
+    }
+
+    public function getStripeSessionId(): ?string
+    {
+        return $this->StripeSessionId;
+    }
+
+    public function setStripeSessionId(?string $StripeSessionId): static
+    {
+        $this->StripeSessionId = $StripeSessionId;
+>>>>>>> 569ed047865299fc8826d7c0b415cb15f7d296ef
         return $this;
     }
 }

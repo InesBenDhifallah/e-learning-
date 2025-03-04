@@ -1,0 +1,196 @@
+{% extends 'base2.html.twig' %}
+
+{% block title %}Nouveau Quiz{% endblock %}
+
+{% block body %}
+    <div class="container mx-auto">
+        <!-- Header Section -->
+        <div class="flex justify-between items-center mb-6">
+            <div>
+                <h1 class="text-3xl font-bold text-gray-800">Créer un Nouveau Quiz</h1>
+                <p class="text-gray-600 mt-2">Ajoutez un nouveau quiz à votre collection</p>
+            </div>
+            <a href="{{ path('app_quizz2_index') }}" 
+               class="flex items-center gap-2 bg-gray-500 text-white px-4 py-2 rounded-lg hover:bg-gray-600 transition">
+                <i class="fas fa-arrow-left"></i>
+                Retour à la liste
+            </a>
+        </div>
+
+        <!-- Form Card -->
+        <div class="bg-white shadow-lg rounded-lg overflow-hidden max-w-2xl mx-auto">
+            <!-- Card Header -->
+            <div class="bg-gray-50 px-6 py-4 border-b border-gray-200">
+                <h2 class="text-xl font-semibold text-gray-700">
+                    <i class="fas fa-edit mr-2 text-lime-500"></i>
+                    Détails du Quiz
+                </h2>
+            </div>
+
+            <!-- Form Content -->
+            <div class="p-6">
+                {{ form_start(form, {'attr': {'class': 'space-y-6'}}) }}
+                    <!-- Matière Field -->
+                    <div class="space-y-2">
+                        {{ form_label(form.matiere, 'Matière', {'label_attr': {'class': 'block text-sm font-medium text-gray-700'}}) }}
+                        <div class="relative rounded-md shadow-sm">
+                            {{ form_widget(form.matiere, {
+                                'attr': {
+                                    'class': 'w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-lime-500 focus:border-lime-500 transition-shadow',
+                                    'placeholder': 'Ex: Mathématiques, Physique, etc.'
+                                }
+                            }) }}
+                            <div class="absolute inset-y-0 right-0 flex items-center pr-3">
+                                <i class="fas fa-book text-gray-400"></i>
+                            </div>
+                        </div>
+                        {{ form_errors(form.matiere, {'attr': {'class': 'text-red-500 text-sm mt-1'}}) }}
+                    </div>
+
+                    <!-- Chapitre Field -->
+                    <div class="space-y-2">
+                        {{ form_label(form.chapitre, 'Chapitre', {'label_attr': {'class': 'block text-sm font-medium text-gray-700'}}) }}
+                        <div class="relative rounded-md shadow-sm">
+                            {{ form_widget(form.chapitre, {
+                                'attr': {
+                                    'class': 'w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-lime-500 focus:border-lime-500 transition-shadow',
+                                    'placeholder': 'Ex: Chapitre 1, Introduction, etc.'
+                                }
+                            }) }}
+                            <div class="absolute inset-y-0 right-0 flex items-center pr-3">
+                                <i class="fas fa-bookmark text-gray-400"></i>
+                            </div>
+                        </div>
+                        {{ form_errors(form.chapitre, {'attr': {'class': 'text-red-500 text-sm mt-1'}}) }}
+                    </div>
+
+                    <!-- Best Field -->
+                    <div class="space-y-2">
+                        {{ form_label(form.bestg, 'Best', {'label_attr': {'class': 'block text-sm font-medium text-gray-700'}}) }}
+                        <div class="relative rounded-md shadow-sm">
+                            {{ form_widget(form.bestg, {
+                                'attr': {
+                                    'class': 'w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-lime-500 focus:border-lime-500 transition-shadow',
+                                    'placeholder': 'Entrez la valeur Best...'
+                                }
+                            }) }}
+                            <div class="absolute inset-y-0 right-0 flex items-center pr-3">
+                                <i class="fas fa-trophy text-gray-400"></i>
+                            </div>
+                        </div>
+                        {{ form_errors(form.bestg, {'attr': {'class': 'text-red-500 text-sm mt-1'}}) }}
+                    </div>
+
+                    <!-- Etat Field -->
+                    <div class="space-y-2">
+                        {{ form_label(form.etat, 'État', {'label_attr': {'class': 'block text-sm font-medium text-gray-700'}}) }}
+                        <div class="relative rounded-md shadow-sm">
+                            {{ form_widget(form.etat, {
+                                'attr': {
+                                    'class': 'w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-lime-500 focus:border-lime-500 transition-shadow',
+                                    'placeholder': 'Entrez l\'état...'
+                                }
+                            }) }}
+                            <div class="absolute inset-y-0 right-0 flex items-center pr-3">
+                                <i class="fas fa-check-circle text-gray-400"></i>
+                            </div>
+                        </div>
+                        {{ form_errors(form.etat, {'attr': {'class': 'text-red-500 text-sm mt-1'}}) }}
+                    </div>
+
+                    <!-- Gain Field -->
+                    <div class="space-y-2">
+                        {{ form_label(form.gain, 'Gain', {'label_attr': {'class': 'block text-sm font-medium text-gray-700'}}) }}
+                        <div class="relative rounded-md shadow-sm">
+                            {{ form_widget(form.gain, {
+                                'attr': {
+                                    'class': 'w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-lime-500 focus:border-lime-500 transition-shadow',
+                                    'placeholder': 'Entrez le gain...'
+                                }
+                            }) }}
+                            <div class="absolute inset-y-0 right-0 flex items-center pr-3">
+                                <i class="fas fa-coins text-gray-400"></i>
+                            </div>
+                        </div>
+                        {{ form_errors(form.gain, {'attr': {'class': 'text-red-500 text-sm mt-1'}}) }}
+                    </div>
+
+                    <!-- Difficulté Field -->
+                    <div class="space-y-2">
+                        {{ form_label(form.difficulte, 'Difficulté', {'label_attr': {'class': 'block text-sm font-medium text-gray-700'}}) }}
+                        <div class="flex items-center space-x-1">
+                            {% for i in 1..5 %}
+                                <button type="button" 
+                                        class="star-btn text-2xl focus:outline-none transition-colors duration-200" 
+                                        data-value="{{ i }}">
+                                    <i class="fas fa-star text-gray-300"></i>
+                                </button>
+                            {% endfor %}
+                        </div>
+                        {{ form_widget(form.difficulte, {'attr': {'class': 'hidden'}}) }}
+                        {{ form_errors(form.difficulte, {'attr': {'class': 'text-red-500 text-sm mt-1'}}) }}
+                        <p class="text-sm text-gray-500 mt-1">Sélectionnez le niveau de difficulté (1-5 étoiles)</p>
+                    </div>
+
+                    <!-- Form Actions -->
+                    <div class="flex items-center justify-end gap-4 mt-8 pt-6 border-t border-gray-200">
+                        <button type="button" onclick="history.back()" 
+                                class="px-4 py-2 text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200 transition">
+                            <i class="fas fa-times mr-2"></i>Annuler
+                        </button>
+                        <button type="submit" 
+                                class="flex items-center px-6 py-2 bg-lime-500 text-white rounded-lg hover:bg-lime-600 transition">
+                            <i class="fas fa-save mr-2"></i>
+                            Enregistrer
+                        </button>
+                    </div>
+                {{ form_end(form) }}
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Star rating functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            const stars = document.querySelectorAll('.star-btn');
+            const difficulteInput = document.querySelector('#{{ form.difficulte.vars.id }}');
+
+            function updateStars(rating) {
+                stars.forEach((star, index) => {
+                    const starIcon = star.querySelector('i');
+                    if (index < rating) {
+                        starIcon.classList.remove('text-gray-300');
+                        starIcon.classList.add('text-yellow-400');
+                    } else {
+                        starIcon.classList.remove('text-yellow-400');
+                        starIcon.classList.add('text-gray-300');
+                    }
+                });
+                difficulteInput.value = rating;
+            }
+
+            stars.forEach(star => {
+                star.addEventListener('click', () => {
+                    const rating = parseInt(star.dataset.value);
+                    updateStars(rating);
+                });
+
+                star.addEventListener('mouseover', () => {
+                    const rating = parseInt(star.dataset.value);
+                    stars.forEach((s, index) => {
+                        const starIcon = s.querySelector('i');
+                        if (index < rating) {
+                            starIcon.classList.add('text-yellow-400');
+                            starIcon.classList.remove('text-gray-300');
+                        }
+                    });
+                });
+
+                star.addEventListener('mouseout', () => {
+                    const currentRating = parseInt(difficulteInput.value) || 0;
+                    updateStars(currentRating);
+                });
+            });
+        });
+    </script>
+{% endblock %}

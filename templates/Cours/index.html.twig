@@ -6,6 +6,7 @@
     <title>Liste des Cours</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<<<<<<< HEAD
     <style>
         body[lang="ar"] {
             direction: rtl;
@@ -132,5 +133,68 @@
         });
     </script>
 
+=======
+</head>
+<body class="bg-gray-100 min-h-screen flex">
+    <!-- Sidebar -->
+    <aside class="w-72 bg-[#AFC92C] text-black p-6 min-h-screen fixed">
+        {% include 'sidebarprof.html.twig' %}
+    </aside>
+
+    <!-- Main Content -->
+    <main class="flex-1 ml-80 p-10">
+        <div class="bg-white w-full max-w-6xl mx-auto rounded-xl shadow-lg p-8">
+            <header class="flex justify-between items-center mb-6">
+                <h1 class="text-3xl font-bold text-gray-800">Liste des Cours</h1>
+                <a href="{{ path('app_cours_new') }}" class="py-3 px-4 bg-blue-500 text-white rounded-lg hover:bg-blue-700 transition-all">
+                    <i class="fas fa-plus mr-2"></i> Ajouter un Cours
+                </a>
+            </header>
+
+            <!-- Table des Cours -->
+            <div class="overflow-x-auto">
+                <table class="table-auto w-full bg-white rounded-lg shadow-lg">
+                    <thead class="bg-gray-800 text-white">
+                        <tr>
+                            <th class="py-3 px-6">ID</th>
+                            <th class="py-3 px-6">Titre</th>
+                            <th class="py-3 px-6">Fichier</th>
+                            <th class="py-3 px-6 text-center">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for cour in cours %}
+                            <tr class="border-b hover:bg-gray-100 transition">
+                                <td class="py-3 px-6 text-center">{{ cour.id }}</td>
+                                <td class="py-3 px-6 font-semibold text-gray-800">{{ cour.titre }}</td>
+                                <td class="py-3 px-6 text-center">
+                                    {% if cour.contenuFichier %}
+                                        <a href="{{ asset('uploads/cours/' ~ cour.contenuFichier) }}" class="text-blue-500 underline">
+                                            <i class="fas fa-download"></i> Télécharger
+                                        </a>
+                                    {% else %}
+                                        <span class="text-gray-500">Aucun fichier</span>
+                                    {% endif %}
+                                </td>
+                                <td class="py-3 px-6 text-center space-x-2">
+                                    <a href="{{ path('app_cours_show', {'id': cour.id}) }}" class="bg-blue-500 text-white py-2 px-4 rounded-lg hover:bg-blue-700 transition-all">
+                                        <i class="fas fa-eye"></i> Voir
+                                    </a>
+                                    <a href="{{ path('app_cours_edit', {'id': cour.id}) }}" class="bg-green-500 text-white py-2 px-4 rounded-lg hover:bg-green-700 transition-all">
+                                        <i class="fas fa-edit"></i> Modifier
+                                    </a>
+                                </td>
+                            </tr>
+                        {% else %}
+                            <tr>
+                                <td colspan="4" class="text-center py-4 text-gray-600">Aucun cours trouvé.</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </main>
+>>>>>>> 569ed047865299fc8826d7c0b415cb15f7d296ef
 </body>
 </html>

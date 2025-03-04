@@ -2,7 +2,16 @@
 
 namespace App\Repository;
 
+<<<<<<< HEAD
 use App\Entity\Abonnement;
+=======
+
+
+
+use App\Entity\Abonnement;
+
+
+>>>>>>> 569ed047865299fc8826d7c0b415cb15f7d296ef
 use App\Entity\Paiement;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
@@ -17,6 +26,52 @@ class PaiementRepository extends ServiceEntityRepository
         parent::__construct($registry, Paiement::class);
     }
 
+<<<<<<< HEAD
+=======
+
+    public function paiementParAbonnement(){
+        $entityManager = $this->getEntityManager();
+
+    $query = $entityManager->createQuery(
+        'SELECT a.type AS abonnement, SUM(p.montant) AS total
+         FROM App\Entity\Paiement p
+         JOIN p.id_abonnement a
+         GROUP BY a.type
+         ORDER BY total DESC'
+    );
+
+    return $query->getResult();
+        
+    }
+    public function totalPaiements(): float
+{
+    $entityManager = $this->getEntityManager();
+
+    $query = $entityManager->createQuery(
+        'SELECT SUM(p.montant) AS total FROM App\Entity\Paiement p'
+    );
+
+    return (float) $query->getSingleScalarResult();
+}
+public function nombrePaiementsParAbonnement()
+{
+    $entityManager = $this->getEntityManager();
+
+    $query = $entityManager->createQuery(
+        'SELECT a.type AS abonnement, COUNT(p.id) AS nombre_paiements
+         FROM App\Entity\Paiement p
+         JOIN p.id_abonnement a
+         GROUP BY a.type
+         ORDER BY nombre_paiements DESC'
+    );
+
+    return $query->getResult();
+}
+
+
+
+
+>>>>>>> 569ed047865299fc8826d7c0b415cb15f7d296ef
     //    /**
     //     * @return Abonnement[] Returns an array of Abonnement objects
     //     */
