@@ -1,31 +1,27 @@
 <?php
 namespace App\Service;
 
-use Symfony\Component\Notifier\NotifierInterface;
-use Symfony\Component\Notifier\Notification\Notification;
-use Symfony\Component\Notifier\Recipient\Recipient;
+use Symfony\Component\Mailer\MailerInterface;
+use Symfony\Component\Mime\Email;
 
 class NotificationService
 {
-    private $notifier;
+    private $mailer;
 
-    public function __construct(NotifierInterface $notifier)
+    public function __construct(MailerInterface $mailer)
     {
-        $this->notifier = $notifier;
+        $this->mailer = $mailer;
     }
 
-    public function sendPaymentNotification(string $userPhoneNumber): void
+    public function sendPaymentNotification(string $email, string $subject, string $message): void
     {
-        // Créer une notification
-        $notification = new Notification(
-            'Votre paiement sur la plateforme Alpha Education a été effectué avec succès.',
-            ['sms']  // Choisir le canal (ici SMS)
-        );
+        $email = (new Email())
+            ->from('bendhifallahines@gmail.com')  // Ton adresse email
+            ->to($email)  // Adresse du destinataire
+            ->subject($subject)  // Sujet de l'email
+            ->text($message);  // Contenu de l'email
 
-        // Créer un destinataire (par exemple, un numéro de téléphone)
-        $recipient = new Recipient($userPhoneNumber);
-
-        // Envoyer la notification
-        $this->notifier->send($notification, $recipient);
+        // Envoie l'email
+        $this->mailer->send($email);
     }
 }

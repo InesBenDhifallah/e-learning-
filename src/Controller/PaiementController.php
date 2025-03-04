@@ -2,11 +2,11 @@
 
 namespace App\Controller;
 
-use App\Service\StripeService;
+
 use App\Service\StripeService;
 use App\Entity\Paiement;
 use App\Entity\Abonnement;
-use App\Entity\User;
+use App\Service\NotificationService;
 use App\Entity\User;
 use App\Form\PaiementType;
 use App\Repository\AbonnementRepository;
@@ -15,7 +15,7 @@ use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Routing\Annotation\Route;
+
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Core\User\UserInterface;
 
@@ -34,13 +34,6 @@ final class PaiementController extends AbstractController
         $this->stripeService = $stripeService;
         $this->entityManager = $entityManager;
     }
-
-
-
-    
-
-   
-
 
 
     #[Route('/abonnement', name: 'app_abonnement_index', methods: ['GET'])]
@@ -73,12 +66,14 @@ final class PaiementController extends AbstractController
         // Rediriger l'utilisateur vers la page de paiement Stripe
         return $this->redirect($session->url);  // Redirection vers Stripe
     }
-    #[Route('/success', name: 'payment_success', methods: ['GET', 'POST'])]
-    public function success(Request $request, EntityManagerInterface $entityManager): Response
-    {
-        // Récupère le session_id depuis les données envoyées dans la requête POST
-        $sessionId = $request->query->get('session_id');
 
+   
+
+    #[Route('/success', name: 'payment_success', methods: ['GET', 'POST'])]
+    public function success(Request $request, EntityManagerInterface $entityManager, NotificationService $emailService): Response
+    {
+        $sessionId = $request->query->get('session_id');
+        $userEmail = 'user@example.com';  // Remplace par l'email de l'utilisateur récupéré depuis la base de données.
     
         if (!$sessionId) {
             return new Response('Session ID manquant', 400);
@@ -90,7 +85,6 @@ final class PaiementController extends AbstractController
             // Récupère la session Stripe pour vérifier les informations
             $session = \Stripe\Checkout\Session::retrieve($sessionId);
     
-            // Vérifie que le paiement a été effectué
             if ($session->payment_status === 'paid') {
                 // Récupère l'ID de l'abonnement et de l'utilisateur à partir des métadonnées
                 $abonnementId = $session->metadata->abonnement_id;
@@ -109,20 +103,21 @@ final class PaiementController extends AbstractController
                 $paiement->setStripeSessionId($sessionId);
                 $paiement->setMontant($session->amount_total / 100); // Montant en euros
                 $paiement->setDatePaiement(new \DateTime());
-                $paiement->setUserid($user); // Assurez-vous que vous avez une relation avec l'utilisateur dans votre entité Paiement
-                $paiement->setIdAbonnement($abonnement); // Assurez-vous que vous avez une relation avec l'abonnement dans votre entité Paiement
+                $paiement->setUserid($user);
+                $paiement->setIdAbonnement($abonnement);
     
                 // Persiste le paiement dans la base de données
                 $entityManager->persist($paiement);
                 $entityManager->flush();
     
-                // Retourne une réponse de succès
+                // Envoie la notification par email
+                $emailService->sendPaymentNotification($userEmail, 'Paiement réussi', 'Votre paiement sur la plateforme Alpha Education a été effectué avec succès.');
+    
                 return new Response('Paiement réussi et enregistré !');
             } else {
                 return new Response('Le paiement n\'a pas été validé.', 400);
             }
         } catch (\Exception $e) {
-            // Gère les erreurs, par exemple si la session est introuvable
             return new Response('Erreur lors du traitement du paiement : ' . $e->getMessage(), 500);
         }
     }
@@ -222,4 +217,5 @@ final class PaiementController extends AbstractController
 
         return $this->redirectToRoute('app_paiement_index', [], Response::HTTP_SEE_OTHER);
     }
+}
 }

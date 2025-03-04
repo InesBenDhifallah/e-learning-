@@ -29,11 +29,7 @@ class StripeService
             'payment_method_types' => ['card'],
             'line_items' => [[
                 'price_data' => [
-
-
-                    'currency' => 'tnd',
-
-
+                    'currency' => 'eur',
                     'product_data' => ['name' => 'Abonnement e-learning'],
                     'unit_amount' => $abonnement->getPrix() * 100, // Stripe utilise les centimes
                 ],
