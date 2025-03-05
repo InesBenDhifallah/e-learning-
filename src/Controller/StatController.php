@@ -11,7 +11,7 @@ final class StatController extends AbstractController
     #[Route('/stat', name: 'app_stat')]
     public function index(): Response
     {
-        return $this->render('stat/stat.html.twig', [
+        return $this->render('stat/statistics.html.twig', [
             'controller_name' => 'StatController',
         ]);
     }

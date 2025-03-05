@@ -1,0 +1,30 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Statistiques de l'utilisateur{% endblock %}
+
+{% block body %}
+    <div class="container">
+        <h1>Statistiques des scores par matière</h1>
+
+        {% if averages is not empty %}
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th scope="col">Matière</th>
+                        <th scope="col">Score Moyen</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for average in averages %}
+                        <tr>
+                            <td>{{ average.matiere }}</td>
+                            <td>{{ average.averageScore|number_format(2) }}</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        {% else %}
+            <p>Aucune donnée de score n'a été trouvée pour cet utilisateur.</p>
+        {% endif %}
+    </div>
+{% endblock %}

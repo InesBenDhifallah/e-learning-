@@ -29,6 +29,11 @@ security:
         - { path: ^/reset, roles: PUBLIC_ACCESS } 
         - { path: ^/send, roles: PUBLIC_ACCESS }
         - { path: ^/update-password, roles: PUBLIC_ACCESS } 
+        - { path: ^/quizz2, roles: PUBLIC_ACCESS } 
+        - { path: ^/suggestion2, roles: PUBLIC_ACCESS }
+        - { path: ^/quizz/average, roles: PUBLIC_ACCESS }  
+        - { path: ^/question2, roles: ROLE_TEACHER }
+        
 
         # Pages accessible by ROLE_TEACHER and ROLE_PARENT
         - { path: ^/stat, roles: [ROLE_TEACHER, ROLE_Parent] }
