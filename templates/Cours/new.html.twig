@@ -45,6 +45,17 @@
                 </div>
             </div>
 
+            <!-- Section description du cours -->
+            <div>
+                <label for="{{ form.description.vars.id }}" class="block text-sm font-medium text-gray-600">
+                    Description <span class="text-red-500">*</span>
+                </label>
+                {{ form_widget(form.description, {'attr': {'class': 'mt-2 w-full p-3 border border-gray-300 rounded-lg'}}) }}
+                {% if form.description.vars.errors|length > 0 %}
+                    <p class="text-red-500 text-sm">{{ form_errors(form.description) }}</p>
+                {% endif %}
+            </div>
+
             <!-- Section fichier du cours -->
             <div>
                 <label for="{{ form.contenuFile.vars.id }}" class="block text-sm font-medium text-gray-600">

@@ -1,136 +1,74 @@
-<!DOCTYPE html>
-<html lang="fr">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Liste des Cours</title>
-    <script src="https://cdn.tailwindcss.com"></script>
+{% extends 'base.html.twig' %}
+
+{% block stylesheets %}
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    <style>
-        body[lang="ar"] {
-            direction: rtl;
-            text-align: right;
-        }
+{% endblock %}
 
-        .text-right {
-            text-align: right;
-        }
+{% block body %}
+<div class="container mx-auto p-6">
+    {% if app.user %}
+        <div class="bg-blue-100 text-blue-900 p-4 rounded-lg mb-6 text-center">
+            <h2 class="text-xl font-semibold">Bienvenue, {{ app.user.nom }} ! 😊</h2>
+        </div>
+    {% endif %}
 
-        .text-left {
-            text-align: left;
-        }
-    </style>
-</head>
-<body class="bg-gray-100 min-h-screen flex" id="body">
+    {% for moduleData in modulesWithChapitresAndCours %}
+        <div class="bg-white shadow-md rounded-lg p-6 mb-4">
+            <div class="flex justify-between items-center">
+                <!-- Module Title with Toggle (Triangle) -->
+                <div class="flex items-center cursor-pointer" onclick="toggleVisibility('module-{{ moduleData.module.id }}')">
+                    <i class="fas fa-caret-down text-lg text-blue-600 mr-2 transition-transform duration-300" id="icon-module-{{ moduleData.module.id }}"></i>
+                    <span class="text-xl font-semibold text-blue-600">{{ moduleData.module.nom }}</span>
+                </div>
+            </div>
 
-    <!-- Sidebar -->
-    <aside class="w-72 bg-[#AFC92C] text-black p-6 min-h-screen fixed" data-translate="true">
-        {% include 'sidebarparenteleve.html.twig' %}
-    </aside>
+            <!-- Liste des chapitres -->
+            <div id="module-{{ moduleData.module.id }}" class="hidden ml-6 mt-3">
+                {% for chapitre in moduleData.chapitres %}
+                    <div class="mb-2">
+                        <div class="flex justify-between items-center">
+                            <!-- Chapitre Title with Toggle (Triangle) -->
+                            <div class="flex items-center cursor-pointer" onclick="toggleVisibility('chapitre-{{ chapitre.id }}')">
+                                <i class="fas fa-caret-right text-lg text-gray-700 mr-2 transition-transform duration-300" id="icon-chapitre-{{ chapitre.id }}"></i>
+                                <span class="text-lg font-semibold text-gray-700 hover:text-gray-900">{{ chapitre.nom }}</span>
+                            </div>
+                        </div>
 
-    <!-- Main content -->
-    <div class="ml-72 p-8 w-full" data-translate="true">
-        <div class="flex justify-between items-center mb-6">
-            <h1 class="text-2xl font-semibold" data-translate="true"> Liste des Cours</h1>
-
-            <!-- Sélecteur de langue -->
-            <div data-translate="true">
-                <label for="language-selector" class="mr-2 font-semibold">Langue :</label>
-                <select id="language-selector" class="px-3 py-1 border rounded">
-                    <option value="fr">🇫🇷 Français</option>
-                    <option value="en">🇬🇧 Anglais</option>
-                    <option value="ar">🇦🇪 Arabe</option>
-                </select>
+                        <!-- Liste des cours -->
+                        <div id="chapitre-{{ chapitre.id }}" class="hidden ml-6 mt-2">
+                            {% for cours in moduleData.cours[chapitre.id] %}
+                                <div class="bg-gray-100 p-3 rounded-lg mb-2 flex justify-between">
+                                    <div>
+                                        <h5 class="text-md font-medium text-gray-800">{{ cours.titre }}</h5>
+                                        <p class="text-sm text-gray-600">{{ cours.description }}</p>
+                                        <a href="/uploads/cours/{{ cours.contenuFichier }}" class="text-blue-500 hover:text-blue-700 underline transition duration-300" target="_blank">
+                                            <i class="fas fa-download mr-2"></i> Télécharger
+                                        </a>
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                {% endfor %}
             </div>
         </div>
+    {% endfor %}
+</div>
 
-        <!-- Bouton d'ajout de cours (Professeur uniquement) -->
-        {% if is_granted('ROLE_TEACHER') %}
-            <a href="{{ path('app_cours_new') }}" class="bg-green-500 text-white px-4 py-2 rounded-lg mb-6 inline-block" data-translate="true">
-                <i class="fas fa-plus"></i> Ajouter un cours
-            </a>
-        {% endif %}
+<!-- JavaScript pour afficher/masquer les chapitres et cours -->
+<script>
+    function toggleVisibility(id) {
+        const element = document.getElementById(id);
+        const icon = document.getElementById('icon-' + id);
 
-        <!-- Liste des cours -->
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {% for cour in cours %}
-                <div class="bg-white p-6 rounded-lg shadow-lg relative" data-translate="true">
-                    <h2 id="title-{{ cour.id }}" class="text-xl font-semibold text-green-600" data-translate="true">{{ cour.titre }}</h2>
-                    <p id="description-{{ cour.id }}" class="text-gray-600 mt-2 mb-4" data-translate="true">{{ cour.description }}</p>
-
-                    <a href="{{ path('app_cours_show', {'id': cour.id}) }}" class="text-blue-500 hover:underline" data-translate="true">
-                        Voir les détails <i class="fas fa-arrow-right"></i>
-                    </a>
-
-                    <!-- Actions (Professeur uniquement) -->
-                    {% if is_granted('ROLE_TEACHER') %}
-                        <div class="mt-4 flex justify-between" data-translate="true">
-                            <a href="{{ path('app_cours_edit', {'id': cour.id}) }}" class="text-yellow-500 hover:underline" data-translate="true">
-                                <i class="fas fa-edit"></i> Modifier
-                            </a>
-
-                            <form action="{{ path('app_cours_delete', {'id': cour.id}) }}" method="post" style="display:inline;" data-translate="true">
-                                <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ cour.id) }}">
-                                <button type="submit" class="text-red-500 hover:underline" data-translate="true">
-                                    <i class="fas fa-trash"></i> Supprimer
-                                </button>
-                            </form>
-                        </div>
-                    {% endif %}
-                </div>
-            {% endfor %}
-        </div>
-    </div>
-
-    <!-- Script de traduction -->
-    <script>
-        async function translateText(text, targetLang) {
-            const requestBody = {
-                texts: [text],
-                target_language: targetLang
-            };
-
-            const response = await fetch('http://127.0.0.1:5000/translate', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(requestBody),
-            });
-
-            if (!response.ok) {
-                console.error('Erreur API:', await response.text());
-                throw new Error(`Erreur API: ${response.status} - ${response.statusText}`);
-            }
-
-            const data = await response.json();
-            return data.translated_texts[0];
+        if (element.classList.contains('hidden')) {
+            element.classList.remove('hidden');
+            icon.classList.add('rotate-90');
+        } else {
+            element.classList.add('hidden');
+            icon.classList.remove('rotate-90');
         }
-
-        document.getElementById('language-selector').addEventListener('change', async function () {
-            const lang = this.value;
-            const elementsToTranslate = document.querySelectorAll('[data-translate="true"]');
-            const body = document.getElementById('body');
-
-            // Changer la langue du body et ajuster la direction
-            body.setAttribute('lang', lang);
-            if (lang === 'ar') {
-                body.setAttribute('dir', 'rtl');
-            } else {
-                body.setAttribute('dir', 'ltr');
-            }
-
-            for (let element of elementsToTranslate) {
-                try {
-                    const translatedText = await translateText(element.innerText, lang);
-                    element.innerText = translatedText;
-                } catch (error) {
-                    console.error('Échec de la traduction:', error);
-                    alert('Échec de la traduction. Consultez la console pour plus de détails.');
-                }
-            }
-        });
-    </script>
-
-</body>
-</html>
+    }
+</script>
+{% endblock %}

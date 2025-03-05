@@ -32,6 +32,20 @@ class ModuleRepository extends ServiceEntityRepository
         ->getResult();
 }
 
+
+public function findAllWithChapitresAndCours(): array
+{
+    return $this->createQueryBuilder('m')
+        ->leftJoin('m.chapitres', 'c')
+        ->leftJoin('c.cours', 'co')
+        ->addSelect('c')
+        ->addSelect('co')
+        ->getQuery()
+        ->getResult();
+}
+
+
+
     
     
 
