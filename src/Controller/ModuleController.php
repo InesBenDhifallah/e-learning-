@@ -15,16 +15,31 @@ use Symfony\Component\Routing\Attribute\Route;
 final class ModuleController extends AbstractController
 {
     #[Route(name: 'app_module_index', methods: ['GET'])]
-    public function index(ModuleRepository $moduleRepository): Response
-    {
-        return $this->render('module/index.html.twig', [
-            'modules' => $moduleRepository->findAll(),
-        ]);
+public function index(ModuleRepository $moduleRepository): Response
+{
+    $user = $this->getUser(); // Récupère l'utilisateur connecté
+
+    if ($this->isGranted('ROLE_TEACHER')) {
+        // Si l'utilisateur est un professeur, il ne voit que ses modules
+        $modules = $moduleRepository->findModulesByProfesseur($user);
+    } else {
+        // Sinon, il voit tous les modules (admin, autres rôles)
+        $modules = $moduleRepository->findAll();
     }
+
+    return $this->render('module/moduleprof.html.twig', [
+        'modules' => $modules,
+    ]);
+}
+
 
     #[Route('/new', name: 'app_module_new', methods: ['GET', 'POST'])]
     public function new(Request $request, EntityManagerInterface $entityManager): Response
     {
+        if ($this->isGranted('ROLE_TEACHER')) {
+            throw $this->createAccessDeniedException('Les professeurs ne peuvent pas créer de modules.');
+        }
+
         $module = new Module();
         $form = $this->createForm(ModuleType::class, $module);
         $form->handleRequest($request);
@@ -53,6 +68,10 @@ final class ModuleController extends AbstractController
     #[Route('/{id}/edit', name: 'app_module_edit', methods: ['GET', 'POST'])]
     public function edit(Request $request, Module $module, EntityManagerInterface $entityManager): Response
     {
+        if ($this->isGranted('ROLE_TEACHER')) {
+            throw $this->createAccessDeniedException('Les professeurs ne peuvent pas modifier les modules.');
+        }
+
         $form = $this->createForm(ModuleType::class, $module);
         $form->handleRequest($request);
 
@@ -71,6 +90,10 @@ final class ModuleController extends AbstractController
     #[Route('/{id}', name: 'app_module_delete', methods: ['POST'])]
     public function delete(Request $request, Module $module, EntityManagerInterface $entityManager): Response
     {
+        if ($this->isGranted('ROLE_TEACHER')) {
+            throw $this->createAccessDeniedException('Les professeurs ne peuvent pas supprimer les modules.');
+        }
+
         if ($this->isCsrfTokenValid('delete'.$module->getId(), $request->getPayload()->getString('_token'))) {
             $entityManager->remove($module);
             $entityManager->flush();
@@ -79,20 +102,5 @@ final class ModuleController extends AbstractController
         return $this->redirectToRoute('app_module_index', [], Response::HTTP_SEE_OTHER);
     }
 
-    #[Route('/prof/modules', name: 'app_prof_modules')]
-public function modulesProfesseur(ModuleRepository $moduleRepository): Response
-{
-    $user = $this->getUser(); // Récupère le professeur connecté
-
-    if (!$user) {
-        throw $this->createAccessDeniedException('Vous devez être connecté.');
-    }
-
-    // Récupérer les modules assignés au professeur
-    $modules = $moduleRepository->findModulesByProfesseur($user);
-
-    return $this->render('module/prof.html.twig', [
-        'modules' => $modules
-    ]);
-}
+    
 }

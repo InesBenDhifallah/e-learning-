@@ -22,13 +22,22 @@ final class CoursController extends AbstractController
             'cours' => $coursRepository->findAll(),
         ]);
     }
+    #[Route('/courss')]
+
+    #[Route(name: 'app_cours_index', methods: ['GET'])]
+    public function index1(CoursRepository $coursRepository): Response
+    {
+        return $this->render('cours/prof.html.twig', [
+            'cours' => $coursRepository->findAll(),
+        ]);
+    }
 
     // Dans la méthode 'new' (pour créer un cours)
 #[Route('/new', name: 'app_cours_new', methods: ['GET', 'POST'])]
 public function new(Request $request, EntityManagerInterface $entityManager): Response
 {
     // Vérification si l'utilisateur a le rôle 'ROLE_PROFESSOR'
-    if (!$this->isGranted('ROLE_PROFESSOR')) {
+    if (!$this->isGranted('ROLE_TEACHER')) {
         throw $this->createAccessDeniedException('Accès refusé');
     }
 
@@ -68,7 +77,7 @@ public function new(Request $request, EntityManagerInterface $entityManager): Re
     {
 
         // Vérification si l'utilisateur a le rôle 'ROLE_PROFESSOR'
-        if (!$this->isGranted('ROLE_PROFESSOR')) {
+        if (!$this->isGranted('ROLE_TEACHER')) {
             throw $this->createAccessDeniedException('Accès refusé');
         }
     
@@ -100,7 +109,7 @@ public function new(Request $request, EntityManagerInterface $entityManager): Re
 public function delete(Request $request, Cours $cour, EntityManagerInterface $entityManager): Response
 {
     // Vérification si l'utilisateur a le rôle 'ROLE_PROFESSOR'
-    if (!$this->isGranted('ROLE_PROFESSOR')) {
+    if (!$this->isGranted('ROLE_TEACHER')) {
         throw $this->createAccessDeniedException('Accès refusé');
     }
 

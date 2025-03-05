@@ -2,16 +2,12 @@
 
 namespace App\Repository;
 
-<<<<<<< HEAD
-use App\Entity\Abonnement;
-=======
 
 
 
 use App\Entity\Abonnement;
 
 
->>>>>>> 569ed047865299fc8826d7c0b415cb15f7d296ef
 use App\Entity\Paiement;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
@@ -26,8 +22,6 @@ class PaiementRepository extends ServiceEntityRepository
         parent::__construct($registry, Paiement::class);
     }
 
-<<<<<<< HEAD
-=======
 
     public function paiementParAbonnement(){
         $entityManager = $this->getEntityManager();
@@ -71,7 +65,6 @@ public function nombrePaiementsParAbonnement()
 
 
 
->>>>>>> 569ed047865299fc8826d7c0b415cb15f7d296ef
     //    /**
     //     * @return Abonnement[] Returns an array of Abonnement objects
     //     */

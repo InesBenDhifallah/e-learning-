@@ -1,6 +1,18 @@
 {
-<<<<<<< HEAD
-=======
+    "api-platform/core": {
+        "version": "4.0",
+        "recipe": {
+            "repo": "github.com/symfony/recipes",
+            "branch": "main",
+            "version": "4.0",
+            "ref": "cb9e6b8ceb9b62f32d41fc8ad72a25d5bd674c6d"
+        },
+        "files": [
+            "./config/packages/api_platform.yaml",
+            "./config/routes/api_platform.yaml",
+            "./src/ApiResource/.gitignore"
+        ]
+    },
     "api-platform/symfony": {
         "version": "3.4",
         "recipe": {
@@ -15,7 +27,6 @@
             "./src/ApiResource/.gitignore"
         ]
     },
->>>>>>> 569ed047865299fc8826d7c0b415cb15f7d296ef
     "doctrine/doctrine-bundle": {
         "version": "2.13",
         "recipe": {
@@ -46,8 +57,6 @@
     "knplabs/knp-paginator-bundle": {
         "version": "v6.6.1"
     },
-<<<<<<< HEAD
-=======
     "nelmio/cors-bundle": {
         "version": "2.5",
         "recipe": {
@@ -60,7 +69,6 @@
             "./config/packages/nelmio_cors.yaml"
         ]
     },
->>>>>>> 569ed047865299fc8826d7c0b415cb15f7d296ef
     "phpunit/phpunit": {
         "version": "9.6",
         "recipe": {
@@ -293,8 +301,6 @@
             "./templates/base.html.twig"
         ]
     },
-<<<<<<< HEAD
-=======
     "symfony/twilio-notifier": {
         "version": "6.4",
         "recipe": {
@@ -316,7 +322,6 @@
             "./config/packages/uid.yaml"
         ]
     },
->>>>>>> 569ed047865299fc8826d7c0b415cb15f7d296ef
     "symfony/ux-turbo": {
         "version": "2.22",
         "recipe": {

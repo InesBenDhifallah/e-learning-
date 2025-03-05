@@ -2,17 +2,12 @@
 
 namespace App\Controller;
 
-<<<<<<< HEAD
-use App\Entity\Paiement;
-use App\Entity\Abonnement;
-=======
 
 use App\Service\StripeService;
 use App\Entity\Paiement;
 use App\Entity\Abonnement;
 use App\Service\NotificationService;
 use App\Entity\User;
->>>>>>> 569ed047865299fc8826d7c0b415cb15f7d296ef
 use App\Form\PaiementType;
 use App\Repository\AbonnementRepository;
 use App\Repository\PaiementRepository;
@@ -20,18 +15,12 @@ use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-<<<<<<< HEAD
-=======
-
->>>>>>> 569ed047865299fc8826d7c0b415cb15f7d296ef
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Core\User\UserInterface;
 
 #[Route('/paiement')]
 final class PaiementController extends AbstractController
 {
-<<<<<<< HEAD
-=======
     
 
     // Le constructeur qui permet d'injecter StripeService
@@ -46,7 +35,6 @@ final class PaiementController extends AbstractController
     }
 
 
->>>>>>> 569ed047865299fc8826d7c0b415cb15f7d296ef
     #[Route('/abonnement', name: 'app_abonnement_index', methods: ['GET'])]
     public function abonnementIndex(AbonnementRepository $abonnementRepository): Response
     {
@@ -55,50 +43,15 @@ final class PaiementController extends AbstractController
         ]);
     }
 
-<<<<<<< HEAD
-    #[Route('/new/{abonnementId}', name: 'app_paiement_new', methods: ['GET', 'POST'])]
-    public function new(Request $request, EntityManagerInterface $entityManager, AbonnementRepository $abonnementRepository, int $abonnementId): Response
-    {
-=======
 
     #[Route('/new/{abonnementId}', name: 'app_paiement_new', methods: ['GET', 'POST'])]
     public function new(Request $request, EntityManagerInterface $entityManager, AbonnementRepository $abonnementRepository, int $abonnementId): Response
     {
         // Trouver l'abonnement
->>>>>>> 569ed047865299fc8826d7c0b415cb15f7d296ef
         $abonnement = $abonnementRepository->find($abonnementId);
         if (!$abonnement) {
             throw $this->createNotFoundException("L'abonnement n'existe pas");
         }
-<<<<<<< HEAD
-        $user = $this->getUser();
-        $montant = $abonnement->getPrix();
-        $paiement = new Paiement();
-        $paiement->setIdAbonnement($abonnement);
-        $paiement->setMontant($montant);
-        $paiement->setDatePaiement(new \DateTime());
-        $paiement->setUserid($user);
-
-        $form = $this->createForm(PaiementType::class, $paiement);
-        $form->handleRequest($request);
-
-        if ($form->isSubmitted() && $form->isValid()) {
-            $entityManager->persist($paiement);
-            $entityManager->flush();
-
-            return $this->redirectToRoute('app_paiement_index', [], Response::HTTP_SEE_OTHER);
-        }
-
-        return $this->render('paiement/new.html.twig', [
-            'paiement' => $paiement,
-            'form' => $form,
-            'montant' => $montant,
-        ]);
-    }
-
-    #[Route('/index', name: 'app_paiement_index', methods: ['GET'])]
-    public function index(PaiementRepository $paiementRepository, UserInterface $user): Response
-=======
     
         // Récupérer l'utilisateur connecté
         $user = $this->getUser();
@@ -198,24 +151,12 @@ final class PaiementController extends AbstractController
     #[Route('/index', name: 'app_paiement_index', methods: ['GET'])]
     public function index(PaiementRepository $paiementRepository, UserInterface $user): Response
 
->>>>>>> 569ed047865299fc8826d7c0b415cb15f7d296ef
     {
         $paiements = $paiementRepository->findBy(['userid' => $user]);
 
         return $this->render('paiement/index.html.twig', [
             'paiements' => $paiements,
         ]);
-<<<<<<< HEAD
-    }
-
-    #[Route('/{id}', name: 'app_paiement_show', methods: ['GET'])]
-    public function show(Paiement $paiement): Response
-    {
-        return $this->render('paiement/show.html.twig', [
-            'paiement' => $paiement,
-        ]);
-    }
-=======
         $paiements = $paiementRepository->findBy(['userid' => $user]);
 
         return $this->render('paiement/index.html.twig', [
@@ -245,7 +186,6 @@ final class PaiementController extends AbstractController
            'nombre'=>$nombre,
        ]);
    }
->>>>>>> 569ed047865299fc8826d7c0b415cb15f7d296ef
 
     #[Route('/{id}/edit', name: 'app_paiement_edit', methods: ['GET', 'POST'])]
     public function edit(Request $request, Paiement $paiement, EntityManagerInterface $entityManager): Response
@@ -266,16 +206,10 @@ final class PaiementController extends AbstractController
     }
 
     #[Route('/{id}', name: 'app_paiement_delete', methods: ['POST'])]
-<<<<<<< HEAD
-    public function delete(Request $request, Paiement $paiement, EntityManagerInterface $entityManager): Response
-    {
-        if ($this->isCsrfTokenValid('delete' . $paiement->getId(), $request->request->get('_token'))) {
-=======
     public function delete(Request $request, Paiement $paiement, EntityManagerInterface $entityManager) 
     {
         if ($this->isCsrfTokenValid('delete' . $paiement->getId(), $request->request->get('_token'))) {
         if ($this->isCsrfTokenValid('delete' . $paiement->getId(), $request->request->get('_token'))) {
->>>>>>> 569ed047865299fc8826d7c0b415cb15f7d296ef
             $entityManager->remove($paiement);
             $entityManager->flush();
         }
@@ -283,7 +217,4 @@ final class PaiementController extends AbstractController
         return $this->redirectToRoute('app_paiement_index', [], Response::HTTP_SEE_OTHER);
     }
 }
-<<<<<<< HEAD
-=======
 }
->>>>>>> 569ed047865299fc8826d7c0b415cb15f7d296ef

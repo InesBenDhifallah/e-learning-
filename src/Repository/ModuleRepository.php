@@ -16,16 +16,18 @@ class ModuleRepository extends ServiceEntityRepository
         parent::__construct($registry, Module::class);
     }
 
-   
-public function findModulesByProfesseur(User $professeur)
-{
-    return $this->createQueryBuilder('m')
-        ->innerJoin('m.users', 'u')
-        ->where('u.id = :professeurId')
-        ->setParameter('professeurId', $professeur->getId())
-        ->getQuery()
-        ->getResult();
-}
+    public function findModulesByTeacher(User $teacher): array
+    {
+        return $this->createQueryBuilder('m')
+            ->innerJoin('m.users', 'u') // Assurez-vous que la relation est correcte
+            ->where('u.id = :teacherId')
+            ->andWhere('JSON_CONTAINS(u.roles, :role) = 1') // Vérifier si ROLE_TEACHER est bien défini
+            ->setParameter('teacherId', $teacher->getId())
+            ->setParameter('role', '"ROLE_TEACHER"') // Vérifier le rôle au format JSON
+            ->getQuery()
+            ->getResult();
+    }
+    
 
 
     //    /**

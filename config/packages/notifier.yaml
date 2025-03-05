@@ -2,10 +2,9 @@ framework:
     notifier:
         chatter_transports:
         texter_transports:
-<<<<<<< HEAD
-=======
+
             twilio: '%env(TWILIO_DSN)%'
->>>>>>> 569ed047865299fc8826d7c0b415cb15f7d296ef
+
         channel_policy:
             # use chat/slack, chat/telegram, sms/twilio or sms/nexmo
             urgent: ['email']
