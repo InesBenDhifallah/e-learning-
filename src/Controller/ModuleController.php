@@ -21,13 +21,13 @@ public function index(ModuleRepository $moduleRepository): Response
 
     if ($this->isGranted('ROLE_TEACHER')) {
         // Si l'utilisateur est un professeur, il ne voit que ses modules
-        $modules = $moduleRepository->findModulesByProfesseur($user);
+        $modules = $moduleRepository->findModulesByTeacher($user);
     } else {
         // Sinon, il voit tous les modules (admin, autres rôles)
         $modules = $moduleRepository->findAll();
     }
 
-    return $this->render('module/moduleprof.html.twig', [
+    return $this->render('module/index.html.twig', [
         'modules' => $modules,
     ]);
 }

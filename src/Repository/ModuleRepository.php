@@ -5,6 +5,7 @@ namespace App\Repository;
 use App\Entity\Module;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
+use App\Entity\User;
 
 /**
  * @extends ServiceEntityRepository<Module>
@@ -16,17 +17,22 @@ class ModuleRepository extends ServiceEntityRepository
         parent::__construct($registry, Module::class);
     }
 
-    public function findModulesByTeacher(User $teacher): array
-    {
-        return $this->createQueryBuilder('m')
-            ->innerJoin('m.users', 'u') // Assurez-vous que la relation est correcte
-            ->where('u.id = :teacherId')
-            ->andWhere('JSON_CONTAINS(u.roles, :role) = 1') // Vérifier si ROLE_TEACHER est bien défini
-            ->setParameter('teacherId', $teacher->getId())
-            ->setParameter('role', '"ROLE_TEACHER"') // Vérifier le rôle au format JSON
-            ->getQuery()
-            ->getResult();
+    public function findModulesByTeacher(User $user): array
+{
+    // Vérifier si l'utilisateur a le rôle "ROLE_TEACHER"
+    if (!in_array('ROLE_TEACHER', $user->getRoles())) {
+        return []; // Retourner une liste vide si l'utilisateur n'est pas un enseignant
     }
+
+    return $this->createQueryBuilder('m')
+        ->innerJoin('m.users', 'u')
+        ->where('u.id = :userId')
+        ->setParameter('userId', $user->getId())
+        ->getQuery()
+        ->getResult();
+}
+
+    
     
 
 

@@ -30,12 +30,7 @@
                     <thead class="bg-lime-600 text-white">
     <tr>
         <th class="py-4 px-6">Id</th>
-<<<<<<< HEAD
-        <th class="py-4 px-6">Nom</th>
-        <th class="py-4 px-6">Email</th>
-=======
        
->>>>>>> 569ed047865299fc8826d7c0b415cb15f7d296ef
         <th class="py-4 px-6">Type d'Abonnement</th> 
         <th class="py-4 px-6">Montant</th>
         <th class="py-4 px-6">Date Paiement</th>
@@ -47,12 +42,7 @@
     {% for paiement in paiements %}
         <tr class="hover:bg-gray-50">
             <td class="py-4 px-6">{{ paiement.id }}</td>
-<<<<<<< HEAD
-            <td class="py-4 px-6">{{ paiement.nom }}</td>
-            <td class="py-4 px-6">{{ paiement.email }}</td>
-=======
            
->>>>>>> 569ed047865299fc8826d7c0b415cb15f7d296ef
             <td class="py-4 px-6 font-semibold text-gray-700">
                 {{ paiement.idAbonnement ? paiement.idAbonnement.type : 'Non défini' }} 
             </td> 
