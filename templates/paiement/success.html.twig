@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Succès</title>
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #222;
+        }
+        .card {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            width: 300px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+        .icon {
+            font-size: 50px;
+            color: green;
+            margin-bottom: 10px;
+        }
+        .button {
+            display: inline-block;
+            padding: 10px;
+            margin-top: 10px;
+            border-radius: 5px;
+            text-decoration: none;
+            font-weight: bold;
+            background: green;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="card">
+        <div class="icon">✅</div>
+        <h2>Succès !</h2>
+        <p>Votre paiement a été effectuée avec succès.</p>
+        <a href="{{ path('app_paiement_index') }}" > RETOUR </a>
+    </div>
+
+</body>
+</html>
