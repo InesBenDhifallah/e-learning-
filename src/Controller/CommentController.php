@@ -5,95 +5,105 @@ namespace App\Controller;
 use App\Entity\Comment;
 use App\Entity\Article;
 use App\Form\CommentType;
-use App\Repository\ArticleRepository;  // Utilisation correcte du namespace pour le repository
+use App\Repository\CommentRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use DateTimeImmutable;
+use Symfony\Component\Validator\Validator\ValidatorInterface;
+use Symfony\Component\Security\Core\Exception\AccessDeniedException;
+use App\Service\BadWordsFilter;
 
+#[Route('/admin/comments')]
 class CommentController extends AbstractController
 {
     private $entityManager;
-    private $articleRepository;
+    private $commentRepository;
+    private $validator;
+    private $badWordsFilter;
 
     // Injection des dépendances via le constructeur
-    public function __construct(EntityManagerInterface $entityManager, ArticleRepository $articleRepository)
-    {
+    public function __construct(
+        EntityManagerInterface $entityManager, 
+        CommentRepository $commentRepository, 
+        ValidatorInterface $validator,
+        BadWordsFilter $badWordsFilter
+    ) {
         $this->entityManager = $entityManager;
-        $this->articleRepository = $articleRepository;
+        $this->commentRepository = $commentRepository;
+        $this->validator = $validator;
+        $this->badWordsFilter = $badWordsFilter;
     }
 
-    // Créer un commentaire pour un article
-    #[Route('/article/{articleId}/comment/create', name: 'comment_create')]
-    public function create(int $articleId, Request $request): Response
+    #[Route('/', name: 'admin_comment_index', methods: ['GET'])]
+    public function index(): Response
     {
-        $article = $this->articleRepository->find($articleId);
+        return $this->render('admin/comment/index.html.twig', [
+            'comments' => $this->commentRepository->findBy([], ['createdAt' => 'DESC'])
+        ]);
+    }
 
-        if (!$article) {
-            throw $this->createNotFoundException('Article not found');
-        }
-
+    #[Route('/new', name: 'admin_comment_new', methods: ['GET', 'POST'])]
+    public function new(Request $request): Response
+    {
         $comment = new Comment();
-        $comment->setArticle($article);  // Associer le commentaire à l'article
-        $comment->setCreatedAt(new \DateTime()); // Définir la date de création du commentaire
-
         $form = $this->createForm(CommentType::class, $comment);
-
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            // Sauvegarder le commentaire
+            $comment->setCreatedAt(new \DateTimeImmutable());
+            $comment->setUser($this->getUser());
+            
             $this->entityManager->persist($comment);
             $this->entityManager->flush();
 
-            // Rediriger après la soumission
-            return $this->redirectToRoute('article_show', ['id' => $article->getId()]);
+            $this->addFlash('success', 'Commentaire créé avec succès');
+            return $this->redirectToRoute('admin_comment_index');
         }
 
-        return $this->render('comment/create.html.twig', [
+        return $this->render('admin/comment/new.html.twig', [
+            'comment' => $comment,
             'form' => $form->createView(),
-            'article' => $article,
         ]);
     }
 
-    // Modifier un commentaire
-    #[Route('/comment/{id}/edit', name: 'comment_edit')]
-    public function edit(Comment $comment, Request $request): Response
+    #[Route('/{id}/edit', name: 'admin_comment_edit', methods: ['GET', 'POST'])]
+    public function edit(Request $request, Comment $comment): Response
     {
         $form = $this->createForm(CommentType::class, $comment);
-
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            // Sauvegarder le commentaire modifié
             $this->entityManager->flush();
-
-            return $this->redirectToRoute('article_show', ['id' => $comment->getArticle()->getId()]);
+            $this->addFlash('success', 'Commentaire modifié avec succès');
+            return $this->redirectToRoute('admin_comment_index');
         }
 
-        return $this->render('comment/edit.html.twig', [
-            'form' => $form->createView(),
+        return $this->render('admin/comment/edit.html.twig', [
             'comment' => $comment,
+            'form' => $form->createView(),
         ]);
     }
 
-    // Supprimer un commentaire
-    #[Route('/comment/{id}/delete', name: 'comment_delete')]
-    public function delete(Comment $comment): Response
-    {
-        $this->entityManager->remove($comment);
-        $this->entityManager->flush();
-
-        return $this->redirectToRoute('article_show', ['id' => $comment->getArticle()->getId()]);
-    }
-
-    // Afficher un commentaire
-    #[Route('/comment/{id}', name: 'comment_show')]
+    #[Route('/{id}', name: 'admin_comment_show', methods: ['GET'])]
     public function show(Comment $comment): Response
     {
-        return $this->render('comment/show.html.twig', [
+        return $this->render('admin/comment/show.html.twig', [
             'comment' => $comment,
         ]);
+    }
+
+    #[Route('/{id}/delete', name: 'admin_comment_delete', methods: ['POST'])]
+    public function delete(Request $request, Comment $comment): Response
+    {
+        if ($this->isCsrfTokenValid('delete'.$comment->getId(), $request->request->get('_token'))) {
+            $this->entityManager->remove($comment);
+            $this->entityManager->flush();
+            $this->addFlash('success', 'Commentaire supprimé avec succès');
+        }
+
+        return $this->redirectToRoute('admin_comment_index');
     }
 }

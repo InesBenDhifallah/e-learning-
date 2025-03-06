@@ -1,0 +1,273 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Tableau de bord - Statistiques{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <style>
+        .stat-card {
+            transition: all 0.3s ease;
+        }
+        .stat-card:hover {
+            transform: translateY(-5px);
+        }
+        .chart-container {
+            position: relative;
+            height: 300px;
+            width: 100%;
+        }
+    </style>
+{% endblock %}
+
+{% block body %}
+<div class="min-h-screen bg-gray-50 py-8">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        {# En-tête #}
+        <div class="mb-8">
+            <h1 class="text-3xl font-bold text-gray-900 flex items-center gap-3">
+                <span class="text-lime-500">📊</span> 
+                Tableau de bord des statistiques
+            </h1>
+            <p class="mt-2 text-gray-600">Vue d'ensemble des articles et interactions</p>
+        </div>
+
+        {# Cartes de statistiques #}
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+            {# Total Articles #}
+            <div class="stat-card bg-white rounded-xl shadow-sm p-6 border border-gray-100">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-sm font-medium text-gray-600">Total Articles</p>
+                        <p class="text-2xl font-bold text-gray-900">{{ total_articles }}</p>
+                    </div>
+                    <div class="p-3 bg-blue-50 rounded-full">
+                        <svg class="w-6 h-6 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9.5a2 2 0 00-2-2h-2"></path>
+                        </svg>
+                    </div>
+                </div>
+                <div class="mt-2">
+                    <p class="text-sm text-gray-600">Articles publiés</p>
+                </div>
+            </div>
+
+            {# Total Commentaires #}
+            <div class="stat-card bg-white rounded-xl shadow-sm p-6 border border-gray-100">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-sm font-medium text-gray-600">Commentaires</p>
+                        <p class="text-2xl font-bold text-gray-900">{{ total_comments }}</p>
+                    </div>
+                    <div class="p-3 bg-green-50 rounded-full">
+                        <svg class="w-6 h-6 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z"></path>
+                        </svg>
+                    </div>
+                </div>
+                <div class="mt-2">
+                    <p class="text-sm text-gray-600">Interactions totales</p>
+                </div>
+            </div>
+
+            {# Moyenne commentaires/article #}
+            <div class="stat-card bg-white rounded-xl shadow-sm p-6 border border-gray-100">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-sm font-medium text-gray-600">Moy. Commentaires</p>
+                        <p class="text-2xl font-bold text-gray-900">{{ avg_comments }}</p>
+                    </div>
+                    <div class="p-3 bg-purple-50 rounded-full">
+                        <svg class="w-6 h-6 text-purple-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path>
+                        </svg>
+                    </div>
+                </div>
+                <div class="mt-2">
+                    <p class="text-sm text-gray-600">Par article</p>
+                </div>
+            </div>
+
+            {# Catégories #}
+            <div class="stat-card bg-white rounded-xl shadow-sm p-6 border border-gray-100">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-sm font-medium text-gray-600">Catégories</p>
+                        <p class="text-2xl font-bold text-gray-900">{{ categories|length }}</p>
+                    </div>
+                    <div class="p-3 bg-yellow-50 rounded-full">
+                        <svg class="w-6 h-6 text-yellow-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z"></path>
+                        </svg>
+                    </div>
+                </div>
+                <div class="mt-2">
+                    <p class="text-sm text-gray-600">Types de contenu</p>
+                </div>
+            </div>
+        </div>
+
+        {# Graphiques #}
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            {# Distribution des catégories #}
+            <div class="bg-white rounded-xl shadow-sm p-6 border border-gray-100">
+                <h3 class="text-lg font-semibold text-gray-900 mb-4">Distribution par catégorie</h3>
+                <div class="chart-container">
+                    <canvas id="categoriesChart"></canvas>
+                </div>
+            </div>
+
+            {# Articles par mois #}
+            <div class="bg-white rounded-xl shadow-sm p-6 border border-gray-100">
+                <h3 class="text-lg font-semibold text-gray-900 mb-4">Publications mensuelles</h3>
+                <div class="chart-container">
+                    <canvas id="monthlyChart"></canvas>
+                </div>
+            </div>
+
+            {# Top articles commentés #}
+            <div class="bg-white rounded-xl shadow-sm p-6 border border-gray-100">
+                <h3 class="text-lg font-semibold text-gray-900 mb-4">Articles les plus commentés</h3>
+                <div class="chart-container">
+                    <canvas id="commentsChart"></canvas>
+                </div>
+            </div>
+
+            {# Activité récente #}
+            <div class="bg-white rounded-xl shadow-sm p-6 border border-gray-100">
+                <h3 class="text-lg font-semibold text-gray-900 mb-4">Activité récente</h3>
+                <div class="space-y-4">
+                    {% if most_commented_article %}
+                        <div class="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
+                            <div>
+                                <p class="font-medium text-gray-900">{{ most_commented_article.title }}</p>
+                                <p class="text-sm text-gray-600">{{ max_comments }} commentaires</p>
+                            </div>
+                            <span class="text-sm text-gray-500">
+                                {{ most_commented_article.createdAt|date('d/m/Y') }}
+                            </span>
+                        </div>
+                    {% else %}
+                        <p class="text-gray-500 text-center">Aucun article récent</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <a href="{{ path('articles_index') }}" class="btn btn-secondary">
+            <i class="fas fa-arrow-left"></i> Retour à la liste
+        </a>
+    </div>
+</div>
+{% endblock %}
+
+{% block javascripts %}
+{{ parent() }}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const commonOptions = {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+            legend: {
+                position: 'bottom',
+                labels: {
+                    padding: 20,
+                    font: { size: 12 }
+                }
+            }
+        }
+    };
+
+    // Configuration des couleurs
+    const colors = {
+        primary: '#3B82F6',
+        success: '#10B981',
+        warning: '#F59E0B',
+        danger: '#EF4444',
+        info: '#6366F1'
+    };
+
+    // Graphique des catégories
+    const categoriesData = {
+        {% for category, count in categories %}
+            "{{ category }}": {{ count }}{% if not loop.last %},{% endif %}
+        {% endfor %}
+    };
+    
+    new Chart(document.getElementById('categoriesChart'), {
+        type: 'doughnut',
+        data: {
+            labels: Object.keys(categoriesData),
+            datasets: [{
+                data: Object.values(categoriesData),
+                backgroundColor: [
+                    colors.primary,
+                    colors.success,
+                    colors.warning,
+                    colors.danger,
+                    colors.info
+                ],
+                borderWidth: 2,
+                borderColor: '#ffffff'
+            }]
+        },
+        options: {
+            ...commonOptions,
+            cutout: '60%'
+        }
+    });
+
+    // Graphique des articles par mois
+    new Chart(document.getElementById('monthlyChart'), {
+        type: 'line',
+        data: {
+            labels: ['Jan', 'Fév', 'Mar', 'Avr', 'Mai', 'Jun', 'Jul', 'Aoû', 'Sep', 'Oct', 'Nov', 'Déc'],
+            datasets: [{
+                label: 'Articles publiés',
+                data: [
+                    {% for count in articles_per_month %}
+                        {{ count }}{% if not loop.last %},{% endif %}
+                    {% endfor %}
+                ],
+                borderColor: colors.primary,
+                backgroundColor: 'rgba(59, 130, 246, 0.1)',
+                tension: 0.3,
+                fill: true
+            }]
+        },
+        options: {
+            ...commonOptions,
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    ticks: { stepSize: 1 }
+                }
+            }
+        }
+    });
+
+    // Graphique des articles les plus commentés
+    new Chart(document.getElementById('commentsChart'), {
+        type: 'bar',
+        data: {
+            labels: ["{{ most_commented_article ? most_commented_article.title|slice(0, 15) ~ '...' : 'Aucun article' }}"],
+            datasets: [{
+                label: 'Commentaires',
+                data: [{{ max_comments }}],
+                backgroundColor: colors.success
+            }]
+        },
+        options: {
+            ...commonOptions,
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    ticks: { stepSize: 1 }
+                }
+            }
+        }
+    });
+});
+</script>
+{% endblock %} 

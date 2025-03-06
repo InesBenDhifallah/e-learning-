@@ -5,9 +5,19 @@ namespace App\Entity;
 use App\Repository\ArticleRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
+use Doctrine\Common\Collections\Criteria;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Component\Serializer\Annotation\Groups;
+use Doctrine\ORM\Query\Expr\Comparison;
+use Doctrine\ORM\Query\Expr\Func;
+use Doctrine\ORM\Query\Expr\OrderBy;
+
+
+
+
+
 
 #[ORM\Entity(repositoryClass: ArticleRepository::class)]
 class Article
@@ -15,50 +25,68 @@ class Article
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
+    #[Groups(['article:read'])]
     private ?int $id = null;
 
+    /**
+     * @Assert\NotBlank(message: "Le titre est requis")
+     * @Assert\Length(
+     *      min: 3,
+     *      max: 255,
+     *      minMessage: "Le titre doit contenir au moins {{ limit }} caractères",
+     *      maxMessage: "Le titre ne peut pas dépasser {{ limit }} caractères"
+     * )
+     */
     #[ORM\Column(length: 255)]
-    #[Assert\NotBlank(message: "Title should not be blank.")]
-    #[Assert\Length(
-        max: 255,
-        maxMessage: "Title should not exceed {{ limit }} characters."
+    #[Assert\Regex(
+        pattern: "/^[a-zA-Z0-9\s\-_.,!?'\"À-ÿ]+$/",
+        message: "Le titre ne peut contenir que des lettres, chiffres et ponctuations basiques"
     )]
+    #[Groups(['article:read'])]
     private ?string $title = null;
 
+    /**
+     * @Assert\NotBlank(message: "Le contenu est requis")
+     */
     #[ORM\Column(type: Types::TEXT)]
-    #[Assert\NotBlank(message: "Content should not be blank.")]
     #[Assert\Length(
         min: 10,
-        minMessage: "Content should be at least {{ limit }} characters long."
+        max: 10000,
+        minMessage: "Le contenu doit contenir au moins {{ limit }} caractères",
+        maxMessage: "Le contenu ne peut pas dépasser {{ limit }} caractères"
     )]
+    #[Groups(['article:read'])]
     private ?string $content = null;
 
-    #[ORM\Column(length: 255)]
-    #[Assert\NotBlank(message: "Author should not be blank.")]
-    #[Assert\Length(
-        max: 255,
-        maxMessage: "Author name should not exceed {{ limit }} characters."
+    #[ORM\Column(length: 255, nullable: true)]
+    #[Assert\Length(max: 255)]
+    #[Assert\Regex(
+        pattern: "/^[a-zA-Z0-9\s\-_]+$/",
+        message: "La catégorie ne peut contenir que des lettres, chiffres et tirets"
     )]
-    private ?string $author = null;
-
-    #[ORM\Column(length: 255)]
-    #[Assert\NotBlank(message: "Category should not be blank.")]
+    #[Groups(['article:read'])]
     private ?string $category = null;
 
-    #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: false)]
-    #[Assert\NotNull(message: "Creation date cannot be null.")]
-    private ?\DateTimeInterface $createdAt = null;
+    #[ORM\Column]
+    private ?\DateTimeImmutable $createdAt = null;
 
     /**
      * @var Collection<int, Comment>
      */
-    #[ORM\OneToMany(targetEntity: Comment::class, mappedBy: 'article', cascade: ['remove'], orphanRemoval: true)]
+    #[ORM\OneToMany(mappedBy: 'article', targetEntity: Comment::class, orphanRemoval: true)]
+    #[Groups(['article:read'])]
     private Collection $comments;
+
+    #[ORM\ManyToOne(targetEntity: User::class)]
+    #[ORM\JoinColumn(name: "user_id", nullable: false)]
+    #[Assert\NotNull(message: "L'utilisateur est requis")]
+    #[Groups(['article:read'])]
+    private ?User $user = null;
 
     public function __construct()
     {
         $this->comments = new ArrayCollection();
-        $this->createdAt = new \DateTime(); // Initialisation de la date de création
+        $this->createdAt = new \DateTimeImmutable();
     }
 
     public function getId(): ?int
@@ -88,34 +116,23 @@ class Article
         return $this;
     }
 
-    public function getAuthor(): ?string
-    {
-        return $this->author;
-    }
-
-    public function setAuthor(string $author): static
-    {
-        $this->author = $author;
-        return $this;
-    }
-
     public function getCategory(): ?string
     {
         return $this->category;
     }
 
-    public function setCategory(string $category): static
+    public function setCategory(?string $category): self
     {
         $this->category = $category;
         return $this;
     }
 
-    public function getCreatedAt(): ?\DateTimeInterface
+    public function getCreatedAt(): ?\DateTimeImmutable
     {
         return $this->createdAt;
     }
 
-    public function setCreatedAt(\DateTimeInterface $createdAt): static
+    public function setCreatedAt(\DateTimeImmutable $createdAt): self
     {
         $this->createdAt = $createdAt;
         return $this;
@@ -147,6 +164,29 @@ class Article
             }
         }
 
+        return $this;
+    }
+
+    public function getLastCommentDate(): ?\DateTimeImmutable
+    {
+        if ($this->comments->isEmpty()) {
+            return null;
+        }
+
+        return $this->comments
+            ->matching(Criteria::create()->orderBy(['createdAt' => 'DESC']))
+            ->first()
+            ->getCreatedAt();
+    }
+
+    public function getUser(): ?User
+    {
+        return $this->user;
+    }
+
+    public function setUser(?User $user): self
+    {
+        $this->user = $user;
         return $this;
     }
 }

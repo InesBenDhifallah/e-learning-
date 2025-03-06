@@ -1,0 +1,28 @@
+{{ form_start(form) }}
+    {{ form_row(form.title) }}
+    {{ form_row(form.category) }}
+    <div class="mb-3">
+        {{ form_label(form.content) }}
+        {{ form_widget(form.content) }}
+        {{ form_errors(form.content) }}
+    </div>
+    <button class="btn btn-primary">{{ button_label|default('Enregistrer') }}</button>
+{{ form_end(form) }}
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const categoryInput = document.querySelector('[name="article[category]"]');
+    if (categoryInput) {
+        categoryInput.addEventListener('input', function(e) {
+            const value = e.target.value;
+            const isValid = /^[a-zA-Z0-9\-]*$/.test(value);
+            
+            if (!isValid) {
+                e.target.setCustomValidity('La catégorie ne peut contenir que des lettres, chiffres et tirets');
+            } else {
+                e.target.setCustomValidity('');
+            }
+        });
+    }
+});
+</script> 

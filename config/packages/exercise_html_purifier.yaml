@@ -1,0 +1,11 @@
+exercise_html_purifier:
+    html_profiles:
+        default:
+            config:
+                Core.Encoding: 'UTF-8'
+                Cache.SerializerPath: '%kernel.cache_dir%/htmlpurifier'
+                HTML.Allowed: 'p,b,i,u,strong,em,br,a[href],ul,ol,li,span[class|style]'
+                AutoFormat.RemoveEmpty: false
+                AutoFormat.RemoveSpansWithoutAttributes: false
+                HTML.ForbiddenElements: ['script', 'style', 'iframe', 'form', 'input']
+                Core.EscapeInvalidTags: true 

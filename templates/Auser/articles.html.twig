@@ -1,52 +1,205 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Liste des articles{% endblock %}
+{% block title %}Articles - Alpha Education{% endblock %}
 
 {% block body %}
-    <div class="container mx-auto px-4">
-        <h1 class="text-3xl font-extrabold text-gray-800 mb-8 text-center">📰 Liste des Articles</h1>
-        
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-            {% for article in articles %}
-                <div class="bg-white rounded-xl shadow-md hover:shadow-xl transition-shadow duration-300 transform hover:-translate-y-1 p-6 flex flex-col justify-between">
-                    <div>
-                        
-                        <!-- Titre de l'article -->
-                        <h3 class="text-xl font-bold text-gray-800 truncate">{{ article.title }}</h3>
-
-                        <!-- Auteur + Date de création -->
-                        <p class="text-gray-600 text-sm mb-2">
-                            Par <strong class="text-lime-600 truncate">{{ article.author }}</strong> 
-                            | <span class="text-gray-500">{{ article.createdAt|date('d/m/Y H:i') }}</span>
-                        </p>
-
-                        <!-- Contenu tronqué -->
-                        <p class="text-gray-700 text-sm overflow-hidden text-ellipsis whitespace-nowrap">
-                            {{ article.content|slice(0, 100) ~ '...' }}
-                        </p>
-                    </div>
-                    
-                    
-                    <div class="flex items-center justify-between mt-4">
-                        <!-- Catégorie -->
-                        <span class="bg-blue-100 text-blue-600 px-3 py-1 rounded-full text-xs font-semibold truncate">
-                            {{ article.category }}
-                        </span>
-
-                        <!-- Bouton Lire l'article -->
-                        <a href="{{ path('user_article_show', {'id': article.id}) }}" 
-                           class="bg-blue-500 text-white px-4 py-2 rounded-full font-bold shadow-md hover:bg-blue-600 transition duration-300 transform hover:scale-105">
-                           📖 Lire l'article
-                        </a>
-                    </div>
-
-
-
-
+<div class="container mx-auto px-4 py-8">
+    <!-- En-tête avec recherche -->
+    <div class="bg-white rounded-xl shadow-lg p-6 mb-8">
+        <div class="flex flex-col md:flex-row justify-between items-center gap-4">
+            <div class="flex items-center gap-3">
+                <i class="fas fa-book-reader text-3xl text-lime-500"></i>
+                <h1 class="text-3xl font-bold text-gray-800">Articles</h1>
+            </div>
+            <div class="flex flex-col sm:flex-row gap-4 w-full md:w-auto">
+                <div class="relative flex-1 md:w-64">
+                    <input type="text" 
+                           id="searchInput" 
+                           value="{{ currentSearch }}"
+                           placeholder="Rechercher un article..." 
+                           class="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-lime-500">
+                    <i class="fas fa-search absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
                 </div>
-            {% else %}
-                <p class="text-gray-500 text-center col-span-3">Aucun article disponible.</p>
-            {% endfor %}
+                <select id="categoryFilter" 
+                        class="w-full sm:w-48 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-lime-500 bg-white">
+                    <option value="">Toutes les catégories</option>
+                    {% for category in ['mathematiques', 'informatique', 'francais', 'anglais', 'arabe', 'sciences'] %}
+                        <option value="{{ category }}" {% if currentCategory == category %}selected{% endif %}>
+                            {{ category|capitalize }}
+                        </option>
+                    {% endfor %}
+                </select>
+            </div>
         </div>
     </div>
+
+    <!-- Grille d'articles -->
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
+        {% for article in articles %}
+            <div class="bg-white rounded-xl shadow-lg overflow-hidden hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1">
+                <!-- Bannière de catégorie -->
+                <div class="h-48 bg-gradient-to-r from-lime-500 to-green-600 relative overflow-hidden">
+                    <div class="absolute inset-0 flex items-center justify-center text-white text-6xl opacity-20">
+                        <i class="fas {% if article.category == 'mathematiques' %}fa-square-root-alt
+                                  {% elseif article.category == 'informatique' %}fa-laptop-code
+                                  {% elseif article.category == 'francais' %}fa-book
+                                  {% elseif article.category == 'anglais' %}fa-language
+                                  {% elseif article.category == 'arabe' %}fa-pen
+                                  {% else %}fa-graduation-cap{% endif %}"></i>
+                    </div>
+                    <div class="absolute top-4 right-4">
+                        <span class="bg-white/90 backdrop-blur-sm text-lime-600 px-4 py-2 rounded-full text-sm font-semibold shadow-lg">
+                            {{ article.category|capitalize }}
+                        </span>
+                    </div>
+                </div>
+
+                <div class="p-6">
+                    <!-- Titre et métadonnées -->
+                    <h2 class="text-xl font-bold text-gray-800 mb-3 hover:text-lime-600 transition-colors line-clamp-2">
+                        {{ article.title }}
+                    </h2>
+                    <div class="flex items-center text-gray-500 text-sm mb-4">
+                        <span class="flex items-center">
+                            <i class="far fa-user mr-2"></i>
+                            {{ article.user ? article.user.email : 'Anonyme' }}
+                        </span>
+                        <span class="mx-3">•</span>
+                        <span class="flex items-center">
+                            <i class="far fa-calendar-alt mr-2"></i>
+                            {{ article.createdAt|date('d/m/Y') }}
+                        </span>
+                    </div>
+
+                    <!-- Extrait -->
+                    <p class="text-gray-600 mb-6 line-clamp-3">
+                        {{ article.content|striptags|slice(0, 150) }}...
+                    </p>
+
+                    <!-- Footer avec stats et action -->
+                    <div class="flex justify-between items-center pt-4 border-t border-gray-100">
+                        <div class="flex items-center gap-4 text-sm text-gray-500">
+                            <span class="flex items-center">
+                                <i class="far fa-comment mr-1"></i>
+                                {{ article.comments|length }}
+                            </span>
+                            <span class="flex items-center">
+                                <i class="far fa-clock mr-1"></i>
+                                {{ article.createdAt|date('H:i') }}
+                            </span>
+                        </div>
+                        <a href="{{ path('user_article_show', {'id': article.id}) }}" 
+                           class="inline-flex items-center px-4 py-2 bg-gradient-to-r from-lime-500 to-green-600 text-white rounded-lg hover:from-lime-600 hover:to-green-700 transition-all duration-300 shadow-md hover:shadow-lg">
+                            <span>Lire plus</span>
+                            <i class="fas fa-arrow-right ml-2 transform group-hover:translate-x-1 transition-transform"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        {% else %}
+            <div class="col-span-full flex flex-col items-center justify-center py-16 text-gray-500">
+                <div class="bg-gray-50 rounded-full p-8 mb-6">
+                    <i class="fas fa-newspaper text-6xl text-gray-300"></i>
+                </div>
+                <h3 class="text-2xl font-semibold mb-2">Aucun article trouvé</h3>
+                {% if currentSearch or currentCategory %}
+                    <p class="text-gray-400">Essayez de modifier vos critères de recherche</p>
+                    <a href="{{ path('user_articles') }}" 
+                       class="mt-4 text-lime-500 hover:text-lime-600 flex items-center gap-2">
+                        <i class="fas fa-redo"></i>
+                        Réinitialiser la recherche
+                    </a>
+                {% else %}
+                    <p class="text-gray-400">Les articles apparaîtront ici</p>
+                {% endif %}
+            </div>
+        {% endfor %}
+    </div>
+
+    <!-- Pagination améliorée -->
+    {% if totalPages > 1 %}
+        <div class="flex justify-center items-center gap-3 mt-8">
+            {% if currentPage > 1 %}
+                <a href="{{ path('user_articles', {page: currentPage - 1, category: currentCategory, search: currentSearch}) }}" 
+                   class="flex items-center px-4 py-2 bg-white text-gray-700 rounded-lg border hover:bg-gray-50 transition-all duration-300 shadow-sm">
+                    <i class="fas fa-chevron-left mr-2"></i>
+                    Précédent
+                </a>
+            {% endif %}
+
+            <div class="flex gap-2">
+                {% for i in 1..totalPages %}
+                    {% if i == 1 or i == totalPages or (i >= currentPage - 2 and i <= currentPage + 2) %}
+                        <a href="{{ path('user_articles', {page: i, category: currentCategory, search: currentSearch}) }}" 
+                           class="w-10 h-10 flex items-center justify-center rounded-lg transition-all duration-300 
+                                  {% if currentPage == i %}
+                                      bg-gradient-to-r from-lime-500 to-green-600 text-white shadow-md hover:from-lime-600 hover:to-green-700
+                                  {% else %}
+                                      bg-white text-gray-700 border hover:bg-gray-50
+                                  {% endif %}">
+                            {{ i }}
+                        </a>
+                    {% elseif i == currentPage - 3 or i == currentPage + 3 %}
+                        <span class="w-10 h-10 flex items-center justify-center text-gray-400">...</span>
+                    {% endif %}
+                {% endfor %}
+            </div>
+
+            {% if currentPage < totalPages %}
+                <a href="{{ path('user_articles', {page: currentPage + 1, category: currentCategory, search: currentSearch}) }}" 
+                   class="flex items-center px-4 py-2 bg-white text-gray-700 rounded-lg border hover:bg-gray-50 transition-all duration-300 shadow-sm">
+                    Suivant
+                    <i class="fas fa-chevron-right ml-2"></i>
+                </a>
+            {% endif %}
+        </div>
+    {% endif %}
+</div>
+{% endblock %}
+
+{% block stylesheets %}
+{{ parent() }}
+<style>
+    .line-clamp-2 {
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+    }
+    .line-clamp-3 {
+        display: -webkit-box;
+        -webkit-line-clamp: 3;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+    }
+</style>
+{% endblock %}
+
+{% block javascripts %}
+{{ parent() }}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const searchInput = document.getElementById('searchInput');
+    const categoryFilter = document.getElementById('categoryFilter');
+    let searchTimeout;
+
+    function applyFilters() {
+        const searchValue = searchInput.value.trim();
+        const categoryValue = categoryFilter.value;
+        const params = new URLSearchParams();
+
+        if (searchValue) params.append('search', searchValue);
+        if (categoryValue) params.append('category', categoryValue);
+        
+        window.location.href = `{{ path('user_articles') }}?${params.toString()}`;
+    }
+
+    searchInput.addEventListener('input', function() {
+        clearTimeout(searchTimeout);
+        searchTimeout = setTimeout(applyFilters, 500);
+    });
+
+    categoryFilter.addEventListener('change', applyFilters);
+});
+</script>
 {% endblock %}

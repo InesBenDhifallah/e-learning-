@@ -1,65 +1,171 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}{{ article.title }} - Alpha Education{% endblock %}
+{% block title %}{{ article.title }}{% endblock %}
 
 {% block body %}
-    <!-- Article Section with Border -->
-    <div class="mb-8 p-6 border-2 border-gray-300 rounded-lg shadow-md">
-        <h1 class="text-3xl font-bold text-gray-800">{{ article.title }}</h1>
-        <p class="text-gray-600 mb-4">Par <strong class="text-lime-600">{{ article.author }}</strong></p>
-        <p class="mt-4 text-gray-700">{{ article.content }}</p>
-    </div>
-
-    <!-- Action Buttons: Edit and Delete -->
-    <div class="flex space-x-4 mb-6">
-        <a href="{{ path('article_edit', {'id': article.id}) }}" 
-           class="bg-blue-500 text-white px-4 py-2 rounded-full font-bold shadow-md hover:bg-blue-600 transition duration-300 transform hover:scale-105">
-            ✏️ Modifier
-        </a>
-        <form method="post" action="{{ path('article_delete', {'id': article.id}) }}" onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer cet article ?');">
-            <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ article.id) }}">
-            <button type="submit" 
-                    class="bg-red-500 text-white px-4 py-2 rounded-full font-bold shadow-md hover:bg-red-600 transition duration-300 transform hover:scale-105">
-                🗑️ Supprimer
-            </button>
-        </form>
-    </div>
-
-    <!-- Comments Section with Border -->
-    <div class="mt-8 p-6 border-2 border-gray-300 rounded-lg shadow-md">
-        <h2 class="text-xl font-bold mb-4">Commentaires</h2>
-
-        {% for comment in article.comments %}
-            <div class="border-b pb-4 mb-4">
-                <p class="text-gray-800">{{ comment.content }}</p>
-                <div class="flex space-x-4 mt-2">
-                    <a href="{{ path('comment_edit', {'id': comment.id}) }}" 
-                       class="bg-yellow-500 text-white px-4 py-2 rounded-full font-bold shadow-md hover:bg-yellow-600 transition duration-300 transform hover:scale-105">
-                        ✏️ Modifier
-                    </a>
-                    <form method="post" action="{{ path('comment_delete', {'id': comment.id}) }}" onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer ce commentaire ?');">
-                        <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ comment.id) }}">
-                        <button type="submit" 
-                                class="bg-red-500 text-white px-4 py-2 rounded-full font-bold shadow-md hover:bg-red-600 transition duration-300 transform hover:scale-105">
-                            🗑️ Supprimer
-                        </button>
-                    </form>
-                </div>
-            </div>
-        {% else %}
-            <p class="text-gray-600">Aucun commentaire pour cet article.</p>
-        {% endfor %}
-
-        <!-- Add Comment and Return Button -->
-        <div class="mt-4 flex space-x-4">
-            <a href="{{ path('comment_create', {'articleId': article.id}) }}" 
-               class="bg-green-500 text-white px-4 py-2 rounded-full font-bold shadow-md hover:bg-green-600 transition duration-300 transform hover:scale-105">
-                ➕ Ajouter un commentaire
-            </a>
-            <button onclick="history.back()" 
-                    class="bg-gray-500 text-white px-4 py-2 rounded-full font-bold shadow-md hover:bg-gray-600 transition duration-300 transform hover:scale-105">
-                ⬅ Retour
-            </button>
+<div class="container mt-4">
+    {# Article Header & Content... #}
+    <div class="article-header mb-4">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="{{ path('articles_index') }}">Articles</a></li>
+                <li class="breadcrumb-item active">{{ article.title }}</li>
+            </ol>
+        </nav>
+        
+        <h1 class="text-3xl font-bold mb-2">{{ article.title }}</h1>
+        
+        <div class="article-meta text-gray-600 mb-4">
+            <span class="mr-4">
+                <i class="fas fa-calendar-alt"></i>
+                {{ article.createdAt|date('d/m/Y à H:i') }}
+            </span>
+            
+            {% if article.category %}
+                <span class="mr-4">
+                    <i class="fas fa-folder"></i>
+                    <span class="bg-lime-100 text-lime-800 px-2 py-1 rounded-full text-sm">
+                        {{ article.category }}
+                    </span>
+                </span>
+            {% endif %}
         </div>
     </div>
+
+    <div class="article-content prose max-w-none mb-8">
+        {{ article.content|raw }}
+    </div>
+
+    {# Dans la section des commentaires #}
+    {% for message in app.flashes('error') %}
+        <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4" role="alert">
+            <span class="block sm:inline">{{ message }}</span>
+        </div>
+    {% endfor %}
+
+    {# Comments Section #}
+    <div class="comments-section mt-5">
+        <h3 class="mb-4">Commentaires</h3>
+        
+        {% for comment in article.comments %}
+            <div class="comment bg-white p-4 mb-3 rounded shadow">
+                <div class="comment-header flex justify-between items-center">
+                    <span class="font-bold">{{ comment.user.email }}</span>
+                    <span class="text-gray-500">{{ comment.createdAt|date('d/m/Y H:i') }}</span>
+                </div>
+                <p class="mt-2">{{ comment.content }}</p>
+                
+                {% if app.user and (comment.user == app.user or is_granted('ROLE_ADMIN')) %}
+                    <div class="comment-actions mt-2">
+                        <a href="{{ path('comment_edit', {'id': comment.id}) }}" 
+                           class="text-blue-500 hover:text-blue-700">
+                            Modifier
+                        </a>
+                        
+                        <form action="{{ path('comment_delete', {'id': comment.id}) }}" 
+                              method="post" 
+                              class="inline-block ml-3"
+                              onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer ce commentaire ?');">
+                            <input type="hidden" name="_token" value="{{ csrf_token('delete-comment' ~ comment.id) }}">
+                            <button type="submit" class="text-red-500 hover:text-red-700">
+                                Supprimer
+                            </button>
+                        </form>
+                    </div>
+                {% endif %}
+            </div>
+        {% endfor %}
+    </div>
+
+    {# Formulaire d'ajout de commentaire #}
+    {% if app.user %}
+        <div class="comment-form mt-5">
+            <h4 class="mb-3">Ajouter un commentaire</h4>
+            <form action="{{ path('article_comment_new', {'id': article.id}) }}" method="post">
+                <textarea name="content" 
+                          class="w-full p-2 border rounded"
+                          rows="4" 
+                          required 
+                          placeholder="Votre commentaire..."></textarea>
+                <button type="submit" 
+                        class="mt-2 bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">
+                    Ajouter un commentaire
+                </button>
+            </form>
+        </div>
+    {% else %}
+        <div class="mt-5 p-4 bg-gray-100 rounded">
+            <p>Veuillez vous <a href="{{ path('app_login') }}" class="text-blue-500 hover:underline">connecter</a> pour ajouter un commentaire.</p>
+        </div>
+    {% endif %}
+
+    {# Boutons d'action pour l'article #}
+    <div class="mt-6">
+        <a href="{{ path('articles_index') }}" 
+           class="inline-flex items-center px-4 py-2 bg-gray-600 hover:bg-gray-700 text-white rounded-lg transition-colors">
+            <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/>
+            </svg>
+            Retour à la liste
+        </a>
+    </div>
+</div>
+{% endblock %}
+
+{% block stylesheets %}
+{{ parent() }}
+<style>
+    .bg-light-blue {
+        background-color: #e3f2fd;
+    }
+    .bg-light-green {
+        background-color: #e8f5e9;
+    }
+    .comment-item {
+        border-radius: 8px;
+        border: 1px solid rgba(0,0,0,.1);
+    }
+    .add-comment-section {
+        border: 1px solid #dee2e6;
+    }
+    .alert-danger {
+        color: #721c24;
+        background-color: #f8d7da;
+        border: 1px solid #f5c6cb;
+        padding: 10px;
+        margin-bottom: 15px;
+        border-radius: 4px;
+    }
+
+    .form-error-message {
+        color: #dc3545;
+        font-size: 0.875em;
+        margin-top: 5px;
+    }
+
+    .form-group {
+        margin-bottom: 1rem;
+    }
+</style>
+{% endblock %}
+
+{% block javascripts %}
+{{ parent() }}
+<script>
+function editComment(commentId) {
+    document.querySelector(`#comment-text-${commentId}`).style.display = 'none';
+    document.querySelector(`#edit-form-${commentId}`).style.display = 'block';
+}
+
+function cancelEdit(commentId) {
+    document.querySelector(`#comment-text-${commentId}`).style.display = 'block';
+    document.querySelector(`#edit-form-${commentId}`).style.display = 'none';
+}
+
+function deleteComment(commentId) {
+    if (confirm('Êtes-vous sûr de vouloir supprimer ce commentaire ?')) {
+        document.querySelector(`#delete-form-${commentId}`).submit();
+    }
+}
+</script>
 {% endblock %}
