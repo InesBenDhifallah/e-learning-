@@ -33,6 +33,7 @@ security:
         - { path: ^/suggestion2, roles: PUBLIC_ACCESS }
         - { path: ^/quizz/average, roles: PUBLIC_ACCESS }  
         - { path: ^/question2, roles: ROLE_TEACHER }
+        - { path: ^/, roles: ROLE_TEACHER }
         
 
         # Pages accessible by ROLE_TEACHER and ROLE_PARENT
