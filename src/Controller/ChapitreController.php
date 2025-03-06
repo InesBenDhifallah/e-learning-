@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Entity\Chapitre;
 use App\Form\ChapitreType;
+use App\Repository\ModuleRepository;
 use App\Repository\ChapitreRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
