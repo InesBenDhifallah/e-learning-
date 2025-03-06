@@ -1,13 +1,9 @@
-
-
-
-
 <!DOCTYPE html>
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Modifier Profil</title>
+    <title id="page-title">Modifier Profil</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 </head>
@@ -18,6 +14,13 @@
         <div class="w-64 bg-white shadow-md">
             {% include 'sidebarparenteleve.html.twig' %}
         </div>
+        <div class="flex justify-end p-4">
+        <select id="language-selector" class="p-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-green-500 focus:border-green-500">
+            <option value="en">English</option>
+            <option value="fr">French</option>
+            <option value="ar">Arabic</option>
+        </select>
+    </div>
 
         <!-- Contenu principal -->
         <div class="flex-grow p-10">
@@ -25,15 +28,15 @@
             <div class="flex flex-col items-center bg-gray-100">
                 <div class="w-full max-w-md p-8 rounded-lg bg-white shadow-md">
                     <div class="text-center relative">
-                       <h2 class="text-2xl font-bold text-gray-800 mt-4">
-                         Votre Profil
+                        <h2 id="profile-title" class="text-2xl font-bold text-gray-800 mt-4">
+                            Votre Profil
                         </h2>
-
                     </div>
-<br>
+                    <br>
+
                     {# Affichage des messages flash (succès ou erreurs) #}
                     {% for message in app.flashes('success') %}
-                        <div class="alert alert-success text-green-600 p-2 mb-4 bg-green-100 rounded-lg">
+                        <div id="success-message" class="alert alert-success text-green-600 p-2 mb-4 bg-green-100 rounded-lg">
                             {{ message }}
                         </div>
                     {% endfor %}
@@ -43,37 +46,84 @@
                         <div class="space-y-4">
                             {# Nom #}
                             <div>
-                                {{ form_label(form.nom, 'Nom', {'label_attr': {'class': 'text-gray-700 font-medium'}}) }}
+                                <label id="nom-label" class="text-gray-700 font-medium">Nom</label>
                                 {{ form_widget(form.nom, { 'attr': { 'class': 'mt-1 w-full p-3 border border-gray-300 rounded-lg focus:ring focus:ring-green-300 focus:outline-none' } }) }}
-                                <div class="text-red-500">{{ form_errors(form.nom) }}</div>
+                                <div id="nom-error" class="text-red-500">{{ form_errors(form.nom) }}</div>
                             </div>
 
                             {# Email #}
                             <div>
-                                {{ form_label(form.email, 'Adresse e-mail', {'label_attr': {'class': 'text-gray-700 font-medium'}}) }}
+                                <label id="email-label" class="text-gray-700 font-medium">Adresse e-mail</label>
                                 {{ form_widget(form.email, { 'attr': { 'class': 'mt-1 w-full p-3 border border-gray-300 rounded-lg focus:ring focus:ring-green-300 focus:outline-none' } }) }}
-                                <div class="text-red-500">{{ form_errors(form.email) }}</div>
+                                <div id="email-error" class="text-red-500">{{ form_errors(form.email) }}</div>
                             </div>
 
                             {# Numéro de téléphone #}
                             <div>
-                                {{ form_label(form.phonenumber, 'Numéro de téléphone', {'label_attr': {'class': 'text-gray-700 font-medium'}}) }}
+                                <label id="phonenumber-label" class="text-gray-700 font-medium">Numéro de téléphone</label>
                                 {{ form_widget(form.phonenumber, { 'attr': { 'class': 'mt-1 w-full p-3 border border-gray-300 rounded-lg focus:ring focus:ring-green-300 focus:outline-none' } }) }}
-                                <div class="text-red-500">{{ form_errors(form.phonenumber) }}</div>
+                                <div id="phonenumber-error" class="text-red-500">{{ form_errors(form.phonenumber) }}</div>
                             </div>
 
-                            <button type="submit" class="w-full py-3 mt-6 bg-green-500 text-white rounded-lg text-lg font-semibold hover:bg-green-600">
+                            <button id="save-button" type="submit" class="w-full py-3 mt-6 bg-green-500 text-white rounded-lg text-lg font-semibold hover:bg-green-600">
                                 Enregistrer les modifications
                             </button>
                         </div>
                     {{ form_end(form) }}
-
-                    
                 </div>
             </div>
             {% endblock %}
         </div>
     </div>
 
+    <!-- Script pour la traduction -->
+    <script>
+        // Fonction pour traduire le texte via l'API REST
+        async function translateText(text, targetLang) {
+            const requestBody = {
+                texts: [text],
+                target_language: targetLang
+            };
+
+            const response = await fetch('http://127.0.0.1:5000/translate', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(requestBody),
+            });
+
+            if (!response.ok) {
+                const errorData = await response.json();
+                console.error('API Error:', errorData);
+                throw new Error(`API Error: ${response.status} - ${response.statusText}`);
+            }
+
+            const data = await response.json();
+            return data.translated_texts[0];
+        }
+
+        // Fonction pour traduire tous les éléments de la page
+        async function translatePage(lang) {
+            const elementsToTranslate = document.querySelectorAll('[id]');
+            for (const element of elementsToTranslate) {
+                if (element.tagName !== 'INPUT' && element.tagName !== 'FORM') {
+                    const text = element.innerText;
+                    try {
+                        const translatedText = await translateText(text, lang);
+                        element.innerText = translatedText;
+                    } catch (error) {
+                        console.error('Translation failed for element:', element, error);
+                    }
+                }
+            }
+        }
+
+        // Écouteur d'événement pour le changement de langue
+        document.getElementById('language-selector').addEventListener('change', async function () {
+            const lang = this.value;
+            await translatePage(lang);
+        });
+    </script>
 </body>
 </html>

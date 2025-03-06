@@ -1,0 +1,59 @@
+<!-- templates/translate.html.twig -->
+<!DOCTYPE html>
+<html lang="{{ app.request.locale }}">
+<head>
+    <meta charset="UTF-8">
+    <title>{{ 'page.title'|trans }}</title>
+</head>
+<body>
+    <h1 id="title">{{ 'title'|trans }}</h1>
+    <p id="description">{{ 'description'|trans }}</p>
+
+    <!-- Menu pour changer la langue -->
+    <select id="language-selector">
+        <option value="en">English</option>
+        <option value="fr">French</option>
+        <option value="ar">Arabic</option>
+    </select>
+
+    <script>
+        // Fonction pour envoyer la requête de traduction à l'API
+        async function translateText(text, targetLang) {
+            const requestBody = {
+                texts: [text],
+                target_language: targetLang
+            };
+
+            const response = await fetch('http://127.0.0.1:5000/translate', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(requestBody),
+            });
+
+            if (!response.ok) {
+                const errorData = await response.json();
+                console.error('API Error:', errorData);
+                throw new Error(`API Error: ${response.status} - ${response.statusText}`);
+            }
+
+            const data = await response.json();
+            return data.translated_texts[0];
+        }
+
+        // Écouter le changement de langue et traduire les textes
+        document.getElementById('language-selector').addEventListener('change', async function(event) {
+            const language = event.target.value;
+            const titleText = document.getElementById('title').innerText;
+            const descriptionText = document.getElementById('description').innerText;
+
+            const translatedTitle = await translateText(titleText, language);
+            const translatedDescription = await translateText(descriptionText, language);
+
+            document.getElementById('title').innerText = translatedTitle;
+            document.getElementById('description').innerText = translatedDescription;
+        });
+    </script>
+</body>
+</html>

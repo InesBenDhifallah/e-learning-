@@ -1,10 +1,12 @@
 <?php
+
 namespace App\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
 
 class TranslateController extends AbstractController
@@ -17,12 +19,15 @@ class TranslateController extends AbstractController
         $this->httpClient = $httpClient;
     }
 
-    #[Route('/about_us' , name: 'about_us')]
-public function about_us(){
-return $this->render('translate.html.twig');
-}
+    // Route pour afficher la page 'About Us'
+    #[Route('/about_us', name: 'about_us')]
+    public function about_us()
+    {
+        return $this->render('translate.html.twig');
+    }
 
-    #[Route('/translate', methods: ['POST'])]
+    // Route pour effectuer la traduction
+    #[Route('/translate/{target_language}', methods: ['GET', 'POST'])]
     public function translate(Request $request): JsonResponse
     {
         $data = json_decode($request->getContent(), true);
@@ -49,6 +54,7 @@ return $this->render('translate.html.twig');
         return new JsonResponse(['translated_texts' => $translatedTexts]);
     }
 
+    // Fonction pour envoyer la requête de traduction à l'API
     private function translateText(string $text, string $targetLanguage): string
     {
         $response = $this->httpClient->request('GET', 'https://translate.googleapis.com/translate_a/single', [
@@ -63,5 +69,16 @@ return $this->render('translate.html.twig');
 
         $content = $response->toArray();
         return $content[0][0][0] ?? '';
+    }
+
+    // Route pour changer la langue de l'application
+    #[Route('/language/{_locale}', name: 'change_language', requirements: ['_locale' => 'en|fr|ar'])]
+    public function changeLanguage(string $_locale, Request $request): RedirectResponse
+    {
+        // Change la locale
+        $request->getSession()->set('_locale', $_locale);
+
+        // Redirige vers la page précédente
+        return $this->redirect($request->headers->get('referer'));
     }
 }

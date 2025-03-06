@@ -34,10 +34,12 @@ security:
         - { path: ^/quizz/average, roles: PUBLIC_ACCESS }  
         - { path: ^/question2, roles: ROLE_TEACHER }
         - { path: ^/cours, roles: PUBLIC_ACCESS}
+        
 
         # Pages accessible by ROLE_TEACHER and ROLE_PARENT
         - { path: ^/quizz/average, roles: [ROLE_TEACHER, ROLE_Parent] }
         - { path: ^/chapitre, roles: ROLE_TEACHER }
+        - { path: ^/user/edit, roles: ROLE_TEACHER }
         
         
         # Pages accessible only by ROLE_ADMIN
