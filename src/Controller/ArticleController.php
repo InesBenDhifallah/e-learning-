@@ -135,37 +135,7 @@ public function index(ArticleRepository $articleRepository): Response
         ]);
     }
 
-    #[Route('/{id}', name: 'article_show', methods: ['GET', 'POST'])]
-    public function show(Article $article, Request $request): Response
-    {
-        $comment = new Comment();
-        $comment->setArticle($article);
-        $comment->setUser($this->getUser());
-        
-        $commentForm = $this->createForm(CommentType::class, $comment);
-        $commentForm->handleRequest($request);
-
-        if ($commentForm->isSubmitted() && $commentForm->isValid()) {
-            $comment->setCreatedAt(new \DateTimeImmutable());
-            $this->entityManager->persist($comment);
-            $this->entityManager->flush();
-
-            $this->addFlash('success', 'Commentaire ajouté avec succès!');
-            return $this->redirectToRoute('article_show', ['id' => $article->getId()]);
-        }
-
-        // Récupérer tous les commentaires triés par date
-        $comments = $this->entityManager->getRepository(Comment::class)
-            ->findBy(['article' => $article], ['createdAt' => 'DESC']);
-
-        return $this->render('article/show.html.twig', [
-            'article' => $article,
-            'commentForm' => $commentForm->createView(),
-            'comments' => $comments,
-            'isAdmin' => $this->isGranted('ROLE_ADMIN')
-        ]);
-    }
-
+    
     #[Route('/{id}/delete', name: 'article_delete', methods: ['POST'])]
     public function delete(Request $request, Article $article): Response
     {

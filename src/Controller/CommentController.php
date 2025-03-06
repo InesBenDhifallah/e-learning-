@@ -6,35 +6,49 @@ use App\Entity\Comment;
 use App\Entity\Article;
 use App\Form\CommentType;
 use App\Repository\CommentRepository;
+use App\Repository\ArticleRepository;
+use App\Service\BadWordsFilter;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 #[Route('/admin/comments')]
 class CommentController extends AbstractController
 {
-    private $entityManager;
-    private $commentRepository;
-    private $validator;
-    private $badWordsFilter;
+    private EntityManagerInterface $entityManager;
+    private CommentRepository $commentRepository;
+    private ValidatorInterface $validator;
+    private BadWordsFilter $badWordsFilter;
+    private ArticleRepository $articleRepository;
 
-    // Injection des dépendances via le constructeur
     public function __construct(
         EntityManagerInterface $entityManager, 
         CommentRepository $commentRepository, 
         ValidatorInterface $validator,
-        BadWordsFilter $badWordsFilter
+        BadWordsFilter $badWordsFilter,
+        ArticleRepository $articleRepository
     ) {
         $this->entityManager = $entityManager;
         $this->commentRepository = $commentRepository;
         $this->validator = $validator;
         $this->badWordsFilter = $badWordsFilter;
+        $this->articleRepository = $articleRepository;
     }
 
     #[Route('/', name: 'admin_comment_index', methods: ['GET'])]
     public function index(): Response
+    {
+        $comments = $this->commentRepository->findAll();
+        return $this->render('admin/comment/index.html.twig', [
+            'comments' => $comments,
+        ]);
+    }
+
+    #[Route('/new/{articleId}', name: 'admin_comment_new', methods: ['GET', 'POST'])]
+    public function new(Request $request, int $articleId): Response
     {
         $article = $this->articleRepository->find($articleId);
 
@@ -43,14 +57,13 @@ class CommentController extends AbstractController
         }
 
         $comment = new Comment();
-        $comment->setArticle($article);  // Associer le commentaire à l'article
-        $comment->setCreatedAt(new \DateTime()); // Définir la date de création du commentaire
+        $comment->setArticle($article);
+        $comment->setCreatedAt(new \DateTimeImmutable());
 
         $form = $this->createForm(CommentType::class, $comment);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $comment->setCreatedAt(new \DateTimeImmutable());
             $comment->setUser($this->getUser());
             
             $this->entityManager->persist($comment);
@@ -61,7 +74,6 @@ class CommentController extends AbstractController
         }
 
         return $this->render('admin/comment/new.html.twig', [
-            'comment' => $comment,
             'form' => $form->createView(),
         ]);
     }
@@ -79,7 +91,6 @@ class CommentController extends AbstractController
         }
 
         return $this->render('admin/comment/edit.html.twig', [
-            'comment' => $comment,
             'form' => $form->createView(),
         ]);
     }
