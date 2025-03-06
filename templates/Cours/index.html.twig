@@ -13,62 +13,125 @@
         </div>
     {% endif %}
 
-    {% for moduleData in modulesWithChapitresAndCours %}
-        <div class="bg-white shadow-md rounded-lg p-6 mb-4">
-            <div class="flex justify-between items-center">
-                <!-- Module Title with Toggle (Triangle) -->
-                <div class="flex items-center cursor-pointer" onclick="toggleVisibility('module-{{ moduleData.module.id }}')">
-                    <i class="fas fa-caret-down text-lg text-blue-600 mr-2 transition-transform duration-300" id="icon-module-{{ moduleData.module.id }}"></i>
-                    <span class="text-xl font-semibold text-blue-600">{{ moduleData.module.nom }}</span>
-                </div>
-            </div>
+    <div class="modules-container">
+        {% for module in modulesWithChapitresAndCours %}
+            <div class="bg-white shadow-md rounded-lg p-6 mb-4">
+                <!-- Module -->
+                <div class="flex justify-between items-center cursor-pointer" onclick="toggleVisibility('module-{{ module.module.id }}')">
+                    <div>
+                        <i class="fas fa-caret-right text-lg text-blue-600 mr-2 transition-transform duration-300" id="icon-module-{{ module.module.id }}"></i>
+                        <span class="text-xl font-semibold text-blue-600 hover:text-blue-800 transition duration-300">{{ module.module.nom }}</span>
+                    </div>
 
-            <!-- Liste des chapitres -->
-            <div id="module-{{ moduleData.module.id }}" class="hidden ml-6 mt-3">
-                {% for chapitre in moduleData.chapitres %}
-                    <div class="mb-2">
-                        <div class="flex justify-between items-center">
-                            <!-- Chapitre Title with Toggle (Triangle) -->
-                            <div class="flex items-center cursor-pointer" onclick="toggleVisibility('chapitre-{{ chapitre.id }}')">
-                                <i class="fas fa-caret-right text-lg text-gray-700 mr-2 transition-transform duration-300" id="icon-chapitre-{{ chapitre.id }}"></i>
-                                <span class="text-lg font-semibold text-gray-700 hover:text-gray-900">{{ chapitre.nom }}</span>
+                    <!-- Boutons pour les enseignants : ajouter chapitre, modifier, supprimer -->
+                    {% if is_granted('ROLE_TEACHER') %}
+                        <div class="flex space-x-2">
+                            <a href="{{ path('app_chapitre_new', {'moduleId': module.module.id}) }}" class="text-green-500 hover:text-green-700 text-sm">
+                                <i class="fas fa-plus-circle mr-1"></i> Ajouter un chapitre
+                            </a>
+                            <a href="{{ path('app_module_edit', {'id': module.module.id}) }}" class="text-yellow-500 hover:text-yellow-700 text-sm">
+                                <i class="fas fa-edit mr-1"></i> Modifier
+                            </a>
+                            <form action="{{ path('app_module_delete', {'id': module.module.id}) }}" method="POST" style="display:inline;">
+                                <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ module.module.id) }}">
+                                <button type="submit" class="text-red-500 hover:text-red-700 text-sm">
+                                    <i class="fas fa-trash-alt"></i> Supprimer
+                                </button>
+                            </form>
+                        </div>
+                    {% endif %}
+                </div>
+
+                <!-- Liste des chapitres sous le module (cachée par défaut) -->
+                <div id="module-{{ module.module.id }}" class="hidden ml-6 mt-3">
+                    {% for chapitre in module.chapitres %}
+                        <div class="mb-2">
+                            <!-- Bouton Ajouter Chapitre (avant le nom du chapitre) pour les enseignants -->
+                            {% if is_granted('ROLE_TEACHER') %}
+                                <div class="flex justify-between items-center mb-2">
+                                    <a href="{{ path('app_cours_new', {'chapitreId': chapitre.id}) }}" class="text-green-500 hover:text-green-700 text-sm">
+                                        <i class="fas fa-plus-circle mr-1"></i> Ajouter un cours
+                                    </a>
+                                </div>
+                            {% endif %}
+
+                            <!-- Chapitre -->
+                            <div class="flex justify-between items-center cursor-pointer" onclick="toggleVisibility('chapitre-{{ chapitre.id }}')">
+                                <div>
+                                    <i class="fas fa-caret-right text-lg text-gray-700 mr-2 transition-transform duration-300" id="icon-chapitre-{{ chapitre.id }}"></i>
+                                    <span class="text-lg font-semibold text-gray-700 hover:text-gray-900 transition duration-300">{{ chapitre.nom }}</span>
+                                </div>
+
+                                <!-- Boutons pour les enseignants : modifier, supprimer -->
+                                {% if is_granted('ROLE_TEACHER') %}
+                                    <div class="flex space-x-2">
+                                        <a href="{{ path('app_chapitre_edit', {'id': chapitre.id}) }}" class="text-yellow-500 hover:text-yellow-700 text-sm">
+                                            <i class="fas fa-edit mr-1"></i> Modifier
+                                        </a>
+                                        <form action="{{ path('app_chapitre_delete', {'id': chapitre.id}) }}" method="POST" style="display:inline;">
+                                            <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ chapitre.id) }}">
+                                            <button type="submit" class="text-red-500 hover:text-red-700 text-sm">
+                                                <i class="fas fa-trash-alt"></i> Supprimer
+                                            </button>
+                                        </form>
+                                    </div>
+                                {% endif %}
+                            </div>
+
+                            <!-- Liste des cours sous chaque chapitre (cachée par défaut) -->
+                            <div id="chapitre-{{ chapitre.id }}" class="hidden ml-6 mt-2">
+                                {% for cours in module.cours[chapitre.id] %}
+                                    <div class="bg-gray-100 p-3 rounded-lg mb-2 flex justify-between">
+                                        <div>
+                                            <h3 class="text-md font-medium text-gray-800">{{ cours.titre }}</h3>
+                                            <p class="text-sm text-gray-600">{{ cours.description }}</p>
+                                            <!-- Lien de téléchargement avec le champ contenuFichier -->
+                                            {% if cours.contenuFichier %}
+                                                <a href="{{ asset('uploads/cours/' ~ cours.contenuFichier) }}" class="text-blue-500 hover:text-blue-700 underline transition duration-300" target="_blank">
+                                                    <i class="fas fa-download mr-2"></i> Télécharger le fichier
+                                                </a>
+                                            {% endif %}
+                                        </div>
+
+                                        <!-- Boutons pour les enseignants : modifier, supprimer -->
+                                        {% if is_granted('ROLE_TEACHER') %}
+                                            <div class="flex space-x-2">
+                                                <a href="{{ path('app_cours_edit', {'id': cours.id}) }}" class="text-yellow-500 hover:text-yellow-700 text-sm">
+                                                    <i class="fas fa-edit mr-1"></i> Modifier
+                                                </a>
+                                                <form action="{{ path('app_cours_delete', {'id': cours.id}) }}" method="POST" style="display:inline;">
+                                                    <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ cours.id) }}">
+                                                    <button type="submit" class="text-red-500 hover:text-red-700 text-sm">
+                                                        <i class="fas fa-trash-alt"></i> Supprimer
+                                                    </button>
+                                                </form>
+                                            </div>
+                                        {% endif %}
+                                    </div>
+                                {% endfor %}
                             </div>
                         </div>
-
-                        <!-- Liste des cours -->
-                        <div id="chapitre-{{ chapitre.id }}" class="hidden ml-6 mt-2">
-                            {% for cours in moduleData.cours[chapitre.id] %}
-                                <div class="bg-gray-100 p-3 rounded-lg mb-2 flex justify-between">
-                                    <div>
-                                        <h5 class="text-md font-medium text-gray-800">{{ cours.titre }}</h5>
-                                        <p class="text-sm text-gray-600">{{ cours.description }}</p>
-                                        <a href="/uploads/cours/{{ cours.contenuFichier }}" class="text-blue-500 hover:text-blue-700 underline transition duration-300" target="_blank">
-                                            <i class="fas fa-download mr-2"></i> Télécharger
-                                        </a>
-                                    </div>
-                                </div>
-                            {% endfor %}
-                        </div>
-                    </div>
-                {% endfor %}
+                    {% endfor %}
+                </div>
             </div>
-        </div>
-    {% endfor %}
+        {% endfor %}
+    </div>
 </div>
 
-<!-- JavaScript pour afficher/masquer les chapitres et cours -->
 <script>
+    // Fonction pour afficher/masquer un module, un chapitre, ou un cours
     function toggleVisibility(id) {
         const element = document.getElementById(id);
         const icon = document.getElementById('icon-' + id);
-
+        
         if (element.classList.contains('hidden')) {
             element.classList.remove('hidden');
-            icon.classList.add('rotate-90');
+            icon.classList.add('rotate-90'); // Rotation du triangle vers le haut
         } else {
             element.classList.add('hidden');
-            icon.classList.remove('rotate-90');
+            icon.classList.remove('rotate-90'); // Rotation du triangle vers le bas
         }
     }
 </script>
+
 {% endblock %}

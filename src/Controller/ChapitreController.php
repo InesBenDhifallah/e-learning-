@@ -70,4 +70,34 @@ class ChapitreController extends AbstractController
 
         return $this->redirectToRoute('app_chapitre_index');
     }
+
+    #[Route('/chapitre/new/{moduleId}', name: 'app_chapitre_new', methods: ['GET', 'POST'])]
+    public function new(Request $request, int $moduleId, ModuleRepository $moduleRepository, EntityManagerInterface $entityManager): Response
+    {
+        // Récupérer le module correspondant à l'ID
+        $module = $moduleRepository->find($moduleId);
+        if (!$module) {
+            throw $this->createNotFoundException("Module introuvable.");
+        }
+    
+        $chapitre = new Chapitre();
+        $chapitre->setModule($module);
+        
+        // Création du formulaire pour le chapitre
+        $form = $this->createForm(ChapitreType::class, $chapitre);
+        $form->handleRequest($request);
+    
+        if ($form->isSubmitted() && $form->isValid()) {
+            // Enregistrer le chapitre dans la base de données
+            $entityManager->persist($chapitre);
+            $entityManager->flush();
+    
+            return $this->redirectToRoute('app_cours_index');  // Redirection vers la liste des cours
+        }
+    
+        return $this->render('chapitre/new.html.twig', [
+            'form' => $form->createView(),
+        ]);
+    }
+    
 }

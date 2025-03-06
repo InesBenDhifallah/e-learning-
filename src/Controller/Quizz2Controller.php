@@ -12,7 +12,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use App\Entity\Suggestion;
 use Symfony\Component\HttpFoundation\JsonResponse;
-
+use App\Entity\QuizzResult;
 #[Route('/quizz2')]
 final class Quizz2Controller extends AbstractController
 {
@@ -113,6 +113,15 @@ final class Quizz2Controller extends AbstractController
             // Mise à jour du meilleur score
             if (!$quizz->getBest() || $percentage > floatval($quizz->getBest())) {
                 $quizz->setBest(strval($percentage));
+                $entityManager->flush();
+            }
+            $user = $this->getUser();
+            if ($user) {
+                $quizzResult = new QuizzResult();
+                $quizzResult->setUser($user);
+                $quizzResult->setQuizz($quizz);
+                $quizzResult->setScore($percentage);
+                $entityManager->persist($quizzResult);
                 $entityManager->flush();
             }
 

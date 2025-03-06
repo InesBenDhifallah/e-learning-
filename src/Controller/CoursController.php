@@ -20,35 +20,31 @@ use Symfony\Component\HttpFoundation\File\Exception\FileException;
 class CoursController extends AbstractController
 {
     #[Route('/', name: 'app_cours_index', methods: ['GET'])]
-    // CoursController.php
-public function index(ModuleRepository $moduleRepository, ChapitreRepository $chapitreRepository, CoursRepository $coursRepository)
-{
-    // Récupérer tous les modules
-    $modules = $moduleRepository->findAll();
+    public function index(ModuleRepository $moduleRepository, ChapitreRepository $chapitreRepository, CoursRepository $coursRepository)
+    {
+        $modules = $moduleRepository->findAll();
 
-    // Récupérer les chapitres et les cours pour chaque module
-    $modulesWithChapitresAndCours = [];
-    foreach ($modules as $module) {
-        $chapitres = $chapitreRepository->findBy(['module' => $module]);
-        $cours = [];
-        foreach ($chapitres as $chapitre) {
-            $cours[$chapitre->getId()] = $coursRepository->findBy(['chapitre' => $chapitre]);
+        $modulesWithChapitresAndCours = [];
+        foreach ($modules as $module) {
+            $chapitres = $chapitreRepository->findBy(['module' => $module]);
+            $cours = [];
+            foreach ($chapitres as $chapitre) {
+                $cours[$chapitre->getId()] = $coursRepository->findBy(['chapitre' => $chapitre]);
+            }
+            $modulesWithChapitresAndCours[] = [
+                'module' => $module,
+                'chapitres' => $chapitres,
+                'cours' => $cours,
+            ];
         }
-        $modulesWithChapitresAndCours[] = [
-            'module' => $module,
-            'chapitres' => $chapitres,
-            'cours' => $cours,
-        ];
+
+        return $this->render('Cours/index.html.twig', [
+            'modulesWithChapitresAndCours' => $modulesWithChapitresAndCours,
+            'user' => $this->getUser(),
+        ]);
     }
 
-    return $this->render('Cours/index.html.twig', [
-        'modulesWithChapitresAndCours' => $modulesWithChapitresAndCours,
-        'user' => $this->getUser(),
-    ]);
-}
-
-
-    #[Route('/new/{id}', name: 'app_cours_new', methods: ['GET', 'POST'])]
+    #[Route('/new/{chapitreId}', name: 'app_cours_new', methods: ['GET', 'POST'])]
     public function new(Request $request, int $chapitreId, ChapitreRepository $chapitreRepository, EntityManagerInterface $entityManager, SluggerInterface $slugger): Response
     {
         if (!$this->isGranted('ROLE_TEACHER')) {

@@ -73,10 +73,17 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\OneToMany(mappedBy: 'user', targetEntity: Comment::class, orphanRemoval: true)]
     private Collection $comments;
 
+    /**
+     * @var Collection<int, QuizzResult>
+     */
+    #[ORM\OneToMany(targetEntity: QuizzResult::class, mappedBy: 'user')]
+    private Collection $quizzResults;
+
     public function __construct() {
 
         $this->isActive = false; // Default value set to false
         $this->comments = new ArrayCollection();
+        $this->quizzResults = new ArrayCollection();
 
     }
 
@@ -240,6 +247,36 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setIdmatiere(?Module $idmatiere): static
     {
         $this->idmatiere = $idmatiere;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, QuizzResult>
+     */
+    public function getQuizzResults(): Collection
+    {
+        return $this->quizzResults;
+    }
+
+    public function addQuizzResult(QuizzResult $quizzResult): static
+    {
+        if (!$this->quizzResults->contains($quizzResult)) {
+            $this->quizzResults->add($quizzResult);
+            $quizzResult->setUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeQuizzResult(QuizzResult $quizzResult): static
+    {
+        if ($this->quizzResults->removeElement($quizzResult)) {
+            // set the owning side to null (unless already changed)
+            if ($quizzResult->getUser() === $this) {
+                $quizzResult->setUser(null);
+            }
+        }
 
         return $this;
     }
