@@ -1,50 +1,25 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Modifier {{ article.title }} - Alpha Education{% endblock %}
+{% block title %}Modifier l'article{% endblock %}
 
 {% block body %}
     <div class="flex justify-center items-center min-h-screen bg-gray-100">
         <div class="w-full max-w-lg p-6 bg-white shadow-lg rounded-lg">
             <h1 class="text-2xl font-bold mb-6 text-center text-gray-800">Modifier l'article</h1>
             
-            {% for message in app.flashes('error') %}
-                <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4">
-                    {{ message }}
-                </div>
-            {% endfor %}
-
-            {% for message in app.flashes('success') %}
-                <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative mb-4">
-                    {{ message }}
-                </div>
-            {% endfor %}
-
             {{ form_start(form, {'attr': {'class': 'space-y-4'}}) }}
-                {{ form_row(form.title, {
-                    'attr': {
-                        'class': 'w-full p-2 border rounded-lg focus:ring focus:ring-lime-300',
-                        'placeholder': 'Titre de l\'article'
-                    }
-                }) }}
-                
-                {{ form_row(form.content, {
-                    'attr': {
-                        'class': 'w-full p-2 border rounded-lg focus:ring focus:ring-lime-300',
-                        'rows': '6',
-                        'placeholder': 'Contenu de l\'article'
-                    }
-                }) }}
 
-                <div class="flex justify-between space-x-4">
-                    <a href="{{ path('article_index') }}" 
-                       class="bg-gray-500 text-white px-4 py-2 rounded-lg font-bold shadow-md hover:bg-gray-600 transition">
-                        Annuler
-                    </a>
-                    <button type="submit" 
-                            class="bg-lime-500 text-white px-4 py-2 rounded-lg font-bold shadow-md hover:bg-lime-600 transition">
-                        Enregistrer les modifications
-                    </button>
-                </div>
+                {{ form_row(form.title, {'attr': {'class': 'w-full p-2 border rounded-lg focus:ring focus:ring-lime-300'}}) }}
+                {{ form_row(form.content, {'attr': {'class': 'w-full p-2 border rounded-lg focus:ring focus:ring-lime-300'}}) }}
+                {{ form_row(form.author, {'attr': {'class': 'w-full p-2 border rounded-lg focus:ring focus:ring-lime-300'}}) }}
+                {{ form_row(form.category, {'attr': {'class': 'w-full p-2 border rounded-lg focus:ring focus:ring-lime-300'}}) }}
+                {{ form_row(form.createdAt, {'attr': {'class': 'w-full p-2 border rounded-lg focus:ring focus:ring-lime-300'}}) }}
+
+                <!-- Bouton d'enregistrement stylisé -->
+                <button type="submit" class="bg-lime-500 text-white px-4 py-2 rounded-lg font-bold shadow-md hover:bg-lime-600 transition duration-300 ease-in-out transform hover:scale-105 w-full">
+                    Enregistrer les modifications
+                </button>
+
             {{ form_end(form) }}
         </div>
     </div>

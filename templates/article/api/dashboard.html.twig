@@ -1,0 +1,150 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Tableau de bord des statistiques{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+{% endblock %}
+
+{% block body %}
+<div class="container mx-auto px-4 py-8">
+    <h1 class="text-3xl font-bold mb-8">Tableau de bord des statistiques</h1>
+
+    <!-- Vue d'ensemble -->
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+        <div class="bg-white p-6 rounded-lg shadow">
+            <h2 class="text-xl font-semibold mb-4">Vue d'ensemble</h2>
+            <div class="grid grid-cols-2 gap-4">
+                <div class="text-center">
+                    <div class="text-4xl font-bold text-blue-600" id="totalArticles">-</div>
+                    <div class="text-gray-600">Articles</div>
+                </div>
+                <div class="text-center">
+                    <div class="text-4xl font-bold text-green-600" id="totalComments">-</div>
+                    <div class="text-gray-600">Commentaires</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Graphique des catégories -->
+        <div class="bg-white p-6 rounded-lg shadow">
+            <h2 class="text-xl font-semibold mb-4">Catégories</h2>
+            <canvas id="categoriesChart"></canvas>
+        </div>
+    </div>
+
+    <!-- Autres graphiques -->
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div class="bg-white p-6 rounded-lg shadow">
+            <h2 class="text-xl font-semibold mb-4">Articles par mois</h2>
+            <canvas id="monthlyArticlesChart"></canvas>
+        </div>
+
+        <div class="bg-white p-6 rounded-lg shadow">
+            <h2 class="text-xl font-semibold mb-4">Articles les plus commentés</h2>
+            <canvas id="commentsChart"></canvas>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block javascripts %}
+{{ parent() }}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const defaultOptions = {
+        responsive: true,
+        plugins: {
+            legend: {
+                position: 'bottom'
+            }
+        }
+    };
+    
+    const defaultColors = [
+        '#3B82F6', '#10B981', '#F59E0B', '#EF4444',
+        '#8B5CF6', '#EC4899', '#6366F1'
+    ];
+
+    const chartOptions = {{ chart_options|default(defaultOptions)|json_encode|raw }};
+    const chartColors = {{ chart_colors|default(defaultColors)|json_encode|raw }};
+
+    fetch('/api/stats')
+        .then(response => response.json())
+        .then(data => {
+            // Mettre à jour les compteurs
+            document.getElementById('totalArticles').textContent = data.total_articles;
+            document.getElementById('totalComments').textContent = data.total_comments;
+
+            // Graphique des catégories
+            new Chart(document.getElementById('categoriesChart'), {
+                type: 'doughnut',
+                data: {
+                    labels: Object.keys(data.categories),
+                    datasets: [{
+                        data: Object.values(data.categories),
+                        backgroundColor: chartColors
+                    }]
+                },
+                options: chartOptions
+            });
+
+            // Graphique des articles par mois
+            new Chart(document.getElementById('monthlyArticlesChart'), {
+                type: 'line',
+                data: {
+                    labels: ['Jan', 'Fév', 'Mar', 'Avr', 'Mai', 'Jun', 'Jul', 'Aoû', 'Sep', 'Oct', 'Nov', 'Déc'],
+                    datasets: [{
+                        label: 'Articles publiés',
+                        data: data.articles_per_month,
+                        borderColor: '#3B82F6',
+                        tension: 0.1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            ticks: {
+                                stepSize: 1
+                            }
+                        }
+                    }
+                }
+            });
+
+            // Graphique des commentaires par article
+            const topArticles = data.comments_per_article
+                .sort((a, b) => b.comments - a.comments)
+                .slice(0, 5);
+
+            new Chart(document.getElementById('commentsChart'), {
+                type: 'bar',
+                data: {
+                    labels: topArticles.map(article => article.title),
+                    datasets: [{
+                        label: 'Nombre de commentaires',
+                        data: topArticles.map(article => article.comments),
+                        backgroundColor: '#10B981'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            ticks: {
+                                stepSize: 1
+                            }
+                        }
+                    }
+                }
+            });
+        });
+});
+</script>
+{% endblock %} 

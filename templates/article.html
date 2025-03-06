@@ -1,0 +1,79 @@
+<div class="article-content">
+  <h1>{{ titre }}</h1>
+  
+  <!-- Version originale -->
+  <div class="version-originale">
+    <h2>Version originale</h2>
+    <div id="contenu-original">
+      {{ contenu }}
+    </div>
+  </div>
+
+  <!-- Traduction anglaise -->
+  <div class="english-version">
+    <h2>English Version</h2>
+    <div id="contenu-anglais"></div>
+  </div>
+
+  <!-- Traduction arabe -->
+  <div class="arabic-version" dir="rtl">
+    <h2>النسخة العربية</h2>
+    <div id="contenu-arabe"></div>
+  </div>
+</div>
+
+<!-- Ajoutez ce script JavaScript -->
+<script>
+async function traduireContenu() {
+    const contenuOriginal = document.getElementById('contenu-original').innerText;
+    
+    try {
+        const response = await fetch('http://localhost:5000/translate', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                text: contenuOriginal
+            })
+        });
+
+        const data = await response.json();
+        
+        // Mettre à jour les contenus traduits
+        document.getElementById('contenu-anglais').innerText = data.english;
+        document.getElementById('contenu-arabe').innerText = data.arabic;
+    } catch (error) {
+        console.error('Erreur de traduction:', error);
+    }
+}
+
+// Lancer la traduction au chargement de la page
+window.addEventListener('load', traduireContenu);
+</script>
+
+<style>
+.article-content {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+.version-originale, .english-version, .arabic-version {
+    margin-bottom: 30px;
+    padding: 15px;
+    border: 1px solid #eee;
+    border-radius: 5px;
+}
+
+.arabic-version {
+    text-align: right;
+}
+
+h2 {
+    color: #333;
+    border-bottom: 2px solid #ddd;
+    padding-bottom: 10px;
+    margin-bottom: 15px;
+}
+</style> 

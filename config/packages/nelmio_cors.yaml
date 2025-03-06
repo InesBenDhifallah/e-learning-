@@ -7,4 +7,11 @@ nelmio_cors:
         expose_headers: ['Link']
         max_age: 3600
     paths:
+<<<<<<< HEAD
         '^/': null
+=======
+        '^/api/':
+            allow_origin: ['*']
+            allow_headers: ['*']
+            allow_methods: ['POST', 'OPTIONS'] 
+>>>>>>> gestion_blog

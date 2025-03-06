@@ -129,6 +129,10 @@
         <div class="alert alert-danger">{{ flash_error }}</div>
     {% endfor %}
 
+    {% for flash_error in app.flashes('error') %}
+        <div class="alert alert-danger">{{ flash_error }}</div>
+    {% endfor %}
+
     {{ form_start(registrationForm, {'attr': {'novalidate': 'novalidate'}}) }}
 
     <div class="form-group">
