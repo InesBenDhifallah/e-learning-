@@ -1,0 +1,15 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <h1>Chapitres du Module : {{ module.nom }}</h1>
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+        {% for chapitre in module.chapitres %}
+            <div class="bg-white p-6 rounded-lg shadow-lg">
+                <h2 class="text-xl font-semibold">{{ chapitre.nom }}</h2>
+                <a href="{{ path('app_cours_chapitre', {'id': chapitre.id}) }}" class="text-blue-500 hover:underline">
+                    Voir les cours <i class="fas fa-arrow-right"></i>
+                </a>
+            </div>
+        {% endfor %}
+    </div>
+{% endblock %}

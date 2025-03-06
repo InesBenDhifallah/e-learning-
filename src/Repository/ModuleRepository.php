@@ -5,6 +5,7 @@ namespace App\Repository;
 use App\Entity\Module;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
+use App\Entity\User;
 
 /**
  * @extends ServiceEntityRepository<Module>
@@ -16,16 +17,37 @@ class ModuleRepository extends ServiceEntityRepository
         parent::__construct($registry, Module::class);
     }
 
-   
-public function findModulesByProfesseur(User $professeur)
+    public function findModulesByTeacher(User $user): array
 {
+    // Vérifier si l'utilisateur a le rôle "ROLE_TEACHER"
+    if (!in_array('ROLE_TEACHER', $user->getRoles())) {
+        return []; // Retourner une liste vide si l'utilisateur n'est pas un enseignant
+    }
+
     return $this->createQueryBuilder('m')
         ->innerJoin('m.users', 'u')
-        ->where('u.id = :professeurId')
-        ->setParameter('professeurId', $professeur->getId())
+        ->where('u.id = :userId')
+        ->setParameter('userId', $user->getId())
         ->getQuery()
         ->getResult();
 }
+
+
+public function findAllWithChapitresAndCours(): array
+{
+    return $this->createQueryBuilder('m')
+        ->leftJoin('m.chapitres', 'c')
+        ->leftJoin('c.cours', 'co')
+        ->addSelect('c')
+        ->addSelect('co')
+        ->getQuery()
+        ->getResult();
+}
+
+
+
+    
+    
 
 
     //    /**

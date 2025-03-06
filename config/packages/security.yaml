@@ -37,8 +37,8 @@ security:
         
 
         # Pages accessible by ROLE_TEACHER and ROLE_PARENT
-        - { path: ^/stat, roles: [ROLE_TEACHER, ROLE_Parent] }
-        - { path: ^/cours, roles: ROLE_TEACHER }
+        - { path: ^/quizz/average, roles: [ROLE_TEACHER, ROLE_Parent] }
+        - { path: ^/cours, roles: [ROLE_TEACHER, ROLE_Parent]}
 
         # Pages accessible only by ROLE_ADMIN
         - { path: ^/listusers, roles: ROLE_ADMIN }
