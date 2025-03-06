@@ -1,27 +1,28 @@
-
 <div class="h-screen bg-[#AFC92C] text-black p-6 w-64">
     <div class="text-center mb-6">
-        <img src="{{ asset('img/logoo.png') }}" alt="Logo" class="h-10 mx-auto">
+        <img src="{{ asset('images/logo.png') }}" alt="Logo" class="h-10 mx-auto">
     </div>
     <nav class="space-y-4">
-        <a href="{{ path('app_event_index') }}" class="block py-2 px-4 rounded-lg hover:bg-lime-700">
-            <i class="fas fa-calendar-alt mr-2"></i> Évènements
+        <a href="{{ path('app_admin') }}" class="block py-2 px-4 rounded-lg hover:bg-lime-700">
+            <i class="fas fa-home mr-2"></i> Dashboard
         </a>
-        <a href="{{ path('index') }}" class="block py-2 px-4 rounded-lg hover:bg-lime-700">
+        <a href="#" class="block py-2 px-4 rounded-lg hover:bg-lime-700">
+            <i class="fas fa-calendar mr-2"></i> Évènements
+        </a>
+        <a href="{{ path('abonnement_index') }}" class="block py-2 px-4 rounded-lg hover:bg-lime-700">
             <i class="fas fa-box mr-2"></i> Packs
         </a>
-        <a href="{{ path('stats_paiements_par_abonnement') }}" class="block py-2 px-4 rounded-lg hover:bg-lime-700">
-    <i class="fas fa-chart-line mr-2"></i> Statistiques
-</a>
-<a href="{{ path('article_index') }}" class="block py-2 px-4 rounded-lg hover:bg-lime-700">
-            <i class="fas fa-users mr-2"></i> Blog
+        <a href="{{ path('app_module_index') }}" class="block py-2 px-4 rounded-lg hover:bg-lime-700">
+            <i class="fas fa-book mr-2"></i> Modules
         </a>
-
+        
         <a href="{{ path('app_listusers') }}" class="block py-2 px-4 rounded-lg hover:bg-lime-700">
             <i class="fas fa-users mr-2"></i> Utilisateurs
         </a>
-        <a href="{{ path('app_logout') }}" class="block py-2 px-4 rounded-lg bg-red-600 text-white hover:bg-red-700">
+        <a href="{{ path('app_logout') }}" class="block py-2 px-4 rounded-lg hover:bg-red-700 text-red-500 hover:text-white">
             <i class="fas fa-sign-out-alt mr-2"></i> Déconnexion
         </a>
     </nav>
 </div>
+
+

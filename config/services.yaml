@@ -1,7 +1,6 @@
 parameters:
     uploads_directory: '%kernel.project_dir%/public/uploads/cours_files'
     events_images_directory: '%kernel.project_dir%/public/uploads/events'
-    locale: 'fr'
 
 services:
     # default configuration for services in *this* file
@@ -22,13 +21,5 @@ services:
             - '../src/Entity/'
             - '../src/Kernel.php'
 
-    # Ajouter le service StripeService
-    App\Service\StripeService:
-        arguments:
-            $secretKey: '%env(STRIPE_SECRET_KEY)%'
-            $webhookSecret: '%env(STRIPE_WEBHOOK_SECRET)%'
-
-  
-
-
-
+    # add more service definitions when explicit configuration is needed
+    # please note that last definitions always *replace* previous ones

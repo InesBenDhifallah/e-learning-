@@ -1,5 +1,7 @@
 <!DOCTYPE html>
 <html lang="fr">
+<!DOCTYPE html>
+<html lang="fr">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,29 +9,20 @@
     <title>{% block title %}Dashboard{% endblock %}</title>
     <title>Education</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
-<body class="bg-gray-100">
-    <div class="flex">
-        {# Inclusion conditionnelle de la sidebar selon le rôle #}
-        {% if is_granted('ROLE_ADMIN') %}
-            {% include 'sidebaradmin.html.twig' %}
-        {% elseif is_granted('ROLE_TEACHER') %}
-            {% include 'sidebarprof.html.twig' %}
-        {% elseif is_granted('ROLE_Parent') %}
-            {% include 'sidebarparenteleve.html.twig' %}
-        {% endif %}
-
-        <!-- Contenu principal -->
-        <div class="flex-1">
-            <main class="p-8">
-                {% block body %}{% endblock %}
-            </main>
-        </div>
-    </div>
-
-    <!-- Scripts -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-    {% block javascripts %}{% endblock %}
-</body>
+<body class="bg-[#C6D93B] flex items-center justify-center min-h-screen">
+    <div class="w-full max-w-6xl bg-white p-6 rounded-lg shadow-xl">
+        <header class="flex justify-between items-center py-4 px-6 border-b">
+            <div class="flex items-center space-x-2">
+                <img alt="logo" src="{{asset('img/logoo.png')}}" alt="Alpha Education Logo" class="h-10">
+            </div>
+            <nav class="space-x-6">
+               
+                
+            </nav>
+           
+        </header>
+    <main>
+        {% block body %}{% endblock %}
+    </main>
 </html>

@@ -67,6 +67,33 @@
             <p class="text-gray-600">Visualisez les progrès de votre enfant en temps réel</p>
         </div>
 
+        <!-- 1. Vue d'ensemble -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+            <!-- Compteurs -->
+            <div class="bg-white p-6 rounded-lg shadow">
+                <div id="totalArticles">4</div>
+                <div id="totalComments">10</div>
+            </div>
+            
+            <!-- Graphique des catégories -->
+            <div class="bg-white p-6 rounded-lg shadow">
+                <canvas id="categoriesChart"></canvas>
+            </div>
+        </div>
+
+        <!-- 2. Catégories -->
+        <div class="categories">
+            Culture: 2 articles
+            Sport: 1 article
+        </div>
+
+        <!-- 3. Articles les plus commentés -->
+        <div class="top-comments">
+            Wikip: 5 commentaires
+            API: 5 commentaires
+            ...
+        </div>
+
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
             <!-- Subject Performance -->
             <div class="chart-card">

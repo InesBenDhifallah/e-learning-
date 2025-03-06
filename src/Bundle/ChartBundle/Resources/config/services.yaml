@@ -1,0 +1,17 @@
+services:
+    _defaults:
+        autowire: true
+        autoconfigure: true
+        public: false
+
+    App\Bundle\ChartBundle\:
+        resource: '../../'
+        exclude:
+            - '../../DependencyInjection/'
+            - '../../Resources/'
+
+    App\Bundle\ChartBundle\Twig\ChartExtension:
+        arguments:
+            $options: '%chart.options%'
+            $colors: '%chart.colors%'
+        tags: ['twig.extension'] 

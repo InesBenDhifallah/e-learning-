@@ -15,36 +15,21 @@ class Comment
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\Column(type: 'text')]
-    #[Assert\NotBlank(message: "Le commentaire ne peut pas être vide")]
+    #[ORM\Column(type: Types::TEXT)]
+    #[Assert\NotBlank(message: "Content should not be blank.")]
     #[Assert\Length(
-        min: 2,
-        max: 1000,
-        minMessage: "Le commentaire doit contenir au moins {{ limit }} caractères",
-        maxMessage: "Le commentaire ne peut pas dépasser {{ limit }} caractères"
-    )]
-    #[Assert\Regex(
-        pattern: "/^[a-zA-Z0-9\s\-_.,!?'\"À-ÿ]+$/",
-        message: "Le commentaire ne peut contenir que des lettres, chiffres et ponctuations basiques"
+        min: 10,
+        minMessage: "Content should be at least {{ limit }} characters long."
     )]
     private ?string $content = null;
 
-    #[ORM\Column(type: 'datetime_immutable')]
-    private ?\DateTimeImmutable $createdAt = null;
+    #[ORM\Column(type: Types::DATETIME_MUTABLE)]
+    #[Assert\NotNull(message: "Creation date cannot be null.")]
+    private ?\DateTimeInterface $createdAt = null;
 
-    #[ORM\ManyToOne(targetEntity: Article::class, inversedBy: 'comments')]
-    #[ORM\JoinColumn(nullable: false)]
-    #[Assert\NotNull(message: "Le commentaire doit être associé à un article")]
+    #[ORM\ManyToOne(inversedBy: 'comments')]
+    #[Assert\NotNull(message: "Article should not be null.")]
     private ?Article $article = null;
-
-    #[ORM\ManyToOne(targetEntity: User::class)]
-    #[ORM\JoinColumn(nullable: false)]
-    private ?User $user = null;
-
-    public function __construct()
-    {
-        $this->createdAt = new \DateTimeImmutable();
-    }
 
     public function getId(): ?int
     {

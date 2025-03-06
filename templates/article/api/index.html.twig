@@ -1,0 +1,147 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Articles et Commentaires{% endblock %}
+
+{% block body %}
+    <div class="container mt-4">
+        <h1>Articles et Commentaires</h1>
+        
+        {# Barre de recherche #}
+        <div class="mb-4">
+            <form class="d-flex" id="searchForm">
+                <input type="text" id="searchInput" class="form-control me-2" placeholder="Rechercher un article...">
+                <button class="btn btn-outline-primary" type="submit">Rechercher</button>
+            </form>
+        </div>
+
+        {# Liste des articles #}
+        <div id="articlesList">
+            {% for article in articles %}
+                <div class="card mb-4">
+                    <div class="card-body">
+                        <h5 class="card-title">{{ article.title }}</h5>
+                        <h6 class="card-subtitle mb-2 text-muted">
+                            Par {{ article.user.username }} le {{ article.createdAt|date('d/m/Y H:i') }}
+                        </h6>
+                        <p class="card-text">{{ article.content|slice(0, 200) }}...</p>
+                        
+                        {# Commentaires #}
+                        <div class="comments-section">
+                            <h6>Commentaires ({{ article.comments|length }})</h6>
+                            {% for comment in article.comments %}
+                                <div class="comment border-left pl-3 mb-2">
+                                    <small class="text-muted">{{ comment.user.username }} - {{ comment.createdAt|date('d/m/Y H:i') }}</small>
+                                    <p class="mb-1">{{ comment.content }}</p>
+                                </div>
+                            {% endfor %}
+                        </div>
+
+                        {# Formulaire de commentaire #}
+                        <div class="comments-section">
+                            {% if is_granted('ROLE_USER') %}
+                                <form class="mt-3 comment-form" data-article-id="{{ article.id }}">
+                                    <div class="form-group">
+                                        <textarea class="form-control comment-content" rows="2" placeholder="Ajouter un commentaire..."></textarea>
+                                    </div>
+                                    <button type="submit" class="btn btn-primary btn-sm mt-2">Commenter</button>
+                                </form>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+
+        {# Section activité récente #}
+        <div class="recent-activity mt-4">
+            <h3>Activité Récente</h3>
+            <div id="recentActivity">
+                <!-- Sera rempli par JavaScript -->
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block javascripts %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Recherche d'articles
+    const searchForm = document.getElementById('searchForm');
+    searchForm.addEventListener('submit', function(e) {
+        e.preventDefault();
+        const searchTerm = document.getElementById('searchInput').value;
+        searchArticles(searchTerm);
+    });
+
+    // Ajout de commentaire
+    document.querySelectorAll('.comment-form').forEach(form => {
+        form.addEventListener('submit', function(e) {
+            e.preventDefault();
+            const articleId = this.dataset.articleId;
+            const content = this.querySelector('.comment-content').value;
+            addComment(articleId, content);
+        });
+    });
+
+    // Charger l'activité récente
+    loadRecentActivity();
+});
+
+function searchArticles(term) {
+    fetch(`/api/articles/search?q=${encodeURIComponent(term)}`)
+        .then(response => response.json())
+        .then(data => {
+            // Mettre à jour l'affichage des articles
+            updateArticlesList(data.articles);
+        });
+}
+
+function addComment(articleId, content) {
+    fetch(`/api/articles/${articleId}/comments`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ content })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.status === 'success') {
+            // Recharger les commentaires
+            location.reload();
+        }
+    });
+}
+
+function loadRecentActivity() {
+    fetch('/api/recent-activity')
+        .then(response => response.json())
+        .then(data => {
+            const activityHtml = generateRecentActivityHtml(data);
+            document.getElementById('recentActivity').innerHTML = activityHtml;
+        });
+}
+
+function generateRecentActivityHtml(data) {
+    let html = '<ul class="list-group">';
+    data.recent_articles.forEach(article => {
+        html += `
+            <li class="list-group-item">
+                Nouvel article : ${article.title}
+                <small class="text-muted">${new Date(article.createdAt).toLocaleDateString()}</small>
+            </li>
+        `;
+    });
+    data.recent_comments.forEach(comment => {
+        html += `
+            <li class="list-group-item">
+                Nouveau commentaire sur "${comment.article.title}"
+                <small class="text-muted">${new Date(comment.createdAt).toLocaleDateString()}</small>
+            </li>
+        `;
+    });
+    html += '</ul>';
+    return html;
+}
+</script>
+{% endblock %} 

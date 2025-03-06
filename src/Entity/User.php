@@ -5,29 +5,30 @@ use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Validator\Constraints as Assert;
-use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\Common\Collections\Collection;
 
-#[ORM\Entity]
+#[ORM\Entity(repositoryClass: UserRepository::class)]
 #[ORM\Table(name: "user")]
+#[UniqueEntity(fields: ['email'], message: 'Cet email est déjà utilisé')]
 class User implements UserInterface, PasswordAuthenticatedUserInterface
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
-    #[ORM\Column(type: "integer")]
-    private $id;
+    #[ORM\Column]
+    private ?int $id = null;
 
-    #[ORM\Column(type: "string", unique: true)]
+    #[ORM\Column(length: 180, unique: true)]
     #[Assert\NotBlank(message: "L'adresse e-mail est obligatoire.")]
     #[Assert\Email(message: "L'adresse e-mail '{{ value }}' n'est pas valide.")]
-    private $email;
+    #[Groups(['article:read'])]
+    private ?string $email = null;
 
-    #[ORM\Column(type: "string")]
+    #[ORM\Column(type: "string", length: 255)]
     #[Assert\NotBlank(message: "Le nom est obligatoire.")]
     #[Assert\Regex(
         pattern: "/^[A-Za-zÀ-ÿ\s]+$/u", 
         message: "Le nom ne doit contenir que des lettres et des espaces."
     )]
+    #[Groups(['article:read'])]
     private $nom;
 
     #[ORM\Column(type: "string", nullable: true)]
@@ -68,23 +69,11 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private ?bool $isActive = false;
 
     #[ORM\ManyToOne(inversedBy: 'users')]
-    private ?Module $idmatiere = null; 
-
-    #[ORM\OneToMany(mappedBy: 'user', targetEntity: Comment::class, orphanRemoval: true)]
-    private Collection $comments;
-
-    /**
-     * @var Collection<int, QuizzResult>
-     */
-    #[ORM\OneToMany(targetEntity: QuizzResult::class, mappedBy: 'user')]
-    private Collection $quizzResults;
+    private ?Module $idmatiere = null; // Set default value to false
 
     public function __construct() {
 
         $this->isActive = false; // Default value set to false
-        $this->comments = new ArrayCollection();
-        $this->quizzResults = new ArrayCollection();
-
     }
 
     public function getId(): ?int
@@ -192,7 +181,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     public function getUserIdentifier(): string
     {
-        return (string) $this->email;  
+        return (string) $this->email;  // The unique identifier (email)
     }
 
     public function getWork(): ?string
