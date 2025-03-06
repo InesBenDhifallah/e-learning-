@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Abonnement Index</title>
+    <title>Ajouter un Chapitre</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 </head>
@@ -14,12 +14,7 @@
             {% include 'sidebarprof.html.twig' %}
         </div>
 
-
-
-{% block body %}
-    
-
-        
+        {% block body %}
         <div class="flex-grow p-8 flex justify-center items-center">
             <div class="bg-white w-full max-w-md mx-auto rounded-xl shadow-lg p-8">
                 <h2 class="text-2xl font-bold text-center mb-6">Ajouter un Chapitre</h2>
@@ -32,7 +27,14 @@
                     {{ form_widget(form.nom, {'attr': {'class': 'mt-2 w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-lime-500'}}) }}
                     <div class="text-red-500">{{ form_errors(form.nom) }}</div>
                 </div>
-                 <div>
+
+                <div>
+                    <label for="{{ form.description.vars.id }}" class="block text-sm font-medium text-gray-600">Description</label>
+                    {{ form_widget(form.description, {'attr': {'class': 'mt-2 w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-lime-500'}}) }}
+                    <div class="text-red-500">{{ form_errors(form.description) }}</div>
+                </div>
+
+                <div>
                     <label for="{{ form.module.vars.id }}" class="block text-sm font-medium text-gray-600">Module</label>
                     {{ form_widget(form.module, {'attr': {'class': 'mt-2 w-full p-3 border border-gray-300 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-lime-500'}}) }}
                     <div class="text-red-500">{{ form_errors(form.module) }}</div>
@@ -41,8 +43,6 @@
                 <button type="submit" class="w-full py-3 bg-lime-500 text-white font-medium rounded-lg hover:bg-lime-600 transition duration-300">
                     Enregistrer
                 </button>
-
-                
 
                 {{ form_end(form) }}
 
@@ -53,5 +53,7 @@
                 </div>
             </div>
         </div>
+        {% endblock %}
     </div>
-{% endblock %}
+</body>
+</html>
