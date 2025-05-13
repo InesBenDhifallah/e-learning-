@@ -73,8 +73,7 @@ final class PaiementController extends AbstractController
     public function success(Request $request, EntityManagerInterface $entityManager, NotificationService $emailService): Response
     {
         $sessionId = $request->query->get('session_id');
-        $user=
-        $userEmail = 'user@example.com';  
+        
     
         if (!$sessionId) {
             return new Response('Session ID manquant', 400);
@@ -94,6 +93,7 @@ final class PaiementController extends AbstractController
                
                 $abonnement = $entityManager->getRepository(Abonnement::class)->find($abonnementId);
                 $user = $entityManager->getRepository(User::class)->find($userId);
+                $userEmail = $user->getEmail();
     
                 if (!$abonnement || !$user) {
                     return new Response('Abonnement ou utilisateur non trouvé.', 400);
