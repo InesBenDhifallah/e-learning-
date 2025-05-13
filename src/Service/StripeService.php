@@ -6,7 +6,7 @@ use App\Entity\User;
 use App\Entity\Abonnement;
 use App\Repository\PaiementRepository;
 use Doctrine\ORM\EntityManagerInterface;
-use Stripe\Webhook;
+
 use Stripe\Checkout\Session;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Security\Core\User\UserInterface;
@@ -14,12 +14,12 @@ use Symfony\Component\Security\Core\User\UserInterface;
 class StripeService
 {
     private string $secretKey;
-    private string $webhookSecret;
+    
 
-    public function __construct(string $secretKey, string $webhookSecret)
+    public function __construct(string $secretKey)
     {
         $this->secretKey = $secretKey;
-        $this->webhookSecret = $webhookSecret;
+        
         \Stripe\Stripe::setApiKey($this->secretKey);
     }
 
