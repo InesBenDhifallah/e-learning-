@@ -1,30 +1,26 @@
 <!-- Sidebar -->
 <div class="sidebar bg-[#AFC92C] text-black w-64 p-6 shadow-md h-screen">
     <div class="text-center mb-6">
-        <img src="{{ asset('img/logo.png') }}" alt="Logo" class="h-10 mx-auto">
+        <img src="{{ asset('images/logo.png') }}" alt="Logo" class="h-10 mx-auto">
     </div>
     <nav class="space-y-4">
-        <a href="{{ path('app_user_edit') }}" class="flex items-center py-2 px-4 rounded-lg transition-all hover:bg-[#6D9B25] hover:translate-x-1">
-            <i class="fas fa-user-circle mr-3"></i> Profil
+        <a href="{{ path('app_user_edit') }}" class="flex items-center py-2 px-4 rounded-lg transition-all hover:bg-[#6D9B25] hover:translate-x-1" data-translate="true">
+            <i class="fas fa-user-circle mr-3"></i> <span data-translate="true">Profil</span>
         </a>
-        <a href="{{ path('app_paiement_index') }}" class="flex items-center py-2 px-4 rounded-lg transition-all hover:bg-[#6D9B25] hover:translate-x-1">
-            <i class="fas fa-credit-card mr-3"></i> Paiements
+        <a href="{{ path('app_paiement_index') }}" class="flex items-center py-2 px-4 rounded-lg transition-all hover:bg-[#6D9B25] hover:translate-x-1" data-translate="true">
+            <i class="fas fa-credit-card mr-3"></i> <span data-translate="true">Paiements</span>
         </a>
-        <a href="{{ path('app_cours_index') }}" class="flex items-center py-2 px-4 rounded-lg transition-all hover:bg-[#6D9B25] hover:translate-x-1">
-            <i class="fas fa-child mr-3"></i> Cours
+        <a href="{{ path('app_cours_index') }}" class="flex items-center py-2 px-4 rounded-lg transition-all hover:bg-[#6D9B25] hover:translate-x-1" data-translate="true">
+            <i class="fas fa-child mr-3"></i> <span data-translate="true">Cours</span>
         </a>
-        <a href="{{ path('app_stat') }}" class="flex items-center py-2 px-4 rounded-lg transition-all hover:bg-[#6D9B25] hover:translate-x-1">
-            <i class="fas fa-chart-line mr-3"></i> Suivre mon enfant
+        <a href="{{ path('app_stat') }}" class="flex items-center py-2 px-4 rounded-lg transition-all hover:bg-[#6D9B25] hover:translate-x-1" data-translate="true">
+            <i class="fas fa-chart-line mr-3"></i> <span data-translate="true">Suivre mon enfant</span>
         </a>
         <a href="{{ path('app_event_index') }}" class="block py-2 px-4 rounded-lg hover:bg-lime-700">
             <i class="fas fa-calendar-alt mr-2"></i> Évènements
-        </a>  
-          <a href="{{ path('user_articles') }}" class="flex items-center py-2 px-4 rounded-lg transition-all hover:bg-[#6D9B25] hover:translate-x-1">
-            <i class="fas fa-newspaper mr-3"></i> Articles
-        </a>
+        </a>    
         <a href="{{ path('app_logout') }}" class="flex items-center py-2 px-4 rounded-lg bg-red-600 text-white transition-all hover:bg-red-700">
             <i class="fas fa-sign-out-alt mr-3"></i> Déconnexion
         </a>
-        
     </nav>
 </div>

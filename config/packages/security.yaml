@@ -17,6 +17,33 @@ security:
             logout:
                 path: app_logout
                 target: /
+            # Remove the form_login since we are using a custom authenticator
     access_control:
-        - { path: ^/admin, roles: ROLE_ADMIN }
+        # Public pages (accessible without authentication)
+        - { path: ^/login, roles: PUBLIC_ACCESS }
+        - { path: ^/register, roles: PUBLIC_ACCESS }
+        - { path: ^/parentsignup, roles: PUBLIC_ACCESS }
+        - { path: ^/pageacceuil, roles: PUBLIC_ACCESS }
+        - { path: ^/logout, roles: PUBLIC_ACCESS } 
+        - { path: ^/reset, roles: PUBLIC_ACCESS } 
+        - { path: ^/send, roles: PUBLIC_ACCESS }
+        - { path: ^/update-password, roles: PUBLIC_ACCESS } 
+        - { path: ^/quizz2, roles: PUBLIC_ACCESS } 
+        - { path: ^/suggestion2, roles: PUBLIC_ACCESS }
+        - { path: ^/quizz/average, roles: PUBLIC_ACCESS }  
+        - { path: ^/question2, roles: ROLE_TEACHER }
+        - { path: ^/cours, roles: PUBLIC_ACCESS}
+        
+
+        # Pages accessible by ROLE_TEACHER and ROLE_PARENT
+        - { path: ^/quizz/average, roles: [ROLE_TEACHER, ROLE_Parent] }
+        - { path: ^/chapitre, roles: ROLE_TEACHER }
+        - { path: ^/user/edit, roles: ROLE_TEACHER }
+        
+        
+        # Pages accessible only by ROLE_ADMIN
+        - { path: ^/listusers, roles: ROLE_ADMIN }
+        - { path: ^/paiement/stats, roles: ROLE_ADMIN }
+
+        # Pages accessible by all authenticated users (any role)
         - { path: ^/profile, roles: ROLE_USER }

@@ -3,7 +3,7 @@ parameters:
     locale: 'fr'
 
 services:
-    # default configuration for services in *this* file
+    # default configuration for services in this file
     _defaults:
         autowire: true      # Automatically injects dependencies in your services.
         autoconfigure: true # Automatically registers your services as commands, event subscribers, etc.
@@ -21,6 +21,3 @@ services:
         arguments:
             $secretKey: '%env(STRIPE_SECRET_KEY)%'
   
-
-
-

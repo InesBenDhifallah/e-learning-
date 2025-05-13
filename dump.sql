@@ -271,7 +271,11 @@ CREATE TABLE `paiement` (
 
 LOCK TABLES `paiement` WRITE;
 /*!40000 ALTER TABLE `paiement` DISABLE KEYS */;
+<<<<<<< HEAD
+INSERT INTO `paiement` VALUES (2,'ines','bendhifallahines@gmail.com','Visa','666','2025-02-27',99,250,NULL,'2025-02-11',NULL),(3,'ines','bendhifallahines@gmail.com','Visa','9','2025-02-13',99,250,NULL,'2025-02-11',NULL),(4,'asma','bendhifallahines@gmail.com','Mastercard','55','2025-02-21',99,700,NULL,'2025-02-11',NULL),(5,'asma','bendhifallahines@gmail.com','Mastercard','55','2025-02-21',99,700,NULL,'2025-02-11',NULL);
+=======
 /*INSERT INTO `paiement` VALUES (2,'ines','bendhifallahines@gmail.com','Visa','666','2025-02-27',99,250,NULL,'2025-02-11',NULL),(3,'ines','bendhifallahines@gmail.com','Visa','9','2025-02-13',99,250,NULL,'2025-02-11',NULL),(4,'asma','bendhifallahines@gmail.com','Mastercard','55','2025-02-21',99,700,NULL,'2025-02-11',NULL),(5,'asma','bendhifallahines@gmail.com','Mastercard','55','2025-02-21',99,700,NULL,'2025-02-11',NULL);*/
+>>>>>>> 569ed047865299fc8826d7c0b415cb15f7d296ef
 /*!40000 ALTER TABLE `paiement` ENABLE KEYS */;
 UNLOCK TABLES;
 

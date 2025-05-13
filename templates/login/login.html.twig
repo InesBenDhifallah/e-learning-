@@ -6,9 +6,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{{ block('title') }}</title>
+    <title id="page-title">{{ block('title') }}</title>
     <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
     <style>
+        /* Vos styles CSS existants */
         body {
             font-family: Arial, sans-serif;
             margin: 0;
@@ -24,7 +25,6 @@
             transition: background-color 0.3s ease;
         }
 
-        /* Menu en haut de la page */
         .top-nav {
             display: flex;
             justify-content: space-between;
@@ -60,7 +60,6 @@
             transition: background-color 0.3s ease;
         }
 
-        /* Contenu de la page de connexion */
         .overlay {
             position: absolute;
             top: 0;
@@ -159,7 +158,6 @@
             animation: fadeIn 0.5s ease-out;
         }
 
-        /* New animations */
         @keyframes fadeIn {
             from {
                 opacity: 0;
@@ -169,7 +167,6 @@
             }
         }
 
-        /* Success message style */
         .alert-success {
             color: #155724;
             background-color: #d4edda;
@@ -180,6 +177,15 @@
             animation: fadeIn 0.5s ease-out;
         }
 
+        /* Sélecteur de langue */
+        .language-selector {
+            padding: 5px 10px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+            background-color: white;
+            font-size: 16px;
+            margin-right: 15px;
+        }
     </style>
 </head>
 <body>
@@ -190,26 +196,32 @@
             <img src="{{ asset('img/logo.png') }}" alt="Logo">
         </div>
         <div class="menu">
-            <a href="{{ path('app_parentsignup') }}">S'inscrire</a>
-            <a href="{{ path('app_register') }}">Rejoindre notre équipe</a>
-            <a href="{{ path('app_register') }}"></a>
+            <!-- Sélecteur de langue -->
+            <select id="language-selector" class="language-selector">
+                <option value="en">English</option>
+                <option value="fr">French</option>
+                <option value="ar">Arabic</option>
+            </select>
+            <!-- Liens de menu -->
+            <a href="{{ path('app_parentsignup') }}" id="signup-link">S'inscrire</a>
+            <a href="{{ path('app_register') }}" id="join-team-link">Rejoindre notre équipe</a>
         </div>
     </div>
 
     <div class="overlay"></div>
 
     <div class="login-container">
-        <h1>Please sign in</h1>
+        <h1 id="login-title">Please sign in</h1>
 
         {% if app.user %}
-            <div class="alert-success">
-                You are already logged in as {{ app.user.nom }}, <a href="{{ path('app_logout') }}">Logout</a>
+            <div class="alert-success" id="logged-in-message">
+                You are already logged in as {{ app.user.nom }}, <a href="{{ path('app_logout') }}" id="logout-link">Logout</a>
             </div>
         {% endif %}
 
         <form method="post">
             {% if app.session.get('authentication_error') %}
-                <div class="alert-danger">
+                <div class="alert-danger" id="error-message">
                     Invalid credentials. Please check your email and password.
                 </div>
             {% endif %}
@@ -243,24 +255,63 @@
 
             <input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
 
-            <button class="login-btn" type="submit">Sign in</button>
+            <button class="login-btn" type="submit" id="login-button">Sign in</button>
         </form>
 
         <div class="extra-links">
-            <a href="#">Forgot password?</a>
+            <a href="{{ path('app_send') }}" id="forgot-password-link">Forgot password?</a>
         </div>
     </div>
 
+    <!-- Script pour la traduction -->
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            const loginError = "{{ error ? 'true' : 'false' }}"; // Use 'error' instead of 'login_error'
-            if (loginError === 'true') {
-                document.getElementById('username').parentElement.classList.add('error');
-                document.getElementById('password').parentElement.classList.add('error');
+        // Fonction pour traduire le texte via l'API REST
+        async function translateText(text, targetLang) {
+            const requestBody = {
+                texts: [text],
+                target_language: targetLang
+            };
+
+            const response = await fetch('http://127.0.0.1:5000/translate', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(requestBody),
+            });
+
+            if (!response.ok) {
+                const errorData = await response.json();
+                console.error('API Error:', errorData);
+                throw new Error(`API Error: ${response.status} - ${response.statusText}`);
             }
+
+            const data = await response.json();
+            return data.translated_texts[0];
+        }
+
+        // Fonction pour traduire tous les éléments de la page
+        async function translatePage(lang) {
+            const elementsToTranslate = document.querySelectorAll('[id]');
+            for (const element of elementsToTranslate) {
+                if (element.tagName !== 'IMG' && element.tagName !== 'INPUT') {
+                    const text = element.innerText;
+                    try {
+                        const translatedText = await translateText(text, lang);
+                        element.innerText = translatedText;
+                    } catch (error) {
+                        console.error('Translation failed for element:', element, error);
+                    }
+                }
+            }
+        }
+
+        // Écouteur d'événement pour le changement de langue
+        document.getElementById('language-selector').addEventListener('change', async function () {
+            const lang = this.value;
+            await translatePage(lang);
         });
     </script>
 </body>
 </html>
 {% endblock %}
-

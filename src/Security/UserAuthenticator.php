@@ -50,7 +50,7 @@ class UserAuthenticator extends AbstractLoginFormAuthenticator
         if (in_array('ROLE_ADMIN', $roles, true)) {
             return new RedirectResponse($this->router->generate('app_listusers')); // Redirect admin to /listusers
         } elseif (in_array('ROLE_Parent', $roles, true)) {
-            return new RedirectResponse($this->router->generate('app_stat')); 
+            return new RedirectResponse($this->router->generate('quizz_average')); 
         } elseif (in_array('ROLE_TEACHER', $roles, true)) {
             return new RedirectResponse($this->router->generate('app_cours_index'));
         }

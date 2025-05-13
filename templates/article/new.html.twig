@@ -1,60 +1,84 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Nouvel Article - Alpha Education{% endblock %}
+{% form_theme form '@FOSCKEditor/Form/ckeditor_widget.html.twig' %}
+
+{% block title %}Nouvel Article{% endblock %}
 
 {% block body %}
-    <div class="container mx-auto px-4 py-8">
-        <h1 class="text-3xl font-bold mb-6">Créer un nouvel article</h1>
+    <div class="flex justify-center items-center min-h-screen bg-gray-100">
+        <div class="w-full max-w-lg p-8 bg-white shadow-xl rounded-2xl">
+            <h1 class="text-3xl font-extrabold text-gray-800 mb-8 text-center">
+                📝 Créer un nouvel article
+            </h1>
 
-        {# Affichage des messages d'erreur #}
-        {% for message in app.flashes('error') %}
-            <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4">
-                {{ message }}
-            </div>
-        {% endfor %}
+            {{ form_start(form, {'attr': {'class': 'space-y-6'}}) }}
 
-        {# Affichage des messages de succès #}
-        {% for message in app.flashes('success') %}
-            <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative mb-4">
-                {{ message }}
-            </div>
-        {% endfor %}
-
-        {{ form_start(form, {'attr': {'class': 'space-y-4'}}) }}
-            <div class="mb-4">
-                {{ form_label(form.title, 'Titre', {'label_attr': {'class': 'block text-gray-700 text-sm font-bold mb-2'}}) }}
-                {{ form_widget(form.title, {'attr': {'class': 'shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline'}}) }}
-                {{ form_errors(form.title, {'attr': {'class': 'text-red-500 text-xs italic'}}) }}
+            <!-- Champ Titre -->
+            <div>
+                {{ form_label(form.title, 'Titre', {'label_attr': {'class': 'block text-lg font-semibold text-gray-700 mb-2'}}) }}
+                {{ form_widget(form.title, {
+                    'attr': {
+                        'class': 'w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-lime-500 transition duration-300 ease-in-out border-gray-300',
+                        'placeholder': 'Entrez le titre de l\'article'
+                    }
+                }) }}
             </div>
 
-            <div class="mb-4">
-                {{ form_label(form.content, 'Contenu', {'label_attr': {'class': 'block text-gray-700 text-sm font-bold mb-2'}}) }}
-                {{ form_widget(form.content, {'attr': {'class': 'shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline'}}) }}
-                {{ form_errors(form.content, {'attr': {'class': 'text-red-500 text-xs italic'}}) }}
+            <!-- Champ Contenu -->
+            <div>
+                {{ form_label(form.content, 'Contenu', {'label_attr': {'class': 'block text-lg font-semibold text-gray-700 mb-2'}}) }}
+                {{ form_widget(form.content, {
+                    'attr': {
+                        'class': 'w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-lime-500 transition duration-300 ease-in-out border-gray-300',
+                        'placeholder': 'Rédigez le contenu de votre article...'
+                    }
+                }) }}
             </div>
 
-            <div class="mb-4">
-                {{ form_label(form.author, 'Author', {'label_attr': {'class': 'block text-gray-700 text-sm font-bold mb-2'}}) }}
-                {{ form_widget(form.author, {'attr': {'class': 'shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline'}}) }}
-                {{ form_errors(form.author, {'attr': {'class': 'text-red-500 text-xs italic'}}) }}
+            <!-- Champ Auteur -->
+            <div>
+                {{ form_label(form.author, 'Author', {'label_attr': {'class': 'block text-lg font-semibold text-gray-700 mb-2'}}) }}
+                {{ form_widget(form.author, {
+                    'attr': {
+                        'class': 'w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-lime-500 transition duration-300 ease-in-out border-gray-300',
+                    }
+                }) }}
             </div>
 
-            <div class="mb-4">
-                {{ form_label(form.category, 'Category', {'label_attr': {'class': 'block text-gray-700 text-sm font-bold mb-2'}}) }}
-                {{ form_widget(form.category, {'attr': {'class': 'shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline'}}) }}
-                {{ form_errors(form.category, {'attr': {'class': 'text-red-500 text-xs italic'}}) }}
+            <!-- Champ Catégorie -->
+            <div>
+                {{ form_label(form.category, 'Category', {'label_attr': {'class': 'block text-lg font-semibold text-gray-700 mb-2'}}) }}
+                {{ form_widget(form.category, {
+                    'attr': {
+                        'class': 'w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-lime-500 transition duration-300 ease-in-out border-gray-300',
+                    }
+                }) }}
             </div>
 
-            <div class="mb-4">
-                {{ form_label(form.createdAt, 'Created at', {'label_attr': {'class': 'block text-gray-700 text-sm font-bold mb-2'}}) }}
-                {{ form_widget(form.createdAt, {'attr': {'class': 'shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline'}}) }}
-                {{ form_errors(form.createdAt, {'attr': {'class': 'text-red-500 text-xs italic'}}) }}
+            <!-- Champ Created At -->
+            <div>
+                {{ form_label(form.createdAt, 'Created at', {'label_attr': {'class': 'block text-lg font-semibold text-gray-700 mb-2'}}) }}
+                {{ form_widget(form.createdAt, {
+                    'attr': {
+                        'class': 'w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-lime-500 transition duration-300 ease-in-out border-gray-300',
+                    }
+                }) }}
             </div>
 
-            <button type="submit" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
-                Créer l'article
-            </button>
-        {{ form_end(form) }}
+            <!-- Boutons d'action (placés après Created At) -->
+            <div class="flex flex-col sm:flex-row justify-between space-y-4 sm:space-y-0 sm:space-x-4 mt-6">
+                <button type="submit" 
+                        class="bg-lime-500 text-white px-6 py-3 rounded-full font-bold shadow-lg hover:bg-lime-600 transition duration-300 transform hover:scale-105 w-full sm:w-auto">
+                    ✅ Enregistrer
+                </button>
+                <button type="button" 
+                        onclick="history.back()" 
+                        class="bg-gray-500 text-white px-6 py-3 rounded-full font-bold shadow-lg hover:bg-gray-600 transition duration-300 transform hover:scale-105 w-full sm:w-auto">
+                    ⬅ Retour
+                </button>
+            </div>
+
+            {{ form_end(form) }}
+        </div>
     </div>
 {% endblock %}
-

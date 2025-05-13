@@ -1,23 +1,3 @@
-
-
-CREATE TABLE `user` (
-  `id` int(11) NOT NULL,
-  `email` varchar(255) NOT NULL,
-  `roles` longtext NOT NULL COMMENT '(DC2Type:json)',
-  `password` varchar(255) NOT NULL,
-  `nom` varchar(255) NOT NULL,
-  `phonenumber` varchar(255) DEFAULT NULL,
-  `matiere` varchar(255) DEFAULT NULL,
-  `experience` int(11) DEFAULT NULL,
-  `reason` varchar(255) DEFAULT NULL,
-  `is_active` tinyint(1) NOT NULL,
-  `work` varchar(255) DEFAULT NULL,
-  `adress` varchar(255) DEFAULT NULL,
-  `pref` varchar(255) DEFAULT NULL,
-  `idmatiere_id` int(11) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
-
 INSERT INTO `user` (`id`, `email`, `roles`, `password`, `nom`, `phonenumber`, `matiere`, `experience`, `reason`, `is_active`, `work`, `adress`, `pref`, `idmatiere_id`) VALUES
 (1, 'aaaa@azrazr.com', '[\"ROLE_TEACHER\"]', '$2y$13$Rd/wuGR1HVo8m9kJ57vYEOPK9UGLIAPoOURtzfjQ2Vom7lkOzaNsK', 'aaa', '123456', 'mathematiques', 12, 'aerzer', 0, NULL, NULL, NULL, NULL),
 (2, 'zaeraezr@gmail.com', '[\"ROLE_TEACHER\"]', '$2y$13$wumCJA73t/eg5xMXAMDI0uVgb6Z74fDWh.SEi4gqhA7SOh6QVHynC', 'aaaa', '123123', 'sciences', 12, 'azrazr', 0, NULL, NULL, NULL, NULL),
@@ -42,39 +22,3 @@ INSERT INTO `user` (`id`, `email`, `roles`, `password`, `nom`, `phonenumber`, `m
 (23, 'zzz@gmail.com', '[\"ROLE_TEACHER\"]', '$2y$13$UYKBZ6OAROKJyvO60LVRNeVYS62YIUQA69JWkEqVRW0tjbbS7CK/m', 'aazer', '12345678', 'aerezr', 12, 'azerezar', 0, NULL, NULL, '0', NULL),
 (24, 'bendhifallahines@gmail.com', '[\"ROLE_Parent\"]', '$2y$13$TtG7LCAT05ITJKHDYookGO0FEw3j4aANKkOAUUt5AiPEZDyYoWuQ2', 'aaaa', '+21655672594', NULL, NULL, NULL, 0, 'azeaze', 'aziz', 'email', NULL);
 
---
--- Index pour les tables déchargées
---
-
---
--- Index pour la table `user`
---
-ALTER TABLE `user`
-  ADD PRIMARY KEY (`id`),
-  ADD UNIQUE KEY `UNIQ_8D93D649E7927C74` (`email`),
-  ADD KEY `IDX_8D93D64939C5CF62` (`idmatiere_id`);
-
---
--- AUTO_INCREMENT pour les tables déchargées
---
-
---
--- AUTO_INCREMENT pour la table `user`
---
-ALTER TABLE `user`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=25;
-
---
--- Contraintes pour les tables déchargées
---
-
---
--- Contraintes pour la table `user`
---
-ALTER TABLE `user`
-  ADD CONSTRAINT `FK_8D93D64939C5CF62` FOREIGN KEY (`idmatiere_id`) REFERENCES `module` (`id`);
-COMMIT;
-
-/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
-/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
-/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
