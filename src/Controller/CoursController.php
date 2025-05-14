@@ -89,25 +89,29 @@ public function new(Request $request, int $chapitreId, ChapitreRepository $chapi
     }
 
     #[Route('/{id}/edit', name: 'app_cours_edit', methods: ['GET', 'POST'])]
-    public function edit(Request $request, Cours $cours, EntityManagerInterface $entityManager): Response
+    public function edit(Request $request, ?Cours $cours, EntityManagerInterface $entityManager): Response
     {
         if (!$this->isGranted('ROLE_TEACHER')) {
             throw $this->createAccessDeniedException('Accès refusé.');
         }
-
+    
+        if (!$cours) {
+            throw $this->createNotFoundException('Cours introuvable.');
+        }
+    
         $form = $this->createForm(CoursType::class, $cours);
         $form->handleRequest($request);
-
+    
         if ($form->isSubmitted() && $form->isValid()) {
             $file = $form->get('contenuFile')->getData();
             if ($file) {
                 $cours->setUpdatedAt(new \DateTimeImmutable());
             }
-
+    
             $entityManager->flush();
             return $this->redirectToRoute('app_cours_index');
         }
-
+    
         return $this->render('cours/edit.html.twig', [
             'cours' => $cours,
             'form' => $form,
