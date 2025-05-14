@@ -28,14 +28,14 @@ Pour utiliser ce projet, vous devez suivre ces étapes:
 
 1. Clonez le repository:
    ```bash
-   git clone [https:](https://github.com/InesBenDhifallah/e-learning-.git)
+   git clone [https](https://github.com/InesBenDhifallah/e-learning-.git)
    
 2. Si vous utilisez WAMP ou XAMPP:
    * Placez le projet dans le dossier www (WAMP) ou htdocs (XAMPP)
      
    * Démarrez Apache et MySQL depuis l'interface de WAMP/XAMPP
      
-   * Accèder au projet via [localhost] (http://127.0.0.1:8000/)
+   * Accèder au projet via [localhost](http://127.0.0.1:8000/)
 
 ## Utilisation
 
