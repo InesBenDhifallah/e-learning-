@@ -42,9 +42,12 @@
 
         <!-- Bouton pour créer un nouveau chapitre -->
         <div class="mt-8 text-center">
-            <a href="{{ path('app_chapitre_new') }}" class="px-6 py-3 bg-green-500 text-white text-lg rounded-lg shadow-md hover:bg-green-600 transition" title="Créer un nouveau chapitre">
-                <i class="fas fa-plus"></i> Créer un nouveau chapitre
-            </a>
+          {% if module is not null %}
+    <a href="{{ path('app_chapitre_new', {'moduleId': module.id}) }}" class="px-6 py-3 bg-green-500 text-white text-lg rounded-lg shadow-md hover:bg-green-600 transition" title="Créer un nouveau chapitre">
+        <i class="fas fa-plus"></i> Créer un nouveau chapitre
+    </a>
+{% endif %}
+
         </div>
     </main>
 

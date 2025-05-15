@@ -15,14 +15,20 @@ use Symfony\Component\Routing\Annotation\Route;
 #[Route('/chapitre')]
 class ChapitreController extends AbstractController
 {
-    #[Route('/', name: 'app_chapitre_index', methods: ['GET'])]
-    public function index(ChapitreRepository $chapitreRepository): Response
-    {
-        return $this->render('chapitre/index.html.twig', [
-            'chapitres' => $chapitreRepository->findAll(),
-        ]);
-    }
+    #[Route('/chapitre', name: 'app_chapitre_index')]
+public function index(ChapitreRepository $chapitreRepository, ModuleRepository $moduleRepository): Response
+{
+    // Récupérer tous les chapitres
+    $chapitres = $chapitreRepository->findAll();
 
+    // Récupérer un module spécifique si nécessaire (par exemple, le premier ou un module particulier)
+    $module = $moduleRepository->find(1);  // Exemple : chercher le module avec l'ID 1
+
+    return $this->render('chapitre/index.html.twig', [
+        'chapitres' => $chapitres,
+        'module' => $module,  // Assurer que le module est passé au template
+    ]);
+}
     #[Route('/{id}', name: 'app_chapitre_show', methods: ['GET'])]
     public function show(Chapitre $chapitre): Response
     {
@@ -72,33 +78,33 @@ class ChapitreController extends AbstractController
         return $this->redirectToRoute('app_chapitre_index');
     }
 
-    #[Route('/chapitre/new/{moduleId}', name: 'app_chapitre_new', methods: ['GET', 'POST'])]
-    public function new(Request $request, int $moduleId, ModuleRepository $moduleRepository, EntityManagerInterface $entityManager): Response
-    {
-        // Récupérer le module correspondant à l'ID
-        $module = $moduleRepository->find($moduleId);
-        if (!$module) {
-            throw $this->createNotFoundException("Module introuvable.");
-        }
-    
-        $chapitre = new Chapitre();
-        $chapitre->setModule($module);
-        
-        // Création du formulaire pour le chapitre
-        $form = $this->createForm(ChapitreType::class, $chapitre);
-        $form->handleRequest($request);
-    
-        if ($form->isSubmitted() && $form->isValid()) {
-            // Enregistrer le chapitre dans la base de données
-            $entityManager->persist($chapitre);
-            $entityManager->flush();
-    
-            return $this->redirectToRoute('app_cours_index');  // Redirection vers la liste des cours
-        }
-    
-        return $this->render('chapitre/new.html.twig', [
-            'form' => $form->createView(),
-        ]);
+    // src/Controller/ChapitreController.php
+#[Route('/chapitre/new/{moduleId}', name: 'app_chapitre_new', methods: ['GET', 'POST'])]
+public function new(int $moduleId, ModuleRepository $moduleRepository, Request $request, EntityManagerInterface $entityManager): Response
+{
+    $module = $moduleRepository->find($moduleId);
+    if (!$module) {
+        throw $this->createNotFoundException('Module introuvable');
     }
+
+    $chapitre = new Chapitre();
+    $chapitre->setModule($module);
+
+    $form = $this->createForm(ChapitreType::class, $chapitre);
+    $form->handleRequest($request);
+
+    if ($form->isSubmitted() && $form->isValid()) {
+        $entityManager->persist($chapitre);
+        $entityManager->flush();
+
+        return $this->redirectToRoute('app_chapitre_index');  // Redirection vers la liste des chapitres
+    }
+
+    return $this->render('chapitre/new.html.twig', [
+        'form' => $form->createView(),
+        'module' => $module
+    ]);
+}
+
     
 }

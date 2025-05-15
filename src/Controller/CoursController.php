@@ -45,48 +45,36 @@ class CoursController extends AbstractController
     }
 
     #[Route('/new/{chapitreId}', name: 'app_cours_new', methods: ['GET', 'POST'])]
-    public function new(Request $request, int $chapitreId, ChapitreRepository $chapitreRepository, EntityManagerInterface $entityManager, SluggerInterface $slugger): Response
-    {
-        if (!$this->isGranted('ROLE_TEACHER')) {
-            throw $this->createAccessDeniedException('Accès refusé.');
-        }
-
-        $chapitre = $chapitreRepository->find($chapitreId);
-        if (!$chapitre) {
-            throw $this->createNotFoundException("Chapitre introuvable.");
-        }
-
-        $cours = new Cours();
-        $cours->setChapitre($chapitre);
-        $form = $this->createForm(CoursType::class, $cours);
-        $form->handleRequest($request);
-
-        if ($form->isSubmitted() && $form->isValid()) {
-            $file = $form->get('contenuFile')->getData();
-            if ($file) {
-                $newFilename = $slugger->slug(pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME)) 
-                                . '-' . uniqid() . '.' . $file->guessExtension();
-
-                try {
-                    $file->move($this->getParameter('uploads_directory'), $newFilename);
-                    $cours->setContenuFichier($newFilename);
-                } catch (FileException $e) {
-                    $this->addFlash('error', "Erreur lors de l'upload du fichier.");
-                }
-
-                $cours->setUpdatedAt(new \DateTimeImmutable());
-            }
-
-            $entityManager->persist($cours);
-            $entityManager->flush();
-
-            return $this->redirectToRoute('app_cours_index');
-        }
-
-        return $this->render('cours/new.html.twig', [
-            'form' => $form->createView(),
-        ]);
+public function new(Request $request, int $chapitreId, ChapitreRepository $chapitreRepository, EntityManagerInterface $entityManager): Response
+{
+    if (!$this->isGranted('ROLE_TEACHER')) {
+        throw $this->createAccessDeniedException('Accès refusé.');
     }
+
+    $chapitre = $chapitreRepository->find($chapitreId);
+    if (!$chapitre) {
+        throw $this->createNotFoundException("Chapitre introuvable.");
+    }
+
+    $cours = new Cours();
+    $cours->setChapitre($chapitre);
+    $form = $this->createForm(CoursType::class, $cours);
+    $form->handleRequest($request);
+
+    if ($form->isSubmitted() && $form->isValid()) {
+        // Pas besoin de gérer manuellement le fichier, VichUploader s'en charge
+        $cours->setUpdatedAt(new \DateTimeImmutable());
+
+        $entityManager->persist($cours);
+        $entityManager->flush();
+
+        return $this->redirectToRoute('app_cours_index');
+    }
+
+    return $this->render('cours/new.html.twig', [
+        'form' => $form->createView(),
+    ]);
+}
 
     #[Route('/{id}', name: 'app_cours_show', methods: ['GET'])]
     public function show(Cours $cours): Response
@@ -101,25 +89,29 @@ class CoursController extends AbstractController
     }
 
     #[Route('/{id}/edit', name: 'app_cours_edit', methods: ['GET', 'POST'])]
-    public function edit(Request $request, Cours $cours, EntityManagerInterface $entityManager): Response
+    public function edit(Request $request, ?Cours $cours, EntityManagerInterface $entityManager): Response
     {
         if (!$this->isGranted('ROLE_TEACHER')) {
             throw $this->createAccessDeniedException('Accès refusé.');
         }
-
+    
+        if (!$cours) {
+            throw $this->createNotFoundException('Cours introuvable.');
+        }
+    
         $form = $this->createForm(CoursType::class, $cours);
         $form->handleRequest($request);
-
+    
         if ($form->isSubmitted() && $form->isValid()) {
             $file = $form->get('contenuFile')->getData();
             if ($file) {
                 $cours->setUpdatedAt(new \DateTimeImmutable());
             }
-
+    
             $entityManager->flush();
             return $this->redirectToRoute('app_cours_index');
         }
-
+    
         return $this->render('cours/edit.html.twig', [
             'cours' => $cours,
             'form' => $form,

@@ -16,9 +16,8 @@ security:
             custom_authenticator: App\Security\UserAuthenticator
             logout:
                 path: app_logout
-                target: /pageacceuil
-    role_hierarchy:
-        ROLE_ADMIN: [ROLE_TEACHER, ROLE_Parent]
+                target: /
+            # Remove the form_login since we are using a custom authenticator
     access_control:
         # Public pages (accessible without authentication)
         - { path: ^/login, roles: PUBLIC_ACCESS }
@@ -29,15 +28,16 @@ security:
         - { path: ^/reset, roles: PUBLIC_ACCESS } 
         - { path: ^/send, roles: PUBLIC_ACCESS }
         - { path: ^/update-password, roles: PUBLIC_ACCESS } 
-        - { path: ^/, roles: PUBLIC_ACCESS }
+        - { path: ^/quizz2, roles: PUBLIC_ACCESS } 
+        - { path: ^/suggestion2, roles: PUBLIC_ACCESS }
+        - { path: ^/quizz/average, roles: PUBLIC_ACCESS }  
+        - { path: ^/question2, roles: ROLE_TEACHER }
+        - { path: ^/, roles: ROLE_TEACHER }
         
 
         # Pages accessible by ROLE_TEACHER and ROLE_PARENT
         - { path: ^/quizz/average, roles: [ROLE_TEACHER, ROLE_Parent] }
         - { path: ^/cours, roles: [ROLE_TEACHER, ROLE_Parent]}
-        - { path: ^/quizz2, roles: ROLE_TEACHER } 
-        - { path: ^/suggestion2, roles: ROLE_TEACHER }
-        - { path: ^/question2, roles: ROLE_TEACHER }
 
         # Pages accessible only by ROLE_ADMIN
         - { path: ^/listusers, roles: ROLE_ADMIN }
@@ -48,6 +48,6 @@ security:
 
         # Pages accessible by all authenticated users (any role)
         - { path: ^/profile, roles: ROLE_USER }
+        - { path: ^/user/edit, roles: IS_AUTHENTICATED_FULLY }
 
-        # All other pages require authentication
-        - { path: ^/, roles: ROLE_USER }
+       

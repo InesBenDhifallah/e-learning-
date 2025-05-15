@@ -14,12 +14,13 @@ class ChapitreType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
-            ->add('nom')
-            ->add('module', EntityType::class, [
-                'class' => Module::class,
-                'choice_label' => 'nom',
-            ])
-        ;
+        ->add('nom')
+        ->add('description')  // Ajout de la description
+        ->add('module', EntityType::class, [
+            'class' => Module::class,
+            'choice_label' => 'nom',
+        ]);
+    
     }
 
     public function configureOptions(OptionsResolver $resolver): void

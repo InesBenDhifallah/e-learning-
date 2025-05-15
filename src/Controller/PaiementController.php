@@ -73,40 +73,41 @@ final class PaiementController extends AbstractController
     public function success(Request $request, EntityManagerInterface $entityManager, NotificationService $emailService): Response
     {
         $sessionId = $request->query->get('session_id');
-        $userEmail = 'user@example.com';  // Remplace par l'email de l'utilisateur récupéré depuis la base de données.
+        
     
         if (!$sessionId) {
             return new Response('Session ID manquant', 400);
         }
     
-        \Stripe\Stripe::setApiKey($_ENV['STRIPE_SECRET_KEY']); // Utilisation de la clé API depuis .env
+        \Stripe\Stripe::setApiKey($_ENV['STRIPE_SECRET_KEY']); 
     
         try {
-            // Récupère la session Stripe pour vérifier les informations
+            
             $session = \Stripe\Checkout\Session::retrieve($sessionId);
     
             if ($session->payment_status === 'paid') {
-                // Récupère l'ID de l'abonnement et de l'utilisateur à partir des métadonnées
+               
                 $abonnementId = $session->metadata->abonnement_id;
                 $userId = $session->metadata->user_id;
     
-                // Récupère l'abonnement et l'utilisateur de la base de données
+               
                 $abonnement = $entityManager->getRepository(Abonnement::class)->find($abonnementId);
                 $user = $entityManager->getRepository(User::class)->find($userId);
+                $userEmail = $user->getEmail();
     
                 if (!$abonnement || !$user) {
                     return new Response('Abonnement ou utilisateur non trouvé.', 400);
                 }
     
-                // Crée l'objet Paiement et l'enregistre dans la base de données
+                
                 $paiement = new Paiement();
                 $paiement->setStripeSessionId($sessionId);
-                $paiement->setMontant($session->amount_total / 100); // Montant en euros
+                $paiement->setMontant($session->amount_total / 100); 
                 $paiement->setDatePaiement(new \DateTime());
                 $paiement->setUserid($user);
                 $paiement->setIdAbonnement($abonnement);
     
-                // Persiste le paiement dans la base de données
+             
                 $entityManager->persist($paiement);
                 $entityManager->flush();
     

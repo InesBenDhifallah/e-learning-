@@ -1,15 +1,37 @@
-{% extends 'base.html.twig' %}
-
-{% block stylesheets %}
-    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Abonnement Index</title>
+    <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-{% endblock %}
+</head>
+<body class="bg-gray-100 min-h-screen">
+    <div class="flex min-h-screen">
+        <!-- Sidebar -->
+        <div class="w-64 bg-gray-800 text-white">
+            {% include 'sidebarparenteleve.html.twig' %}
+        </div>
+
 
 {% block body %}
 <div class="container mx-auto p-6">
+    <!-- Sélecteur de langue -->
+    <div class="mb-6">
+        <label for="language-selector" class="block text-sm font-medium text-gray-700">Choisir la langue :</label>
+        <select id="language-selector" class="mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
+            <option value="en">English</option>
+            <option value="fr">French</option>
+            <option value="ar">Arabic</option>
+        </select>
+    </div>
+
     {% if app.user %}
         <div class="bg-blue-100 text-blue-900 p-4 rounded-lg mb-6 text-center">
-            <h2 class="text-xl font-semibold">Bienvenue, {{ app.user.nom }} ! 😊</h2>
+            <h2 class="text-xl font-semibold">
+                <span id="welcome-message">Bienvenue</span>, {{ app.user.nom }} ! 😊
+            </h2>
         </div>
     {% endif %}
 
@@ -20,22 +42,22 @@
                 <div class="flex justify-between items-center cursor-pointer" onclick="toggleVisibility('module-{{ module.module.id }}')">
                     <div>
                         <i class="fas fa-caret-right text-lg text-blue-600 mr-2 transition-transform duration-300" id="icon-module-{{ module.module.id }}"></i>
-                        <span class="text-xl font-semibold text-blue-600 hover:text-blue-800 transition duration-300">{{ module.module.nom }}</span>
+                        <span id="module-name-{{ module.module.id }}" class="text-xl font-semibold text-blue-600 hover:text-blue-800 transition duration-300">{{ module.module.nom }}</span>
                     </div>
 
                     <!-- Boutons pour les enseignants : ajouter chapitre, modifier, supprimer -->
                     {% if is_granted('ROLE_TEACHER') %}
                         <div class="flex space-x-2">
                             <a href="{{ path('app_chapitre_new', {'moduleId': module.module.id}) }}" class="text-green-500 hover:text-green-700 text-sm">
-                                <i class="fas fa-plus-circle mr-1"></i> Ajouter un chapitre
+                                <i class="fas fa-plus-circle mr-1"></i> <span class="translatable" data-id="add-chapter">Ajouter un chapitre</span>
                             </a>
                             <a href="{{ path('app_module_edit', {'id': module.module.id}) }}" class="text-yellow-500 hover:text-yellow-700 text-sm">
-                                <i class="fas fa-edit mr-1"></i> Modifier
+                                <i class="fas fa-edit mr-1"></i> <span class="translatable" data-id="edit">Modifier</span>
                             </a>
                             <form action="{{ path('app_module_delete', {'id': module.module.id}) }}" method="POST" style="display:inline;">
                                 <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ module.module.id) }}">
                                 <button type="submit" class="text-red-500 hover:text-red-700 text-sm">
-                                    <i class="fas fa-trash-alt"></i> Supprimer
+                                    <i class="fas fa-trash-alt"></i> <span class="translatable" data-id="delete">Supprimer</span>
                                 </button>
                             </form>
                         </div>
@@ -50,7 +72,7 @@
                             {% if is_granted('ROLE_TEACHER') %}
                                 <div class="flex justify-between items-center mb-2">
                                     <a href="{{ path('app_cours_new', {'chapitreId': chapitre.id}) }}" class="text-green-500 hover:text-green-700 text-sm">
-                                        <i class="fas fa-plus-circle mr-1"></i> Ajouter un cours
+                                        <i class="fas fa-plus-circle mr-1"></i> <span class="translatable" data-id="add-course">Ajouter un cours</span>
                                     </a>
                                 </div>
                             {% endif %}
@@ -59,19 +81,19 @@
                             <div class="flex justify-between items-center cursor-pointer" onclick="toggleVisibility('chapitre-{{ chapitre.id }}')">
                                 <div>
                                     <i class="fas fa-caret-right text-lg text-gray-700 mr-2 transition-transform duration-300" id="icon-chapitre-{{ chapitre.id }}"></i>
-                                    <span class="text-lg font-semibold text-gray-700 hover:text-gray-900 transition duration-300">{{ chapitre.nom }}</span>
+                                    <span id="chapitre-name-{{ chapitre.id }}" class="text-lg font-semibold text-gray-700 hover:text-gray-900 transition duration-300">{{ chapitre.nom }}</span>
                                 </div>
 
                                 <!-- Boutons pour les enseignants : modifier, supprimer -->
                                 {% if is_granted('ROLE_TEACHER') %}
                                     <div class="flex space-x-2">
                                         <a href="{{ path('app_chapitre_edit', {'id': chapitre.id}) }}" class="text-yellow-500 hover:text-yellow-700 text-sm">
-                                            <i class="fas fa-edit mr-1"></i> Modifier
+                                            <i class="fas fa-edit mr-1"></i> <span class="translatable" data-id="edit">Modifier</span>
                                         </a>
                                         <form action="{{ path('app_chapitre_delete', {'id': chapitre.id}) }}" method="POST" style="display:inline;">
                                             <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ chapitre.id) }}">
                                             <button type="submit" class="text-red-500 hover:text-red-700 text-sm">
-                                                <i class="fas fa-trash-alt"></i> Supprimer
+                                                <i class="fas fa-trash-alt"></i> <span class="translatable" data-id="delete">Supprimer</span>
                                             </button>
                                         </form>
                                     </div>
@@ -83,12 +105,12 @@
                                 {% for cours in module.cours[chapitre.id] %}
                                     <div class="bg-gray-100 p-3 rounded-lg mb-2 flex justify-between">
                                         <div>
-                                            <h3 class="text-md font-medium text-gray-800">{{ cours.titre }}</h3>
-                                            <p class="text-sm text-gray-600">{{ cours.description }}</p>
+                                            <h3 id="cours-title-{{ cours.id }}" class="text-md font-medium text-gray-800">{{ cours.titre }}</h3>
+                                            <p id="cours-description-{{ cours.id }}" class="text-sm text-gray-600">{{ cours.description }}</p>
                                             <!-- Lien de téléchargement avec le champ contenuFichier -->
                                             {% if cours.contenuFichier %}
                                                 <a href="{{ asset('uploads/cours/' ~ cours.contenuFichier) }}" class="text-blue-500 hover:text-blue-700 underline transition duration-300" target="_blank">
-                                                    <i class="fas fa-download mr-2"></i> Télécharger le fichier
+                                                    <i class="fas fa-download mr-2"></i> <span class="translatable" data-id="download-file">Télécharger le fichier</span>
                                                 </a>
                                             {% endif %}
                                         </div>
@@ -97,12 +119,12 @@
                                         {% if is_granted('ROLE_TEACHER') %}
                                             <div class="flex space-x-2">
                                                 <a href="{{ path('app_cours_edit', {'id': cours.id}) }}" class="text-yellow-500 hover:text-yellow-700 text-sm">
-                                                    <i class="fas fa-edit mr-1"></i> Modifier
+                                                    <i class="fas fa-edit mr-1"></i> <span class="translatable" data-id="edit">Modifier</span>
                                                 </a>
                                                 <form action="{{ path('app_cours_delete', {'id': cours.id}) }}" method="POST" style="display:inline;">
                                                     <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ cours.id) }}">
                                                     <button type="submit" class="text-red-500 hover:text-red-700 text-sm">
-                                                        <i class="fas fa-trash-alt"></i> Supprimer
+                                                        <i class="fas fa-trash-alt"></i> <span class="translatable" data-id="delete">Supprimer</span>
                                                     </button>
                                                 </form>
                                             </div>
@@ -132,6 +154,51 @@
             icon.classList.remove('rotate-90'); // Rotation du triangle vers le bas
         }
     }
-</script>
 
+    // Fonction pour traduire le texte via l'API REST
+    async function translateText(text, targetLang) {
+        const requestBody = {
+            texts: [text],
+            target_language: targetLang
+        };
+
+        const response = await fetch('http://127.0.0.1:5000/translate', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(requestBody),
+        });
+
+        if (!response.ok) {
+            const errorData = await response.json();
+            console.error('API Error:', errorData);
+            throw new Error(`API Error: ${response.status} - ${response.statusText}`);
+        }
+
+        const data = await response.json();
+        return data.translated_texts[0];
+    }
+
+    // Fonction pour traduire tous les éléments de la page
+    async function translatePage(lang) {
+        const elementsToTranslate = document.querySelectorAll('.translatable, [id^="module-name-"], [id^="chapitre-name-"], [id^="cours-title-"], [id^="cours-description-"], #welcome-message');
+        
+        for (const element of elementsToTranslate) {
+            const text = element.innerText;
+            try {
+                const translatedText = await translateText(text, lang);
+                element.innerText = translatedText;
+            } catch (error) {
+                console.error('Translation failed for element:', element, error);
+            }
+        }
+    }
+
+    // Écouteur d'événement pour le changement de langue
+    document.getElementById('language-selector').addEventListener('change', async function () {
+        const lang = this.value;
+        await translatePage(lang);
+    });
+</script>
 {% endblock %}

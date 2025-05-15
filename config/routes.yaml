@@ -6,3 +6,12 @@ controllers:
 app_participation:
     path: /participation/{id}
     controller: App\Controller\ParticipationController::register
+
+app_chapitre_index:
+    path: /chapitre
+    controller: App\Controller\ChapitreController::index
+
+app_chapitre_new:
+    path: /chapitre/new/{moduleId}
+    controller: App\Controller\ChapitreController::new
+    

@@ -43,7 +43,7 @@ final class QuizzResultController extends AbstractController
         // Obtenir la moyenne des scores pour l'utilisateur avec l'ID récupéré
         $averages = $quizzResultRepository->getAverageScoreByMatiere($userId);
 
-        return $this->render('stat/stat.html.twig', [
+        return $this->render('stat/statistics.html.twig', [
             'averages' => $averages,
         ]);
     }

@@ -3,9 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Alpha Education - Apprendre et Grandir</title>
-    {% block css %}
+    <title id="page-title">Alpha Education - Apprendre et Grandir</title>
     <style>
+        /* Styles CSS */
         body {
             font-family: Arial, sans-serif;
             background-color: #C4DA36;
@@ -46,10 +46,19 @@
             width: auto;
         }
 
-        /* Hero Section */
+        /* Sélecteur de langue */
+        .language-selector {
+            padding: 5px 10px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+            background-color: white;
+            font-size: 16px;
+            margin-right: 15px;
+        }
 
+        /* Hero Section */
         .hero {
-            background: url("{{ asset('images/elearning2.jpeg') }}") ;no-repeat center center/cover;
+            background: url("{{ asset('images/elearning2.jpeg') }}") no-repeat center center/cover;
             color: white;
             padding: 150px 20px;
             text-align: center;
@@ -214,9 +223,8 @@
         .hero p,
         .hero a.cta-button {
               color: black; /* Change la couleur du texte en noir */
-}
+        }
     </style>
-    {% endblock %}
 </head>
 <body>
     <div class="top-nav">
@@ -224,23 +232,29 @@
             <img src="{{asset('images/logo.png')}}" alt="Alpha Education Logo">
         </div>
         <div class="menu">
-            <a href="{{ path('app_parentsignup') }}">S'inscrire</a>
-            <a href="{{ path('app_register') }}">rejoignez notre equipe</a>
-            <a href="#"></a>
+            <!-- Sélecteur de langue -->
+            <select id="language-selector" class="language-selector">
+                <option value="en">English</option>
+                <option value="fr">French</option>
+                <option value="ar">Arabic</option>
+            </select>
+            <!-- Liens de menu -->
+            <a href="{{ path('app_parentsignup') }}" id="signup-link">S'inscrire</a>
+            <a href="{{ path('app_register') }}" id="join-team-link">Rejoignez notre équipe</a>
         </div>
     </div>
 
     <!-- Hero Section -->
     <div class="hero">
-        <h1>Apprenez et Grandissez avec Alpha Education</h1>
-        <p>Des cours interactifs pour les enfants, adaptés à chaque âge et niveau scolaire.</p>
-        <a href="{{ path('app_login') }}" class="cta-button">Commencez maintenant</a>
+        <h1 id="hero-title">Apprenez et Grandissez avec Alpha Education</h1>
+        <p id="hero-description">Des cours interactifs pour les enfants, adaptés à chaque âge et niveau scolaire.</p>
+        <a href="{{ path('app_login') }}" class="cta-button" id="cta-button">Commencez maintenant</a>
     </div>
 
     <!-- Introduction Section -->
     <div class="intro">
-        <h2>Pourquoi Choisir Alpha Education ?</h2>
-        <p>Alpha Education vous offre une plateforme d'apprentissage interactive et innovante, conçue spécialement pour les enfants. Avec des cours dans des domaines variés comme les mathématiques, les sciences, l'anglais, et l'art, votre enfant développera des compétences solides dans un environnement amusant et engageant. Grâce à notre méthode d'enseignement moderne et ludique, l'apprentissage devient une expérience joyeuse et efficace.</p>
+        <h2 id="intro-title">Pourquoi Choisir Alpha Education ?</h2>
+        <p id="intro-description">Alpha Education vous offre une plateforme d'apprentissage interactive et innovante, conçue spécialement pour les enfants. Avec des cours dans des domaines variés comme les mathématiques, les sciences, l'anglais, et l'art, votre enfant développera des compétences solides dans un environnement amusant et engageant. Grâce à notre méthode d'enseignement moderne et ludique, l'apprentissage devient une expérience joyeuse et efficace.</p>
     </div>
 
     <!-- Offer Section -->
@@ -248,51 +262,101 @@
         <!-- Offer 1 -->
         <div class="offer-card">
             <img src="{{asset('images/math2.png')}}" alt="Cours de Mathématiques">
-            <h3>Mathématiques</h3>
-            <p>Des leçons et exercices pour maîtriser les bases des mathématiques de manière ludique.</p>
-            <button>Voir l'offre</button>
+            <h3 id="math-title">Mathématiques</h3>
+            <p id="math-description">Des leçons et exercices pour maîtriser les bases des mathématiques de manière ludique.</p>
+            <button id="math-button">Voir l'offre</button>
         </div>
         <!-- Offer 2 -->
         <div class="offer-card">
             <img src="{{asset('images/science.png')}}" alt="Cours de Sciences">
-            <h3>Sciences</h3>
-            <p>Découvrez le monde fascinant des sciences à travers des vidéos et des expériences virtuelles.</p>
-            <button>Voir l'offre</button>
+            <h3 id="science-title">Sciences</h3>
+            <p id="science-description">Découvrez le monde fascinant des sciences à travers des vidéos et des expériences virtuelles.</p>
+            <button id="science-button">Voir l'offre</button>
         </div>
         <!-- Offer 3 -->
         <div class="offer-card">
             <img src="{{asset('images/english.png')}}" alt="Cours d'Anglais">
-            <h3>Anglais</h3>
-            <p>Apprenez l'anglais de façon interactive et amusante avec des jeux et des exercices pratiques.</p>
-            <button>Voir l'offre</button>
+            <h3 id="english-title">Anglais</h3>
+            <p id="english-description">Apprenez l'anglais de façon interactive et amusante avec des jeux et des exercices pratiques.</p>
+            <button id="english-button">Voir l'offre</button>
         </div>
         <!-- Offer 4 -->
         <div class="offer-card">
             <img src="{{asset('images/art.png')}}" alt="Cours d'Art">
-            <h3>Art</h3>
-            <p>Exprimez votre créativité avec des cours de dessin, peinture et plus encore pour les enfants.</p>
-            <button>Voir l'offre</button>
+            <h3 id="art-title">Art</h3>
+            <p id="art-description">Exprimez votre créativité avec des cours de dessin, peinture et plus encore pour les enfants.</p>
+            <button id="art-button">Voir l'offre</button>
         </div>
     </div>
 
     <!-- Testimonials Section -->
     <div class="testimonials">
-        <h2>Ce que disent nos utilisateurs</h2>
+        <h2 id="testimonials-title">Ce que disent nos utilisateurs</h2>
         <div class="testimonial-card">
             <img src="{{asset('images/parent1.png')}}" alt="Parent 1">
-            <h3>Marie Dupont</h3>
-            <p>"Alpha Education a transformé la façon dont mon enfant apprend. Les cours sont captivants et faciles à suivre. Je recommande vivement cette plateforme !"</p>
+            <h3 id="testimonial1-name">Marie Dupont</h3>
+            <p id="testimonial1-text">"Alpha Education a transformé la façon dont mon enfant apprend. Les cours sont captivants et faciles à suivre. Je recommande vivement cette plateforme !"</p>
         </div>
         <div class="testimonial-card">
             <img src="{{asset('images/parent2.png')}}" alt="Parent 2">
-            <h3>Lucien Bertrand</h3>
-            <p>"Grâce à Alpha Education, mon fils adore maintenant les mathématiques ! Les exercices interactifs rendent l'apprentissage beaucoup plus amusant."</p>
+            <h3 id="testimonial2-name">Lucien Bertrand</h3>
+            <p id="testimonial2-text">"Grâce à Alpha Education, mon fils adore maintenant les mathématiques ! Les exercices interactifs rendent l'apprentissage beaucoup plus amusant."</p>
         </div>
     </div>
 
     <!-- Footer -->
     <div class="footer">
-        <p>&copy; 2025 Alpha Education. Tous droits réservés.</p>
+        <p id="footer-text">&copy; 2025 Alpha Education. Tous droits réservés.</p>
     </div>
+
+    <!-- Script pour la traduction -->
+    <script>
+        // Fonction pour traduire le texte via l'API REST
+        async function translateText(text, targetLang) {
+            const requestBody = {
+                texts: [text],
+                target_language: targetLang
+            };
+
+            const response = await fetch('http://127.0.0.1:5000/translate', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(requestBody),
+            });
+
+            if (!response.ok) {
+                const errorData = await response.json();
+                console.error('API Error:', errorData);
+                throw new Error(`API Error: ${response.status} - ${response.statusText}`);
+            }
+
+            const data = await response.json();
+            return data.translated_texts[0];
+        }
+
+        // Fonction pour traduire tous les éléments de la page
+        async function translatePage(lang) {
+            const elementsToTranslate = document.querySelectorAll('[id]');
+            for (const element of elementsToTranslate) {
+                if (element.tagName !== 'IMG') {
+                    const text = element.innerText;
+                    try {
+                        const translatedText = await translateText(text, lang);
+                        element.innerText = translatedText;
+                    } catch (error) {
+                        console.error('Translation failed for element:', element, error);
+                    }
+                }
+            }
+        }
+
+        // Écouteur d'événement pour le changement de langue
+        document.getElementById('language-selector').addEventListener('change', async function () {
+            const lang = this.value;
+            await translatePage(lang);
+        });
+    </script>
 </body>
 </html>
